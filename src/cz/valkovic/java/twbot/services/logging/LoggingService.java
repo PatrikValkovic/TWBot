@@ -4,6 +4,15 @@ import org.apache.logging.log4j.Logger;
 
 public interface LoggingService {
 
-    public Logger getStartup();
+    Logger getStartup();
 
+    Logger getLoading();
+
+    Logger getLoadingResources();
+
+    default ExitWrapper errorMissingFxml(Class<?> cls, Exception e) {
+        this.getLoading().error("Cannot load view for " + cls.getCanonicalName());
+        this.getLoading().debug(e, e);
+        return new ExitWrapper();
+    }
 }

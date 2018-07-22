@@ -1,6 +1,8 @@
 package cz.valkovic.java.twbot.controls;
 
-import cz.valkovic.java.twbot.ResourcesLoader;
+import cz.valkovic.java.twbot.services.ResourceLoaderService;
+import cz.valkovic.java.twbot.services.ServicesModule;
+import cz.valkovic.java.twbot.services.logging.LoggingService;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -30,16 +32,18 @@ import java.io.OutputStream;
 
 public class MyWebView extends VBox {
 
-    public MyWebView() throws IOException {
+    public MyWebView() {
         try {
-            FXMLLoader loader = new FXMLLoader(ResourcesLoader.getResource("controls/MyWebView.fxml"));
+            FXMLLoader loader = new FXMLLoader(ResourceLoaderService.getResource("controls/MyWebView.fxml"));
             loader.setController(this);
             loader.setRoot(this);
             loader.load();
-        } catch (IOException exc) {
-            System.out.println("Error parsing MyWebView");
-            throw exc;
-            //TODO
+        }
+        catch (IOException exc) {
+            ServicesModule.getInjector()
+                          .getInstance(LoggingService.class)
+                          .errorMissingFxml(MyWebView.class, exc)
+                          .andExit();
         }
 
         this.getEngine().load("https://www.divokekmeny.cz");
@@ -94,11 +98,11 @@ public class MyWebView extends VBox {
         this.getEngine().load(url);
     }
 
-    public String getLocation(){
+    public String getLocation() {
         return this.getEngine().getLocation();
     }
 
-    public ReadOnlyStringProperty locationProperty(){
+    public ReadOnlyStringProperty locationProperty() {
         return this.getEngine().locationProperty();
     }
 
@@ -116,7 +120,8 @@ public class MyWebView extends VBox {
 
             transformer.transform(new DOMSource(doc), new StreamResult(str));
             return str;
-        } catch (TransformerException ex) {
+        }
+        catch (TransformerException ex) {
             ex.printStackTrace();
             //TODO
             throw ex;
@@ -158,7 +163,7 @@ public class MyWebView extends VBox {
 
     @FXML
     private void fieldInput(KeyEvent keyEvent) {
-        if (keyEvent.getCode().equals(KeyCode.ENTER)){
+        if (keyEvent.getCode().equals(KeyCode.ENTER)) {
             this.setLocation(this.urlfield.getText());
             keyEvent.consume();
         }
@@ -166,7 +171,7 @@ public class MyWebView extends VBox {
     //endregion
 
     //region methods
-    public void refresh(){
+    public void refresh() {
         this.getEngine().reload();
     }
     //endregion

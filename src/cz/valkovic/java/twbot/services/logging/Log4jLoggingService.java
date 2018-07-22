@@ -9,4 +9,14 @@ public class Log4jLoggingService implements LoggingService {
     public Logger getStartup() {
         return LogManager.getFormatterLogger("Startup");
     }
+
+    @Override
+    public Logger getLoading() {
+        return LogManager.getFormatterLogger("Loading");
+    }
+
+    @Override
+    public Logger getLoadingResources() {
+        return LogManager.getFormatterLogger("Loading.Resources");
+    }
 }
