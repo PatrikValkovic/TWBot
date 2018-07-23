@@ -19,4 +19,9 @@ public class Log4jLoggingService implements LoggingService {
     public Logger getLoadingResources() {
         return LogManager.getFormatterLogger("Loading.Resources");
     }
+
+    @Override
+    public Logger getExit() {
+        return LogManager.getFormatterLogger("Exit");
+    }
 }

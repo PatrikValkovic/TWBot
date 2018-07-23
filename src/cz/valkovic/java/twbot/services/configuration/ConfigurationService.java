@@ -6,6 +6,10 @@ public interface ConfigurationService {
 
     Configuration getConfiguration();
 
+    InterConfiguration getInterConfiguration();
+
     void save() throws IOException;
+
+    void save_noexc();
 
 }

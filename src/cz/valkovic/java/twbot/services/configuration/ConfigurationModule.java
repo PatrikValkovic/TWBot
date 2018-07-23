@@ -19,5 +19,16 @@ public class ConfigurationModule extends AbstractModule {
                 return this.confService.getConfiguration();
             }
         });
+        bind(InterConfiguration.class).toProvider(new Provider<InterConfiguration>() {
+
+            @Inject
+            private ConfigurationService confService;
+
+            @Override
+            public InterConfiguration get() {
+                return this.confService.getInterConfiguration();
+            }
+        });
+        requestStaticInjection(OwnerConfigurationService.class);
     }
 }
