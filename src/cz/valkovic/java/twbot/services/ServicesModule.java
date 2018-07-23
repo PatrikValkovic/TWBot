@@ -3,6 +3,8 @@ package cz.valkovic.java.twbot.services;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import cz.valkovic.java.twbot.services.configuration.ConfigurationModule;
+import cz.valkovic.java.twbot.services.directories.DirectoriesModule;
 import cz.valkovic.java.twbot.services.logging.LoggingModule;
 
 public class ServicesModule extends AbstractModule {
@@ -19,6 +21,8 @@ public class ServicesModule extends AbstractModule {
     @Override
     protected void configure() {
         install(new LoggingModule());
+        install(new DirectoriesModule());
+        install(new ConfigurationModule());
         requestStaticInjection(ResourceLoaderService.class);
     }
 }
