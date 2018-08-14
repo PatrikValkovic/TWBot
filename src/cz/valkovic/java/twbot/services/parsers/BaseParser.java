@@ -1,0 +1,18 @@
+package cz.valkovic.java.twbot.services.parsers;
+
+import java.net.URI;
+import java.util.Map;
+import java.util.TreeMap;
+
+class BaseParser {
+
+    protected Map<String, String> procesParams(URI uri) {
+        Map<String, String> dict = new TreeMap<>();
+        for (String params : uri.getQuery().split("[?]")) {
+            String[] p = params.split("=", 2);
+            dict.put(p[0], p.length > 1 ? p[1] : "");
+        }
+        return dict;
+    }
+
+}
