@@ -1,5 +1,7 @@
 package cz.valkovic.java.twbot.services.parsers;
 
+import org.jsoup.nodes.Document;
+
 import java.net.URI;
 
 public class TWStatsUnitParser extends BaseParser implements Parser {
@@ -12,7 +14,7 @@ public class TWStatsUnitParser extends BaseParser implements Parser {
     }
 
     @Override
-    public void proccess(URI location, String content) {
+    public void proccess(URI location, Document content) {
 
     }
 }

@@ -1,5 +1,6 @@
 package cz.valkovic.java.twbot.services.parsers;
 
+import cz.valkovic.java.twbot.services.logging.TestLoggingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ class TWStatsSettingsParserUrlTest {
 
     @BeforeEach
     void beforeAll(){
-        p = new TWStatsSettingParser();
+        p = new TWStatsSettingParser(new TestLoggingService());
     }
 
     @Test
