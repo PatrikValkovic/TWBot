@@ -12,10 +12,12 @@
         <property name="flushMode">ALWAYS</property>
         <property name="cache.use_second_level_cache" >false</property>
         <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
-        <property name="hbm2ddl.auto">validate</property>
+        <property name="hbm2ddl.auto">create-drop</property>
         <property name="connection.url">jdbc:sqlite:./database.db</property>
 
         <!--Mappings-->
+        <mapping class="cz.valkovic.java.twbot.models.Server" />
+        <mapping class="cz.valkovic.java.twbot.models.ServerSetting" />
 
     </session-factory>
 </hibernate-configuration>

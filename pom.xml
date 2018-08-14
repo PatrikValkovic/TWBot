@@ -25,7 +25,7 @@
         </resources>
         <testResources>
             <testResource>
-                <directory>${basedir}/resources</directory>
+                <directory>${basedir}/test/resources</directory>
             </testResource>
         </testResources>
 

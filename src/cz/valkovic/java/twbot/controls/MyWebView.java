@@ -36,6 +36,9 @@ public class MyWebView extends VBox {
     @Inject
     private ResourceLoaderService resourceLoaderService;
 
+    @Inject
+    private LoggingService log;
+
     public MyWebView() {
         ServicesModule.getInjector().injectMembers(this);
         try {
@@ -127,9 +130,9 @@ public class MyWebView extends VBox {
             return str;
         }
         catch (TransformerException ex) {
-            ex.printStackTrace();
-            //TODO
-            throw ex;
+            log.getParsing().warn("Unable to transform content into string");
+            log.getParsing().debug(ex,ex);
+            return new ByteArrayOutputStream(0);
         }
 
     }
