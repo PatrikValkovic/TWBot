@@ -1,4 +1,4 @@
-package cz.valkovic.java.twbot.services.parsers;
+package cz.valkovic.java.twbot.services.parsers.reporting;
 
 import cz.valkovic.java.twbot.models.ServerSetting;
 

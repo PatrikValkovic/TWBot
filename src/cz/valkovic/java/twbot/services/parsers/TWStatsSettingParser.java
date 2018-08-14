@@ -2,6 +2,7 @@ package cz.valkovic.java.twbot.services.parsers;
 
 import cz.valkovic.java.twbot.models.ServerSetting;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.services.parsers.reporting.ServerSettingsReportingService;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -13,11 +14,13 @@ public class TWStatsSettingParser extends BaseParser implements Parser {
 
 
     @Inject
-    public TWStatsSettingParser(LoggingService log) {
+    public TWStatsSettingParser(LoggingService log, ServerSettingsReportingService report) {
         this.log = log;
+        this.report = report;
     }
 
     private LoggingService log;
+    private ServerSettingsReportingService report;
 
     @Override
     public boolean willProccess(URI location) {
@@ -84,6 +87,8 @@ public class TWStatsSettingParser extends BaseParser implements Parser {
                 log.getParsing().warn("Error parsing server setting property " + el.select("th").first().text());
             }
         }
+
+        this.report.reportServerSettings(settings);
 
         log.getParsing().info(location.toString() + " parsed successfully");
     }

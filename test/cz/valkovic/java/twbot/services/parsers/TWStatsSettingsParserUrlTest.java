@@ -16,7 +16,7 @@ class TWStatsSettingsParserUrlTest {
 
     @BeforeEach
     void beforeAll(){
-        p = new TWStatsSettingParser(new TestLoggingService());
+        p = new TWStatsSettingParser(new TestLoggingService(), null);
     }
 
     @Test
