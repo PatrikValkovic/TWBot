@@ -9,23 +9,30 @@ import javax.inject.Singleton;
 @Singleton
 public class Log4jLoggingService implements LoggingService {
 
+    private static final String BASE_PACKAGE = "cz.valkovic.java.twbot";
+
     @Override
     public Logger getStartup() {
-        return LogManager.getFormatterLogger("Startup");
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".startup");
     }
 
     @Override
     public Logger getLoading() {
-        return LogManager.getFormatterLogger("Loading");
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".loading");
     }
 
     @Override
     public Logger getLoadingResources() {
-        return LogManager.getFormatterLogger("Loading.Resources");
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".loading.resources");
     }
 
     @Override
     public Logger getExit() {
-        return LogManager.getFormatterLogger("Exit");
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".exit");
+    }
+
+    @Override
+    public Logger getParsing() {
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".parsing");
     }
 }
