@@ -4,12 +4,12 @@ import javafx.application.Platform;
 
 public class ExitWrapper {
 
-    public void exit(){
+    public void exit() {
         Platform.exit();
         System.exit(1);
     }
 
-    public void andExit(){
+    public void andExit() {
         this.exit();
     }
 

@@ -25,6 +25,6 @@ public class ServicesModule extends AbstractModule {
         install(new DirectoriesModule());
         install(new ConfigurationModule());
         install(new DatabaseModule());
-        requestStaticInjection(ResourceLoaderService.class);
+        bind(ResourceLoaderService.class);
     }
 }

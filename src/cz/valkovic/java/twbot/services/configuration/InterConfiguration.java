@@ -8,4 +8,16 @@ public interface InterConfiguration extends Mutable, Accessible {
     @DefaultValue("true")
     boolean firstRun();
 
+    @DefaultValue("0")
+    int majorVersion();
+
+    @DefaultValue("1")
+    int minorVersion();
+
+    @DefaultValue("0")
+    int patchVersion();
+
+    default String version() {
+        return majorVersion() + "." + minorVersion() + "." + patchVersion();
+    }
 }

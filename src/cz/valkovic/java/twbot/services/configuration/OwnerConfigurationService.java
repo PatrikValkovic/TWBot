@@ -1,25 +1,38 @@
 package cz.valkovic.java.twbot.services.configuration;
 
-import com.google.inject.Inject;
 import cz.valkovic.java.twbot.services.directories.DirectoriesService;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
+import lombok.Setter;
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.ConfigFactory;
 import org.aeonbits.owner.Mutable;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.*;
 import java.nio.file.Paths;
 
+@Singleton
 class OwnerConfigurationService implements ConfigurationService {
 
-    @Inject
-    private static DirectoriesService dirs;
 
     @Inject
-    private static LoggingService log;
+    public OwnerConfigurationService(DirectoriesService dirs, LoggingService log) {
+        this.dirs = dirs;
+        this.log = log;
+
+        conf = loadConfiguration(Configuration.class, getConfigFilepath());
+        interConf = loadConfiguration(InterConfiguration.class, getInterConfigFilepath());
+    }
+
+    @Setter
+    private DirectoriesService dirs;
+
+    @Setter
+    private LoggingService log;
 
 
-    private static synchronized <T extends Mutable> T loadConfiguration(Class<? extends T> type, String filepath){
+    private synchronized <T extends Mutable> T loadConfiguration(Class<? extends T> type, String filepath) {
         log.getLoading().info("Loading configuration for " + type.getSimpleName());
         T config = ConfigFactory.create(type);
         if (new File(filepath).exists()) {
@@ -35,45 +48,32 @@ class OwnerConfigurationService implements ConfigurationService {
     }
 
     //region Configuration
-    private static String getConfigFilepath() {
+    private Configuration conf;
+
+    private String getConfigFilepath() {
         return Paths.get(dirs.getConfigDir(), "config.txt").toString();
-    }
-
-    private static Configuration conf = null;
-
-    private static synchronized Configuration getConf() {
-        if (conf == null) {
-            conf = loadConfiguration(Configuration.class, getConfigFilepath());
-        }
-        return conf;
     }
 
     @Override
     public Configuration getConfiguration() {
-        return getConf();
+        return conf;
     }
+
     //endregion
     //region InterConfiguration
-    private static String getInterConfigFilepath() {
+    private InterConfiguration interConf;
+
+    private String getInterConfigFilepath() {
         return Paths.get(dirs.getConfigDir(), "interconfig.txt").toString();
-    }
-
-    private static InterConfiguration interConf = null;
-
-    private static synchronized InterConfiguration getInterConf() {
-        if (interConf == null) {
-            interConf = loadConfiguration(InterConfiguration.class, getInterConfigFilepath());
-        }
-        return interConf;
     }
 
     @Override
     public InterConfiguration getInterConfiguration() {
-        return getInterConf();
+        return interConf;
     }
     //endregion
 
-    private <T extends Accessible> void saveConfiguration(T conf, String path) throws IOException{
+    private <T extends Accessible> void saveConfiguration(T conf, String path) throws IOException {
         try (OutputStream str = new FileOutputStream(path)) {
             conf.store(str, null);
         }
@@ -95,7 +95,7 @@ class OwnerConfigurationService implements ConfigurationService {
         try {
             this.save();
         }
-        catch (IOException e){
+        catch (IOException e) {
             log.getExit().error("Configuration was not saved");
             log.getExit().debug(e, e);
         }

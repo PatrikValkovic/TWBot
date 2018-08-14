@@ -1,17 +1,20 @@
 package cz.valkovic.java.twbot.services;
 
-import com.google.inject.Inject;
+
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.URL;
 
+@Singleton
 public class ResourceLoaderService {
 
     @Inject
-    private static LoggingService log;
+    private LoggingService log;
 
-    public static URL getResource(String name) throws IOException {
+    public URL getResource(String name) throws IOException {
         log.getLoadingResources().debug("Loading " + name);
         URL url = ResourceLoaderService.class.getClassLoader().getResource(name);
         if (url == null) {

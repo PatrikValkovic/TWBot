@@ -1,7 +1,6 @@
 package cz.valkovic.java.twbot.services.database;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+
 import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 import cz.valkovic.java.twbot.services.directories.DirectoriesService;
 import cz.valkovic.java.twbot.services.logging.ExitWrapper;
@@ -11,29 +10,35 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.Closeable;
 import java.nio.file.Paths;
 
 @Singleton
 public class HibernateDatabaseConnection implements DatabaseConnection, Closeable {
 
-
     @Inject
+    public HibernateDatabaseConnection(DirectoriesService dir, LoggingService log, InterConfiguration interConf) {
+        this.dir = dir;
+        this.log = log;
+        this.interConf = interConf;
+        this.factory = createFactory();
+    }
+
     private DirectoriesService dir;
 
-    @Inject
     private LoggingService log;
 
-    @Inject
     private InterConfiguration interConf;
 
     private SessionFactory factory;
 
-    private String getConnectionString(){
+    private String getConnectionString() {
         return "jdbc:sqlite:" + Paths.get(this.dir.getDataDir(), "database.db").toString();
     }
 
-    private SessionFactory createFactory(){
+    private SessionFactory createFactory() {
         log.getLoading().info("Loading configuration for Hibernate");
 
         Configuration conf = new Configuration();
@@ -46,7 +51,7 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
             }
             factory = conf.buildSessionFactory();
         }
-        catch(HibernateException e){
+        catch (HibernateException e) {
             log.getLoading().error("Cannot load hibernate");
             log.getLoading().debug(e, e);
             new ExitWrapper().exit();
@@ -58,8 +63,6 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
 
     @Override
     public synchronized Session getSession() {
-        if(!this.loaded())
-            this.createFactory();
         return this.factory.openSession();
     }
 

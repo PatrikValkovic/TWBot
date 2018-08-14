@@ -8,9 +8,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 public class Application extends javafx.application.Application {
+
+    @Inject
+    private ResourceLoaderService resourceLoaderService;
 
     public static void main(String[] args) {
         launch(args);
@@ -18,8 +22,9 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) {
+        ServicesModule.getInjector().injectMembers(this);
         try {
-            Parent root = FXMLLoader.load(ResourceLoaderService.getResource("views/MainWindow.fxml"));
+            Parent root = FXMLLoader.load(resourceLoaderService.getResource("views/MainWindow.fxml"));
 
             primaryStage.setTitle("TWBot");
             primaryStage.setScene(new Scene(root, 1280, 768));

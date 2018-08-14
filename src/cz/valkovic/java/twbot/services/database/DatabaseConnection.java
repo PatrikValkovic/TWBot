@@ -1,12 +1,11 @@
 package cz.valkovic.java.twbot.services.database;
 
-import cz.valkovic.java.twbot.services.logging.LoggingService;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
-import javax.inject.Singleton;
 import java.io.Closeable;
 import java.io.IOException;
+
 
 public interface DatabaseConnection extends Closeable {
 

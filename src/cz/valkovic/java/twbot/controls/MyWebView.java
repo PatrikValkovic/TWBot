@@ -1,5 +1,6 @@
 package cz.valkovic.java.twbot.controls;
 
+import com.google.inject.Inject;
 import cz.valkovic.java.twbot.services.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.ServicesModule;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
@@ -32,9 +33,13 @@ import java.io.OutputStream;
 
 public class MyWebView extends VBox {
 
+    @Inject
+    private ResourceLoaderService resourceLoaderService;
+
     public MyWebView() {
+        ServicesModule.getInjector().injectMembers(this);
         try {
-            FXMLLoader loader = new FXMLLoader(ResourceLoaderService.getResource("controls/MyWebView.fxml"));
+            FXMLLoader loader = new FXMLLoader(resourceLoaderService.getResource("controls/MyWebView.fxml"));
             loader.setController(this);
             loader.setRoot(this);
             loader.load();
