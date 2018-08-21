@@ -48,10 +48,7 @@ public class MyWebView extends VBox {
             loader.load();
         }
         catch (IOException exc) {
-            ServicesModule.getInjector()
-                          .getInstance(LoggingService.class)
-                          .errorMissingFxml(MyWebView.class, exc)
-                          .andExit();
+            log.errorMissingFxml(MyWebView.class, exc).andExit();
         }
 
         this.getEngine().load("https://www.divokekmeny.cz");

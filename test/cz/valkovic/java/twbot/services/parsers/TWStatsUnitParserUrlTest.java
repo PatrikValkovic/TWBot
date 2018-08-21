@@ -1,12 +1,14 @@
 package cz.valkovic.java.twbot.services.parsers;
 
-import org.junit.jupiter.api.BeforeAll;
+import cz.valkovic.java.twbot.services.logging.TestLoggingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TWStatsUnitParserUrlTest {
 
@@ -14,7 +16,7 @@ class TWStatsUnitParserUrlTest {
 
     @BeforeEach
     void beforeAll(){
-        p = new TWStatsUnitParser();
+        p = new TWStatsUnitParser(new TestLoggingService(), null);
     }
 
     @Test

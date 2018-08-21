@@ -20,6 +20,11 @@ public class ServerSetting {
     @Setter
     private Server server;
 
+    @OneToOne(mappedBy = "settings", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Getter
+    @Setter
+    private UnitsSettings units;
+
     @Getter
     @Setter
     private double speed;

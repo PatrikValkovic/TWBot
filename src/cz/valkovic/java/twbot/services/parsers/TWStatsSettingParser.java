@@ -84,7 +84,7 @@ public class TWStatsSettingParser extends BaseParser implements Parser {
                 }
             }
             catch (Exception e) {
-                log.getParsing().warn("Error parsing server setting property " + el.select("th").first().text());
+                log.getParsing().warn("Error parsing server setting property " + el.select("td").first().text());
             }
         }
 

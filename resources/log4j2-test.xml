@@ -4,7 +4,7 @@
 
     <Appenders>
         <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%highlight{[%p, %c]}%C.%M(%F:%L) at %d{DEFAULT}: %m%n" disableAnsi="false"/>
+            <PatternLayout pattern="%highlight{[%p, %c]}&quot;%m&quot; %style{%C.%M(%F:%L) at %d{DEFAULT}}{dark, black}%n" disableAnsi="false"/>
         </Console>
     </Appenders>
 
