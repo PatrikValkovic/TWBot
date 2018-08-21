@@ -4,7 +4,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import cz.valkovic.java.twbot.services.database.DatabaseConnection;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
-import org.hibernate.Session;
+
+import javax.persistence.EntityManager;
 
 public class HibernateInitializationRunner implements Runnable {
 
@@ -17,7 +18,8 @@ public class HibernateInitializationRunner implements Runnable {
     @Override
     public void run() {
         log.getLoading().info("Loading hibernate configuration");
-        try(Session s = con.getSession()){}
+        EntityManager mng = con.getEntityManager();
+        mng.close();
         log.getLoading().info("Hibernate configuration loading finished");
     }
 

@@ -6,12 +6,12 @@ import cz.valkovic.java.twbot.services.directories.DirectoriesService;
 import cz.valkovic.java.twbot.services.logging.ExitWrapper;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.EntityManager;
 import java.io.Closeable;
 import java.nio.file.Paths;
 
@@ -62,8 +62,8 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
     }
 
     @Override
-    public synchronized Session getSession() {
-        return this.factory.openSession();
+    public synchronized EntityManager getEntityManager() {
+        return this.factory.createEntityManager();
     }
 
     @Override

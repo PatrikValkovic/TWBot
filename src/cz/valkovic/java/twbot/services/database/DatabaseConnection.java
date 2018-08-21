@@ -1,15 +1,15 @@
 package cz.valkovic.java.twbot.services.database;
 
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
 
+import javax.persistence.EntityManager;
 import java.io.Closeable;
 import java.io.IOException;
 
 
 public interface DatabaseConnection extends Closeable {
 
-    Session getSession();
+    EntityManager getEntityManager();
 
     default void close_noexc(Logger l) {
         try {
