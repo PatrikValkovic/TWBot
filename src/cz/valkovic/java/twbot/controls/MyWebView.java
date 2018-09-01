@@ -3,11 +3,11 @@ package cz.valkovic.java.twbot.controls;
 import com.google.inject.Inject;
 import cz.valkovic.java.twbot.services.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.ServicesModule;
+import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
+import cz.valkovic.java.twbot.services.connectors.PipeConnectionFactory;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,15 +29,18 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
-public class MyWebView extends VBox {
+public class MyWebView extends VBox implements NavigationEngine {
 
     @Inject
     private ResourceLoaderService resourceLoaderService;
 
     @Inject
     private LoggingService log;
+
+    @Inject
+    private PipeConnectionFactory pipeConnectionFactory;
 
     public MyWebView() {
         ServicesModule.getInjector().injectMembers(this);
@@ -50,6 +53,8 @@ public class MyWebView extends VBox {
         catch (IOException exc) {
             log.errorMissingFxml(MyWebView.class, exc).andExit();
         }
+
+        this.pipeConnectionFactory.create(this);
 
         this.getEngine().load("https://www.divokekmeny.cz");
 
@@ -66,6 +71,7 @@ public class MyWebView extends VBox {
         this.getEngine().getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
                 this.urlfield.setText(this.getEngine().getLocation());
+                this.loadedPage.setValue(this.getLocation());
             }
         });
     }
@@ -103,6 +109,14 @@ public class MyWebView extends VBox {
         this.getEngine().load(url);
     }
 
+    private StringProperty loadedPage = new SimpleStringProperty();
+
+    @Override
+    public ReadOnlyStringProperty loadedPageProperty(){
+        return loadedPage;
+    }
+
+    @Override
     public String getLocation() {
         return this.getEngine().getLocation();
     }
@@ -111,25 +125,26 @@ public class MyWebView extends VBox {
         return this.getEngine().locationProperty();
     }
 
-    public OutputStream getContent() throws TransformerException {
+    @Override
+    public String getContent() {
         Document doc = this.getEngine().getDocument();
         try {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty(OutputKeys.ENCODING, StandardCharsets.UTF_8.name());
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
-            OutputStream str = new ByteArrayOutputStream();
+            ByteArrayOutputStream str = new ByteArrayOutputStream();
 
             transformer.transform(new DOMSource(doc), new StreamResult(str));
-            return str;
+            return new String(str.toByteArray(), StandardCharsets.UTF_8);
         }
         catch (TransformerException ex) {
             log.getParsing().warn("Unable to transform content into string");
             log.getParsing().debug(ex,ex);
-            return new ByteArrayOutputStream(0);
+            return "";
         }
 
     }

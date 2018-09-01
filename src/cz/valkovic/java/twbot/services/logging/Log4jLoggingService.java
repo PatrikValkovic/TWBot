@@ -35,4 +35,9 @@ public class Log4jLoggingService implements LoggingService {
     public Logger getParsing() {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".parsing");
     }
+
+    @Override
+    public Logger getPiping() {
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".piping");
+    }
 }
