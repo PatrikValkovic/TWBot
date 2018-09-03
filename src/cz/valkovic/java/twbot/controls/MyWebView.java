@@ -5,6 +5,8 @@ import cz.valkovic.java.twbot.services.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.ServicesModule;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
 import cz.valkovic.java.twbot.services.connectors.PipeConnectionFactory;
+import cz.valkovic.java.twbot.services.connectors.navigation.Navigatable;
+import cz.valkovic.java.twbot.services.connectors.navigation.NavigationMiddleware;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
@@ -31,7 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class MyWebView extends VBox implements NavigationEngine {
+public class MyWebView extends VBox implements NavigationEngine, Navigatable {
 
     @Inject
     private ResourceLoaderService resourceLoaderService;
@@ -41,6 +43,9 @@ public class MyWebView extends VBox implements NavigationEngine {
 
     @Inject
     private PipeConnectionFactory pipeConnectionFactory;
+
+    @Inject
+    private NavigationMiddleware navigationMiddleware;
 
     public MyWebView() {
         ServicesModule.getInjector().injectMembers(this);
@@ -54,6 +59,8 @@ public class MyWebView extends VBox implements NavigationEngine {
             log.errorMissingFxml(MyWebView.class, exc).andExit();
         }
 
+        //connection with rest of the app
+        this.navigationMiddleware.bind(this);
         this.pipeConnectionFactory.create(this);
 
         this.getEngine().load("https://www.divokekmeny.cz");
@@ -105,6 +112,7 @@ public class MyWebView extends VBox implements NavigationEngine {
         return this.webview.getEngine();
     }
 
+    @Override
     public void setLocation(String url) {
         this.getEngine().load(url);
     }

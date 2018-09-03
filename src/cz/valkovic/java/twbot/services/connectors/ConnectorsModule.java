@@ -2,8 +2,8 @@ package cz.valkovic.java.twbot.services.connectors;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
-import cz.valkovic.java.twbot.services.parsers.pipes.EmptyPipe;
-import cz.valkovic.java.twbot.services.parsers.pipes.ParsingPipe;
+import cz.valkovic.java.twbot.services.connectors.navigation.NavigationMiddleware;
+import cz.valkovic.java.twbot.services.connectors.navigation.NavigationService;
 
 public class ConnectorsModule extends AbstractModule {
 
@@ -13,8 +13,7 @@ public class ConnectorsModule extends AbstractModule {
                 .implement(PipeConnection.class, PipeConnectionImpl.class)
                 .build(PipeConnectionFactory.class));
 
-        //TODO change
-        bind(ParsingPipe.class).toInstance(new EmptyPipe());
+        this.bind(NavigationMiddleware.class).to(NavigationService.class);
 
     }
 

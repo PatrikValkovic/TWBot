@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import javax.persistence.EntityManager;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.function.Function;
 
 
 public interface DatabaseConnection extends Closeable {
@@ -22,5 +23,18 @@ public interface DatabaseConnection extends Closeable {
     }
 
     boolean loaded();
+
+
+    default <T> T entityManagerCallback(Function<EntityManager, T> callback){
+        EntityManager mng = null;
+        try{
+            mng = this.getEntityManager();
+            return callback.apply(mng);
+        }
+        finally{
+            if(mng != null)
+                mng.close();
+        }
+    }
 
 }

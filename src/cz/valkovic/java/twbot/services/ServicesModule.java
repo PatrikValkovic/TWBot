@@ -8,6 +8,7 @@ import cz.valkovic.java.twbot.services.connectors.ConnectorsModule;
 import cz.valkovic.java.twbot.services.database.DatabaseModule;
 import cz.valkovic.java.twbot.services.directories.DirectoriesModule;
 import cz.valkovic.java.twbot.services.logging.LoggingModule;
+import cz.valkovic.java.twbot.services.parsers.pipes.PipesModule;
 
 public class ServicesModule extends AbstractModule {
 
@@ -27,6 +28,7 @@ public class ServicesModule extends AbstractModule {
         install(new ConfigurationModule());
         install(new DatabaseModule());
         install(new ConnectorsModule());
+        install(new PipesModule());
         bind(ResourceLoaderService.class);
     }
 }

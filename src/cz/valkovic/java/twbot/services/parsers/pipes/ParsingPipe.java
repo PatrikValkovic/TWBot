@@ -4,6 +4,6 @@ import java.net.URL;
 
 public interface ParsingPipe {
 
-    void process(URL location, String content);
+    boolean process(URL location, String content);
 
 }
