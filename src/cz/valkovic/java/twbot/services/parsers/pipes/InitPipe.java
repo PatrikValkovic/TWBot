@@ -12,9 +12,11 @@ public class InitPipe implements ParsingPipe {
 
     @Inject
     public void init(Provider<SeriesPipe> series,
-                     Provider<ShouldParsePipe> shouldParse) {
+                     Provider<ShouldParsePipe> shouldParse,
+                     Provider<TWStatConfigurationPipe> twStatConfiguration) {
         pipe = series.get()
-                     .add(shouldParse.get());
+                     .add(shouldParse.get())
+                     .add(twStatConfiguration.get());
     }
 
     @Override
