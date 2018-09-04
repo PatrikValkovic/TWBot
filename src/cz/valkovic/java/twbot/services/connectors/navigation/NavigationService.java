@@ -1,6 +1,7 @@
 package cz.valkovic.java.twbot.services.connectors.navigation;
 
 import cz.valkovic.java.twbot.services.configuration.Configuration;
+import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import javafx.application.Platform;
 
@@ -16,28 +17,25 @@ public class NavigationService implements NavigationMiddleware {
 
     private Configuration configuration;
     private LoggingService log;
+    private InterConfiguration interConfiguration;
 
     @Inject
-    public NavigationService(Configuration configuration, LoggingService log) {
+    public NavigationService(Configuration configuration, LoggingService log, InterConfiguration interConfiguration) {
         this.configuration = configuration;
         this.log = log;
+        this.interConfiguration = interConfiguration;
     }
 
-    Navigatable navigatable = null;
-
-    BlockingQueue<String> queue = new LinkedBlockingDeque<>();
+    private BlockingQueue<String> queue = new LinkedBlockingDeque<>();
 
     @Override
     public void bind(Navigatable navigatable) {
-        this.navigatable = navigatable;
 
         Thread navigationThread = new Thread(() -> {
-
-            //TODO fixed seed
-            Random rand = new Random();
-
-            while(true) {
-                int toWait = rand.nextInt(Math.abs(configuration.navigationTimeMax() - configuration.navigationTimeMin())) + configuration.navigationTimeMin();
+            Random rand = new Random(interConfiguration.seed());
+            while (true) {
+                int difference = Math.abs(configuration.navigationTimeMax() - configuration.navigationTimeMin());
+                int toWait = rand.nextInt(difference) + configuration.navigationTimeMin();
 
                 try {
                     log.getNavigating().debug("Thread will sleep for " + toWait + " milliseconds");
@@ -58,13 +56,12 @@ public class NavigationService implements NavigationMiddleware {
                     }
                 }
                 catch (InterruptedException e) {
-                    log.getNavigating().warn("Error when navigating");
+                    log.getNavigating().info("Ending navigating service");
                     log.getNavigating().debug(e, e);
-                    //TODO proper end
                 }
-
             }
         });
+        navigationThread.setDaemon(true);
         navigationThread.start();
     }
 

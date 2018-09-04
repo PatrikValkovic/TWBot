@@ -31,7 +31,7 @@ public class Main {
 
 
         Logger exit = log.getExit();
-        exit.info("CLosing database connections");
+        exit.info("Closing database connections");
         ServicesModule.getInjector()
                       .getInstance(DatabaseConnection.class)
                       .close_noexc(exit);
@@ -39,7 +39,7 @@ public class Main {
         ServicesModule.getInjector()
                       .getInstance(ConfigurationService.class)
                       .save_noexc();
-        exit.info("Configuration storing finished");
+        exit.info("ConfigurationOwner storing finished");
     }
 
 }
