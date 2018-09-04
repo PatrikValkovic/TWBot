@@ -17,7 +17,7 @@ public class ShouldParsePipe implements ParsingPipe {
     @Override
     public boolean process(URL location, String content) {
         boolean willBeParsed = location.getHost().matches("cs\\d+\\.divokekmeny.cz") ||
-                location.getHost() == "twstats.com";
+                location.getHost().equals("www.twstats.com");
 
         if(willBeParsed)
             log.getPiping().info(location.toString() + " will be parsed");

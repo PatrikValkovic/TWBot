@@ -29,7 +29,10 @@ public interface DatabaseConnection extends Closeable {
         EntityManager mng = null;
         try{
             mng = this.getEntityManager();
-            return callback.apply(mng);
+            mng.getTransaction().begin();
+            T returnValue = callback.apply(mng);
+            mng.getTransaction().commit();
+            return returnValue;
         }
         finally{
             if(mng != null)

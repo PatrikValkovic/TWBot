@@ -13,9 +13,11 @@ public class InitPipe implements ParsingPipe {
     @Inject
     public void init(Provider<SeriesPipe> series,
                      Provider<ShouldParsePipe> shouldParse,
-                     Provider<TWStatConfigurationPipe> twStatConfiguration) {
+                     Provider<TWStatConfigurationPipe> twStatConfiguration,
+                     Provider<ServernameExtractorPipe> servernameExtractor) {
         pipe = series.get()
                      .add(shouldParse.get())
+                     .add(servernameExtractor.get())
                      .add(twStatConfiguration.get());
     }
 
