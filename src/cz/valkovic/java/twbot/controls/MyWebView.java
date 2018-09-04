@@ -79,6 +79,9 @@ public class MyWebView extends VBox implements NavigationEngine, Navigatable {
             if (newState == Worker.State.SUCCEEDED) {
                 this.urlfield.setText(this.getEngine().getLocation());
                 this.loadedPage.setValue(this.getLocation());
+                synchronized (getNavigationMonitor()){
+                    getNavigationMonitor().notifyAll();
+                }
             }
         });
     }
@@ -115,6 +118,12 @@ public class MyWebView extends VBox implements NavigationEngine, Navigatable {
     @Override
     public void setLocation(String url) {
         this.getEngine().load(url);
+    }
+
+    private Object navigationMonitor = new Object();
+    @Override
+    public Object getNavigationMonitor(){
+        return navigationMonitor;
     }
 
     private StringProperty loadedPage = new SimpleStringProperty();

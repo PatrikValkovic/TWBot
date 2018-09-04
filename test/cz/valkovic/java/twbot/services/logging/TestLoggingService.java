@@ -36,4 +36,9 @@ public class TestLoggingService implements LoggingService {
     public Logger getPiping() {
         return log;
     }
+
+    @Override
+    public Logger getNavigating() {
+        return log;
+    }
 }

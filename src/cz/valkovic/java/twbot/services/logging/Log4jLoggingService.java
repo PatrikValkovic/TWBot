@@ -40,4 +40,9 @@ public class Log4jLoggingService implements LoggingService {
     public Logger getPiping() {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".piping");
     }
+
+    @Override
+    public Logger getNavigating() {
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".navigating");
+    }
 }

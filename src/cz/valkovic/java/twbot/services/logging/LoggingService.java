@@ -16,6 +16,8 @@ public interface LoggingService {
 
     Logger getPiping();
 
+    Logger getNavigating();
+
     default ExitWrapper errorMissingFxml(Class<?> cls, Exception e) {
         this.getLoading().error("Cannot load view for " + cls.getCanonicalName());
         this.getLoading().debug(e, e);

@@ -4,4 +4,6 @@ public interface Navigatable {
 
     void setLocation(String url);
 
+    Object getNavigationMonitor();
+
 }
