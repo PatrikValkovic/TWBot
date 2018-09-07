@@ -11,7 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.inject.Inject;
-import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 
 public class TWStatsUnitParser extends BaseParser implements Parser {
@@ -27,15 +27,15 @@ public class TWStatsUnitParser extends BaseParser implements Parser {
 
 
     @Override
-    public boolean willProccess(URI location) {
+    public boolean willProccess(URL location) {
         return location.getHost().equals("www.twstats.com") &&
                 procesParams(location).size() == 1 &&
                 procesParams(location).get("page").equals("units");
     }
 
     @Override
-    public void proccess(URI location, Document content) {
-        log.getParsing().info("Parsing settings for " + location.toString());
+    public void proccess(URL location, Document content) {
+        log.getParsing().info("Parsing units for " + location.toString());
 
         UnitsSettings settings = new UnitsSettings();
 
@@ -88,6 +88,6 @@ public class TWStatsUnitParser extends BaseParser implements Parser {
 
         this.report.reportUnitsSettings(settings);
 
-        log.getParsing().info(location.toString() + " parsed successfully");
+        log.getParsing().info(location.toString() + " units parsed successfully");
     }
 }

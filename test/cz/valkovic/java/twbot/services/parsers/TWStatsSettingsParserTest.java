@@ -10,13 +10,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TWStatsSettingsParserTest {
 
@@ -53,19 +51,19 @@ class TWStatsSettingsParserTest {
     }
 
     @Test
-    void shouldParseSettingsPageWithoutError() throws URISyntaxException {
+    void shouldParseSettingsPageWithoutError() throws Exception {
 
         p.proccess(
-                new URI("http://www.twstats.com/cs57/index.php?page=settings"),
+                new URL("http://www.twstats.com/cs57/index.php?page=settings"),
                 d
         );
     }
 
     @Test
-    void shouldParseSettingsPageWithCorrectValues() throws URISyntaxException {
+    void shouldParseSettingsPageWithCorrectValues() throws Exception {
 
         p.proccess(
-                new URI("http://www.twstats.com/cs57/index.php?page=settings"),
+                new URL("http://www.twstats.com/cs57/index.php?page=settings"),
                 d
         );
 

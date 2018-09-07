@@ -8,10 +8,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.inject.Inject;
-import java.net.URI;
+import java.net.URL;
 
 public class TWStatsSettingParser extends BaseParser implements Parser {
-
 
     @Inject
     public TWStatsSettingParser(LoggingService log, ServerSettingsReportingService report) {
@@ -23,14 +22,14 @@ public class TWStatsSettingParser extends BaseParser implements Parser {
     private ServerSettingsReportingService report;
 
     @Override
-    public boolean willProccess(URI location) {
+    public boolean willProccess(URL location) {
         return location.getHost().equals("www.twstats.com") &&
                 procesParams(location).size() == 1 &&
                 procesParams(location).get("page").equals("settings");
     }
 
     @Override
-    public void proccess(URI location, Document content) {
+    public void proccess(URL location, Document content) {
         log.getParsing().info("Parsing settings for " + location.toString());
 
         ServerSetting settings = new ServerSetting();
@@ -90,6 +89,6 @@ public class TWStatsSettingParser extends BaseParser implements Parser {
 
         this.report.reportServerSettings(settings);
 
-        log.getParsing().info(location.toString() + " parsed successfully");
+        log.getParsing().info(location.toString() + " settings parsed successfully");
     }
 }

@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -53,19 +54,19 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseUnitsPageWithoutError() throws URISyntaxException {
+    void shouldParseUnitsPageWithoutError() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
     }
 
     @Test
-    void shouldParseSpearFighterUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseSpearFighterUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -85,10 +86,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseSwordFighterUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseSwordFighterUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -108,10 +109,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseAxeFighterUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseAxeFighterUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -131,10 +132,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseArcherUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseArcherUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -154,10 +155,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseScoutUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseScoutUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -177,10 +178,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseLightCavaleryUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseLightCavaleryUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -200,10 +201,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseMountedArcherUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseMountedArcherUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -223,10 +224,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseHeavyCavaleryUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseHeavyCavaleryUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -246,10 +247,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseRamUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseRamUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -269,10 +270,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseCatapultUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseCatapultUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -292,10 +293,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParseNoblemanUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParseNoblemanUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 
@@ -315,10 +316,10 @@ class TWStatsUnitsParserWithResourcesTest {
     }
 
     @Test
-    void shouldParsePaladinUnitWithCorrectValues() throws URISyntaxException {
+    void shouldParsePaladinUnitWithCorrectValues() throws URISyntaxException, MalformedURLException {
 
         p.proccess(
-                new URI("http://www.twstats.com/en9/index.php?page=units"),
+                new URL("http://www.twstats.com/en9/index.php?page=units"),
                 d
         );
 

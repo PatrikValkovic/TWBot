@@ -2,12 +2,12 @@ package cz.valkovic.java.twbot.services.parsers;
 
 import org.jsoup.nodes.Document;
 
-import java.net.URI;
+import java.net.URL;
 
 public interface Parser {
 
-    boolean willProccess(URI location);
+    boolean willProccess(URL location);
 
-    void proccess(URI location, Document content);
+    void proccess(URL location, Document content);
 
 }
