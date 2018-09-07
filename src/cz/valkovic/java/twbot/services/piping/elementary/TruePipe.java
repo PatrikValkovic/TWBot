@@ -1,4 +1,6 @@
-package cz.valkovic.java.twbot.services.parsers.pipes;
+package cz.valkovic.java.twbot.services.piping.elementary;
+
+import cz.valkovic.java.twbot.services.piping.ParsingPipe;
 
 import java.net.URL;
 
