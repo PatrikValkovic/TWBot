@@ -29,7 +29,7 @@ public class TWStatConfigurationPipe implements ParsingPipe {
 
         log.getPiping().info("Check if server " + server + " exists ");
 
-        return connection.entityManagerCallback(db -> {
+        return connection.entityManager(db -> {
             Server serverDb = db.find(Server.class, server);
 
             //server exists

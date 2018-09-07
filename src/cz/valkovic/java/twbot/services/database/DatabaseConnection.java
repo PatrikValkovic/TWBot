@@ -25,14 +25,20 @@ public interface DatabaseConnection extends Closeable {
     boolean loaded();
 
 
-    default <T> T entityManagerCallback(Function<EntityManager, T> callback){
+    default <T> T entityManager(Function<EntityManager, T> callback){
+        return this.entityManagerNoTransaction(entityManager -> {
+            entityManager.getTransaction().begin();
+            T returned = callback.apply(entityManager);
+            entityManager.getTransaction().commit();
+            return returned;
+        });
+    }
+
+    default <T> T entityManagerNoTransaction(Function<EntityManager, T> callback){
         EntityManager mng = null;
         try{
             mng = this.getEntityManager();
-            mng.getTransaction().begin();
-            T returnValue = callback.apply(mng);
-            mng.getTransaction().commit();
-            return returnValue;
+            return callback.apply(mng);
         }
         finally{
             if(mng != null)
