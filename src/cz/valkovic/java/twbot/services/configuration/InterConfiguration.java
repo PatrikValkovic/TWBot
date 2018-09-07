@@ -19,6 +19,12 @@ public interface InterConfiguration extends Mutable, Accessible {
     @DefaultValue("0")
     int patchVersion();
 
+    @DefaultValue("cs\\d+\\.divokekmeny.cz")
+    String appDomainRegex();
+
+    @DefaultValue("www.twstats.com")
+    String twstatsDomain();
+
     default String version() {
         return majorVersion() + "." + minorVersion() + "." + patchVersion();
     }

@@ -2,7 +2,7 @@ package cz.valkovic.java.twbot.services.connectors;
 
 import com.google.inject.assistedinject.Assisted;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.parsers.pipes.ParsingPipe;
+import cz.valkovic.java.twbot.services.piping.ParsingPipe;
 
 import javax.inject.Inject;
 import java.net.MalformedURLException;

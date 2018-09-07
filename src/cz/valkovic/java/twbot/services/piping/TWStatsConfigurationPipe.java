@@ -1,4 +1,4 @@
-package cz.valkovic.java.twbot.services.parsers.pipes;
+package cz.valkovic.java.twbot.services.piping;
 
 import cz.valkovic.java.twbot.models.Server;
 import cz.valkovic.java.twbot.services.connectors.navigation.NavigationMiddleware;
@@ -8,7 +8,7 @@ import cz.valkovic.java.twbot.services.logging.LoggingService;
 import javax.inject.Inject;
 import java.net.URL;
 
-public class TWStatConfigurationPipe implements ParsingPipe {
+public class TWStatsConfigurationPipe implements ParsingPipe {
 
     private LoggingService log;
     private DatabaseConnection connection;
@@ -16,7 +16,7 @@ public class TWStatConfigurationPipe implements ParsingPipe {
     private ServerInformationProvider serverInformation;
 
     @Inject
-    public TWStatConfigurationPipe(LoggingService log, DatabaseConnection connection, NavigationMiddleware navigation, ServerInformationProvider serverInformation) {
+    public TWStatsConfigurationPipe(LoggingService log, DatabaseConnection connection, NavigationMiddleware navigation, ServerInformationProvider serverInformation) {
         this.log = log;
         this.connection = connection;
         this.navigation = navigation;
@@ -27,7 +27,7 @@ public class TWStatConfigurationPipe implements ParsingPipe {
     public boolean process(URL location, String content) {
         String server = serverInformation.getName();
 
-        log.getPiping().info("Check if server " + server + " exists ");
+        log.getPiping().info("Check if server " + server + " exists");
 
         return connection.entityManager(db -> {
             Server serverDb = db.find(Server.class, server);

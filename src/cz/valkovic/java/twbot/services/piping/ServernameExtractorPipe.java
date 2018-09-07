@@ -1,7 +1,9 @@
-package cz.valkovic.java.twbot.services.parsers.pipes;
+package cz.valkovic.java.twbot.services.piping;
 
+import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 import lombok.Getter;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.URL;
 
@@ -13,15 +15,22 @@ public class ServernameExtractorPipe implements ParsingPipe, ServerInformationPr
     @Getter
     private String host;
 
+    private InterConfiguration interConfig;
+
+    @Inject
+    public ServernameExtractorPipe(InterConfiguration interConfig) {
+        this.interConfig = interConfig;
+    }
+
     @Override
     public boolean process(URL location, String content) {
-        if (location.getHost().matches("cs\\d+\\.divokekmeny.cz")) {
+        if (location.getHost().matches(interConfig.appDomainRegex())) {
 
             name = location.getHost().substring(0, location.getHost().indexOf("."));
             host = location.getHost().substring(location.getHost().indexOf(".") + 1);
 
             return true;
-        } else if (location.getHost().equals("www.twstats.com")) {
+        } else if (location.getHost().equals(interConfig.twstatsDomain())) {
 
             name = location.getPath().substring(1, location.getPath().indexOf("/", 1));
             host = null;

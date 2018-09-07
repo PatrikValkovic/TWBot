@@ -1,6 +1,6 @@
 package cz.valkovic.java.twbot.services.connectors;
 
-import cz.valkovic.java.twbot.services.parsers.pipes.ParsingPipe;
+import cz.valkovic.java.twbot.services.piping.ParsingPipe;
 
 public interface PipeConnection {
 
