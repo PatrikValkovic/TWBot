@@ -14,7 +14,7 @@ public class ServerSetting {
     @Setter
     private String serverName;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     @Getter
     @Setter
@@ -22,8 +22,12 @@ public class ServerSetting {
 
     @OneToOne(mappedBy = "settings", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Getter
-    @Setter
     private UnitsSettings units;
+
+    public void setUnits(UnitsSettings units) {
+        this.units = units;
+        units.setServerName(getServerName());
+    }
 
     @Getter
     @Setter
@@ -73,6 +77,4 @@ public class ServerSetting {
     @Setter
     private int tribeMemberLimit;
 
-
-    
 }

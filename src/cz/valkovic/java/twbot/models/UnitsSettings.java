@@ -17,13 +17,13 @@ public class UnitsSettings {
     @Setter
     private String serverName;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     @Getter
     @Setter
     private ServerSetting settings;
 
-    @OneToMany(mappedBy="unitsSettings", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy="unitsSettings", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Getter
     @Setter
     private Set<UnitInfo> units = new HashSet<>();

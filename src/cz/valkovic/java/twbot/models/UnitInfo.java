@@ -3,7 +3,6 @@ package cz.valkovic.java.twbot.models;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.Generated;
 import javax.persistence.*;
 
 @Entity
@@ -13,13 +12,14 @@ public class UnitInfo {
     public static final String ID = "unitinfo_id";
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = ID, nullable = false, unique = true)
     @Getter
     @Setter
     private int Id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="units_settings_id", nullable=false)
+    @JoinColumn(name="units_settings_id", nullable = false)
     @Getter
     @Setter
     private UnitsSettings unitsSettings;

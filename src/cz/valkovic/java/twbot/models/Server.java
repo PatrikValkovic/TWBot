@@ -23,7 +23,12 @@ public class Server {
 
     @OneToOne(mappedBy = "server", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Getter
-    @Setter
     private ServerSetting setting;
 
+
+    public void setSetting(ServerSetting setting) {
+        this.setting = setting;
+        setting.setServerName(getServerName());
+        setting.setServer(this);
+    }
 }
