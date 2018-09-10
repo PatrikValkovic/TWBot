@@ -1,9 +1,6 @@
 package cz.valkovic.java.twbot.services.parsers.reporting;
 
-import cz.valkovic.java.twbot.models.Server;
-import cz.valkovic.java.twbot.models.ServerSetting;
-import cz.valkovic.java.twbot.models.UnitInfo;
-import cz.valkovic.java.twbot.models.UnitsSettings;
+import cz.valkovic.java.twbot.models.*;
 import cz.valkovic.java.twbot.services.database.DatabaseConnection;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.piping.ServerInformationProvider;
@@ -24,7 +21,7 @@ public class DatabaseReportingService implements ReportingService {
     }
 
     @Override
-    public void reportServerSettings(ServerSetting settings) {
+    public void report(ServerSetting settings) {
         log.getPiping().info("Storing settings for " + serverInformation.getServer().getServerName());
 
         connection.entityManager(db -> {
@@ -33,11 +30,11 @@ public class DatabaseReportingService implements ReportingService {
             db.merge(server);
         });
 
-        System.out.println("Settings for " + serverInformation.getServer().getServerName() + " stored");
+        log.getPiping().info("Settings for " + serverInformation.getServer().getServerName() + " stored");
     }
 
     @Override
-    public void reportUnitsSettings(UnitsSettings units) {
+    public void report(UnitsSettings units) {
         log.getPiping().info("Storing units settings for " + serverInformation.getServer().getServerName());
 
         connection.entityManager(db -> {
@@ -51,6 +48,24 @@ public class DatabaseReportingService implements ReportingService {
             db.persist(units);
         });
 
-        System.out.println("Units settings for " + serverInformation.getServer().getServerName() + " stored");
+        log.getPiping().info("Units settings for " + serverInformation.getServer().getServerName() + " stored");
+    }
+
+    @Override
+    public void report(BuildingSettings buildings) {
+        log.getPiping().info("Storing building settings for " + serverInformation.getServer().getServerName());
+
+        connection.entityManager(db -> {
+            Server server = serverInformation.getServer();
+            buildings.setServerName(server.getServerName());
+
+            for(BuildingInfo building: buildings.getBuildings()){
+                building.setBuildingSettings(buildings);
+            }
+
+            db.persist(buildings);
+        });
+
+        log.getPiping().info("Building settings for " + serverInformation.getServer().getServerName() + " stored");
     }
 }

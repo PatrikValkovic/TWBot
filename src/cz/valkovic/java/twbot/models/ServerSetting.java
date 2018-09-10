@@ -29,6 +29,15 @@ public class ServerSetting {
         units.setServerName(getServerName());
     }
 
+    @OneToOne(mappedBy = "settings", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Getter
+    private BuildingSettings buildings;
+
+    public void setBuildings(BuildingSettings buildings) {
+        this.buildings = buildings;
+        buildings.setServerName(getServerName());
+    }
+
     @Getter
     @Setter
     private double speed;

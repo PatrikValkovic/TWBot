@@ -4,6 +4,6 @@ import cz.valkovic.java.twbot.models.UnitsSettings;
 
 public interface UnitsSettingsReportingService {
 
-    void reportUnitsSettings(UnitsSettings units);
+    void report(UnitsSettings units);
 
 }

@@ -20,6 +20,8 @@
         <mapping class="cz.valkovic.java.twbot.models.ServerSetting" />
         <mapping class="cz.valkovic.java.twbot.models.UnitsSettings" />
         <mapping class="cz.valkovic.java.twbot.models.UnitInfo" />
+        <mapping class="cz.valkovic.java.twbot.models.BuildingSettings" />
+        <mapping class="cz.valkovic.java.twbot.models.BuildingInfo" />
 
     </session-factory>
 </hibernate-configuration>

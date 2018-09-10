@@ -1,10 +1,7 @@
 package cz.valkovic.java.twbot.services.parsers;
 
 import com.google.inject.AbstractModule;
-import cz.valkovic.java.twbot.services.parsers.reporting.DatabaseReportingService;
-import cz.valkovic.java.twbot.services.parsers.reporting.ReportingService;
-import cz.valkovic.java.twbot.services.parsers.reporting.ServerSettingsReportingService;
-import cz.valkovic.java.twbot.services.parsers.reporting.UnitsSettingsReportingService;
+import cz.valkovic.java.twbot.services.parsers.reporting.*;
 
 public class ParsersModule extends AbstractModule {
 
@@ -12,6 +9,7 @@ public class ParsersModule extends AbstractModule {
     protected void configure() {
         bind(ServerSettingsReportingService.class).to(ReportingService.class);
         bind(UnitsSettingsReportingService.class).to(ReportingService.class);
+        bind(BuildingSettingsReportingService.class).to(ReportingService.class);
         bind(ReportingService.class).to(DatabaseReportingService.class);
     }
 }

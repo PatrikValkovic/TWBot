@@ -23,7 +23,7 @@ class TWStatsSettingsParserTest {
         private ServerSetting settings;
 
         @Override
-        public void reportServerSettings(ServerSetting settings) {
+        public void report(ServerSetting settings) {
             this.settings = settings;
         }
     }

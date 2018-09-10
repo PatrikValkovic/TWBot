@@ -37,8 +37,13 @@ public class TWStatsSettingParser extends BaseParser implements Parser {
         for (Element el : content.select("#main .widget tr")) {
 
             Elements ths = el.select("td");
-            if(ths.size() != 2)
+            if(ths.size() == 0)
                 continue;
+
+            if(ths.size() != 2){
+                log.getParsing().error("Unexpected amount of cells");
+                return;
+            }
 
             String key = ths.first().text();
             String value = ths.last().text();
@@ -87,7 +92,7 @@ public class TWStatsSettingParser extends BaseParser implements Parser {
             }
         }
 
-        this.report.reportServerSettings(settings);
+        this.report.report(settings);
 
         log.getParsing().info(location.toString() + " settings parsed successfully");
     }
