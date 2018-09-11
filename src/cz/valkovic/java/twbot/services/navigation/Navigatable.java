@@ -1,4 +1,4 @@
-package cz.valkovic.java.twbot.services.connectors.navigation;
+package cz.valkovic.java.twbot.services.navigation;
 
 public interface Navigatable {
 

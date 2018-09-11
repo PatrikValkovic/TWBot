@@ -1,11 +1,11 @@
-package cz.valkovic.java.twbot.services.connectors.navigation;
+package cz.valkovic.java.twbot.services.navigation;
+
+import cz.valkovic.java.twbot.services.connectors.webview.ToNavigationServiceConnector;
 
 import java.net.URL;
 import java.util.Arrays;
 
-public interface NavigationMiddleware {
-
-    void bind(Navigatable navigatable);
+public interface NavigationMiddleware extends ToNavigationServiceConnector {
 
     NavigationMiddleware queue(String... urls);
 
