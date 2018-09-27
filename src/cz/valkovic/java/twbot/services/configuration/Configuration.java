@@ -23,4 +23,16 @@ public interface Configuration extends Mutable, Accessible {
 
     @DefaultValue("8000")
     int navigationTimeMax();
+
+    @DefaultValue("1280")
+    int windowWidth();
+
+    @DefaultValue("768")
+    int windowHeight();
+
+    @DefaultValue("False")
+    boolean maximalized();
+
+    @DefaultValue("False")
+    boolean fullscreen();
 }

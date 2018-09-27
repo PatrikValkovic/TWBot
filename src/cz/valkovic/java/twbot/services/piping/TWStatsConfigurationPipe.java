@@ -1,9 +1,9 @@
 package cz.valkovic.java.twbot.services.piping;
 
 import cz.valkovic.java.twbot.models.Server;
-import cz.valkovic.java.twbot.services.connectors.navigation.NavigationMiddleware;
 import cz.valkovic.java.twbot.services.database.DatabaseConnection;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.services.navigation.NavigationMiddleware;
 
 import javax.inject.Inject;
 import java.net.URL;

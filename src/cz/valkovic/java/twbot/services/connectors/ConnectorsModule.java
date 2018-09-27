@@ -2,19 +2,21 @@ package cz.valkovic.java.twbot.services.connectors;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
-import cz.valkovic.java.twbot.services.connectors.navigation.NavigationMiddleware;
-import cz.valkovic.java.twbot.services.connectors.navigation.NavigationService;
+import cz.valkovic.java.twbot.services.connectors.webview.*;
+import cz.valkovic.java.twbot.services.navigation.NavigationMiddleware;
+import cz.valkovic.java.twbot.services.navigation.NavigationService;
 
 public class ConnectorsModule extends AbstractModule {
 
     @Override
     protected void configure() {
         install(new FactoryModuleBuilder()
-                .implement(PipeConnection.class, PipeConnectionImpl.class)
-                .build(PipeConnectionFactory.class));
+                .implement(ToPipesConnector.class, ToPipesConnectorImpl.class)
+                .build(ToPipesConnectorFactory.class));
 
-        this.bind(NavigationMiddleware.class).to(NavigationService.class);
-
+        bind(NavigationMiddleware.class).to(NavigationService.class);
+        bind(WebViewConnector.class).to(ConnectorImpl.class);
+        bind(ToNavigationServiceConnector.class).to(NavigationMiddleware.class);
     }
 
 

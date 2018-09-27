@@ -1,8 +1,8 @@
-package cz.valkovic.java.twbot.services.connectors;
+package cz.valkovic.java.twbot.services.connectors.webview;
 
 import cz.valkovic.java.twbot.services.piping.ParsingPipe;
 
-public interface PipeConnection {
+public interface ToPipesConnector {
 
     void setParsingPipe(ParsingPipe pipe);
 

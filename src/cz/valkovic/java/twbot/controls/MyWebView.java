@@ -4,10 +4,9 @@ import com.google.inject.Inject;
 import cz.valkovic.java.twbot.services.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.ServicesModule;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
-import cz.valkovic.java.twbot.services.connectors.PipeConnectionFactory;
-import cz.valkovic.java.twbot.services.connectors.navigation.Navigatable;
-import cz.valkovic.java.twbot.services.connectors.navigation.NavigationMiddleware;
+import cz.valkovic.java.twbot.services.connectors.WebViewConnector;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.services.navigation.Navigatable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.concurrent.Worker;
@@ -42,10 +41,7 @@ public class MyWebView extends VBox implements NavigationEngine, Navigatable {
     private LoggingService log;
 
     @Inject
-    private PipeConnectionFactory pipeConnectionFactory;
-
-    @Inject
-    private NavigationMiddleware navigationMiddleware;
+    private WebViewConnector connector;
 
     public MyWebView() {
         ServicesModule.getInjector().injectMembers(this);
@@ -60,8 +56,7 @@ public class MyWebView extends VBox implements NavigationEngine, Navigatable {
         }
 
         //connection with rest of the app
-        this.navigationMiddleware.bind(this);
-        this.pipeConnectionFactory.create(this);
+        this.connector.bind(this);
 
         this.getEngine().load("https://www.divokekmeny.cz");
 

@@ -1,6 +1,7 @@
-package cz.valkovic.java.twbot.services.connectors;
+package cz.valkovic.java.twbot.services.connectors.webview;
 
 import com.google.inject.assistedinject.Assisted;
+import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.piping.ParsingPipe;
 
@@ -8,10 +9,10 @@ import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class PipeConnectionImpl implements PipeConnection {
+public class ToPipesConnectorImpl implements ToPipesConnector {
 
     @Inject
-    public PipeConnectionImpl(
+    public ToPipesConnectorImpl(
             @Assisted NavigationEngine engine,
             ParsingPipe pipe,
             LoggingService log) {
