@@ -26,7 +26,7 @@ class TWStatsUnitsParserTest {
 
 
         @Override
-        public void reportUnitsSettings(UnitsSettings units) {
+        public void report(UnitsSettings units) {
             this.units = units;
         }
     }

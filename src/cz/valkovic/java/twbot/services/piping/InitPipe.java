@@ -1,5 +1,6 @@
 package cz.valkovic.java.twbot.services.piping;
 
+import cz.valkovic.java.twbot.services.parsers.TWStatsBuildingsParser;
 import cz.valkovic.java.twbot.services.parsers.TWStatsSettingParser;
 import cz.valkovic.java.twbot.services.parsers.TWStatsUnitParser;
 import cz.valkovic.java.twbot.services.piping.elementary.FalsePipe;
@@ -29,11 +30,13 @@ public class InitPipe implements ParsingPipe {
                      ParserPipeFactory parserPipeFactory,
 
                      Provider<TWStatsSettingParser> twstatsSettingParser,
-                     Provider<TWStatsUnitParser> twStatsUnitParser) {
+                     Provider<TWStatsUnitParser> twStatsUnitParser,
+                     Provider<TWStatsBuildingsParser> twStatsBuildingParser) {
 
         ParsingPipe twstatsParsing = paralel.get()
                                             .add(parserPipeFactory.create(twstatsSettingParser.get()))
-                                            .add(parserPipeFactory.create(twStatsUnitParser.get()));
+                                            .add(parserPipeFactory.create(twStatsUnitParser.get()))
+                                            .add(parserPipeFactory.create(twStatsBuildingParser.get()));
         ParsingPipe appParsing = paralel.get()
                                         .add(falsePipe.get())
                                         .add(falsePipe.get());

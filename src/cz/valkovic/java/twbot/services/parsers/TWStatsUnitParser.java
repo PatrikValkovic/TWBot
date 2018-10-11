@@ -78,7 +78,13 @@ public class TWStatsUnitParser extends BaseParser implements Parser {
                 settings.getUnits().add(info);
             }
             catch(UnknownUnitException e){
-                log.getParsing().debug("Unknown unit =" + el.select("td").first().text() + "=");
+                String unit = el.select("td").first().text();
+                if(unit.length() == 0)
+                    log.getParsing().info("Ignoring empty unit");
+                else {
+                    log.getParsing().error("Cannot parse unit " + unit);
+                    log.getParsing().debug(e, e);
+                }
             }
             catch (Exception e) {
                 log.getParsing().warn("Error parsing unit " + el.select("td").first().text());
@@ -86,7 +92,7 @@ public class TWStatsUnitParser extends BaseParser implements Parser {
             }
         }
 
-        this.report.reportUnitsSettings(settings);
+        this.report.report(settings);
 
         log.getParsing().info(location.toString() + " units parsed successfully");
     }
