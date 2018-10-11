@@ -50,8 +50,37 @@ public class InitPipe implements ParsingPipe {
                                  .add(appCondition.get().andFollow(appParsing)));
     }
 
+    private static class PipingClass implements Runnable {
+        private boolean result;
+
+        private URL location;
+        String content;
+        ParsingPipe pipe;
+
+        public PipingClass(URL location, String content, ParsingPipe pipe) {
+            this.location = location;
+            this.content = content;
+            this.pipe = pipe;
+        }
+
+        @Override
+        public void run() {
+            result = pipe.process(location, content);
+        }
+    }
+
     @Override
     public boolean process(URL location, String content) {
-        return pipe.process(location, content);
+        Boolean value;
+        try {
+            PipingClass p = new PipingClass(location, content, pipe);
+            Thread th = new Thread(p);
+            th.start();
+            th.join();
+            return p.result;
+        }
+        catch (InterruptedException ignore) {
+        }
+        return false;
     }
 }
