@@ -8,17 +8,17 @@ import javax.inject.Inject;
 
 public class ConnectorImpl implements WebViewConnector {
 
-    private ToNavigationServiceConnector navigationConnector;
+    private ToActionServiceConnector actionConnector;
     private ToPipesConnectorFactory webViewToPipesFactory;
     private Configuration conf;
 
 
     @Inject
     public ConnectorImpl(
-            ToNavigationServiceConnector navigationConnector,
+            ToActionServiceConnector actionConnector,
             ToPipesConnectorFactory webViewToPipesFactory,
             Configuration conf) {
-        this.navigationConnector = navigationConnector;
+        this.actionConnector = actionConnector;
         this.webViewToPipesFactory = webViewToPipesFactory;
         this.conf = conf;
     }
@@ -26,7 +26,7 @@ public class ConnectorImpl implements WebViewConnector {
     @Override
     public void bind(MyWebView view) {
         webViewToPipesFactory.create(view);
-        navigationConnector.bind(view);
+        actionConnector.bind(view);
 
         view.getEngine().setUserAgent(conf.userAgent());
     }

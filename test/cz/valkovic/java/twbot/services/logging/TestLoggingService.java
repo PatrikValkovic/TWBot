@@ -38,7 +38,12 @@ public class TestLoggingService implements LoggingService {
     }
 
     @Override
-    public Logger getNavigating() {
+    public Logger getAction() {
+        return log;
+    }
+
+    @Override
+    public Logger getNavigationAction() {
         return log;
     }
 }

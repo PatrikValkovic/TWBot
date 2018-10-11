@@ -3,10 +3,10 @@ package cz.valkovic.java.twbot.controls;
 import com.google.inject.Inject;
 import cz.valkovic.java.twbot.services.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.ServicesModule;
+import cz.valkovic.java.twbot.services.browserManipulation.Actionable;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
 import cz.valkovic.java.twbot.services.connectors.WebViewConnector;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.navigation.Navigatable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.concurrent.Worker;
@@ -32,7 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class MyWebView extends VBox implements NavigationEngine, Navigatable {
+public class MyWebView extends VBox implements NavigationEngine, Actionable {
 
     @Inject
     private ResourceLoaderService resourceLoaderService;
@@ -74,8 +74,8 @@ public class MyWebView extends VBox implements NavigationEngine, Navigatable {
             if (newState == Worker.State.SUCCEEDED) {
                 this.urlfield.setText(this.getEngine().getLocation());
                 this.loadedPage.setValue(this.getLocation());
-                synchronized (getNavigationMonitor()){
-                    getNavigationMonitor().notifyAll();
+                synchronized (getActionMonitor()){
+                    getActionMonitor().notifyAll();
                 }
             }
         });
@@ -106,19 +106,20 @@ public class MyWebView extends VBox implements NavigationEngine, Navigatable {
         this.disableForward.set(disableForward);
     }
 
-    public WebEngine getEngine() {
-        return this.webview.getEngine();
-    }
 
-    @Override
     public void setLocation(String url) {
         this.getEngine().load(url);
     }
 
-    private Object navigationMonitor = new Object();
     @Override
-    public Object getNavigationMonitor(){
-        return navigationMonitor;
+    public WebEngine getEngine() {
+        return this.webview.getEngine();
+    }
+    private Object actionMonitor = new Object();
+
+    @Override
+    public Object getActionMonitor(){
+        return actionMonitor;
     }
 
     private StringProperty loadedPage = new SimpleStringProperty();

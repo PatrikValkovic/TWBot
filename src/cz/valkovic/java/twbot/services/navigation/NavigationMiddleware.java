@@ -1,11 +1,9 @@
 package cz.valkovic.java.twbot.services.navigation;
 
-import cz.valkovic.java.twbot.services.connectors.webview.ToNavigationServiceConnector;
-
 import java.net.URL;
 import java.util.Arrays;
 
-public interface NavigationMiddleware extends ToNavigationServiceConnector {
+public interface NavigationMiddleware {
 
     NavigationMiddleware queue(String... urls);
 
