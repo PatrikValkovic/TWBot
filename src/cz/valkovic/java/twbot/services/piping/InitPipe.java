@@ -27,6 +27,7 @@ public class InitPipe implements ParsingPipe {
                      Provider<ServernameExtractorPipe> servernameExtractor,
                      Provider<TWstatsConditionPipe> TWstatsCondition,
                      Provider<AppConditionPipe> appCondition,
+                     Provider<LoginPipe> login,
                      ParserPipeFactory parserPipeFactory,
 
                      Provider<TWStatsSettingParser> twstatsSettingParser,
@@ -42,6 +43,7 @@ public class InitPipe implements ParsingPipe {
                                         .add(falsePipe.get());
 
         pipe = series.get()
+                     .add(login.get())
                      .add(shouldParse.get())
                      .add(servernameExtractor.get())
                      .add(twStatConfiguration.get())
@@ -72,15 +74,10 @@ public class InitPipe implements ParsingPipe {
     @Override
     public boolean process(URL location, String content) {
         Boolean value;
-        try {
-            PipingClass p = new PipingClass(location, content, pipe);
-            Thread th = new Thread(p);
-            th.start();
-            th.join();
-            return p.result;
-        }
-        catch (InterruptedException ignore) {
-        }
-        return false;
+        PipingClass p = new PipingClass(location, content, pipe);
+        Thread th = new Thread(p, "Piping thread");
+        th.setDaemon(true);
+        th.start();
+        return true;
     }
 }

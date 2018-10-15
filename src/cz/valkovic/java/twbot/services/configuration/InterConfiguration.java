@@ -22,6 +22,9 @@ public interface InterConfiguration extends Mutable, Accessible {
     @DefaultValue("cs\\d+\\.divokekmeny.cz")
     String appDomainRegex();
 
+    @DefaultValue("www.divokekmeny.cz")
+    String loginPageRegex();
+
     @DefaultValue("www.twstats.com")
     String twstatsDomain();
 

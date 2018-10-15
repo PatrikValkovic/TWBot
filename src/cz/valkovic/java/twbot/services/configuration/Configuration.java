@@ -35,4 +35,10 @@ public interface Configuration extends Mutable, Accessible {
 
     @DefaultValue("False")
     boolean fullscreen();
+
+    String username();
+
+    String password();
+
+    String serverName();
 }
