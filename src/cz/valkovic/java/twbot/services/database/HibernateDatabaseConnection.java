@@ -5,6 +5,8 @@ import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 import cz.valkovic.java.twbot.services.directories.DirectoriesService;
 import cz.valkovic.java.twbot.services.logging.ExitWrapper;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.services.messaging.messages.HibernateLoaded;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -18,28 +20,31 @@ import java.nio.file.Paths;
 @Singleton
 public class HibernateDatabaseConnection implements DatabaseConnection, Closeable {
 
+
     @Inject
-    public HibernateDatabaseConnection(DirectoriesService dir, LoggingService log, InterConfiguration interConf) {
+    public HibernateDatabaseConnection(DirectoriesService dir,
+                                       LoggingService log,
+                                       InterConfiguration interConf,
+                                       MessageService message) {
         this.dir = dir;
         this.log = log;
         this.interConf = interConf;
+        this.message = message;
         this.factory = createFactory();
     }
 
     private DirectoriesService dir;
-
     private LoggingService log;
-
     private InterConfiguration interConf;
-
     private SessionFactory factory;
+    private MessageService message;
 
     private String getConnectionString() {
         return "jdbc:sqlite:" + Paths.get(this.dir.getDataDir(), "database.db").toString();
     }
 
     private SessionFactory createFactory() {
-        log.getLoading().info("Loading configuration for Hibernate");
+        log.getLoading().debug("Loading configuration for Hibernate");
 
         Configuration conf = new Configuration();
         try {
@@ -57,7 +62,8 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
             new ExitWrapper().exit();
         }
 
-        log.getLoading().info("Hibernate configuration loaded");
+        log.getLoading().debug("Hibernate configuration loaded");
+        this.message.invoke(new HibernateLoaded());
         return factory;
     }
 

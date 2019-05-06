@@ -50,4 +50,9 @@ public class Log4jLoggingService implements LoggingService {
     public Logger getNavigationAction() {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".action.navigation");
     }
+
+    @Override
+    public Logger getMessaging() {
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".messaging");
+    }
 }
