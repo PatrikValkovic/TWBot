@@ -1,6 +1,5 @@
 package cz.valkovic.java.twbot.services.messaging;
 
-import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +20,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Singleton
 public class MessageServiceImpl implements MessageService {
 
+    private static final int JOIN_TIME = 10000;
+    private static final int LOOP_WAIT = 1000;
+
     //region threading
     @AllArgsConstructor
     @NoArgsConstructor
@@ -34,23 +36,20 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private class MessagingThreadRuntime extends Thread {
-        MessagingThreadRuntime(LoggingService log, InterConfiguration conf) {
+        MessagingThreadRuntime(LoggingService log) {
             this.log = log;
-            this.conf = conf;
             this.setName("Messaging thread");
         }
 
         private LoggingService log;
-        private InterConfiguration conf;
         private BlockingQueue<Invokation> invocations = new LinkedBlockingDeque<>();
         private AtomicBoolean working = new AtomicBoolean(true);
 
         @Override
         public void run() {
-            int pollTime = this.conf.messagingPollingTime();
             try {
                 while (working.get() || !this.invocations.isEmpty()) {
-                    Invokation i = this.invocations.poll(pollTime, TimeUnit.MILLISECONDS);
+                    Invokation i = this.invocations.poll(LOOP_WAIT, TimeUnit.MILLISECONDS);
                     if (i == null) {
                         continue;
                     }
@@ -83,13 +82,11 @@ public class MessageServiceImpl implements MessageService {
 
 
     private LoggingService log;
-    private InterConfiguration conf;
 
     @Inject
-    public MessageServiceImpl(LoggingService log, InterConfiguration conf) {
+    public MessageServiceImpl(LoggingService log) {
         this.log = log;
-        this.conf = conf;
-        this.t = new MessagingThreadRuntime(log, conf);
+        this.t = new MessagingThreadRuntime(log);
         this.t.start();
     }
 
@@ -100,7 +97,7 @@ public class MessageServiceImpl implements MessageService {
         this.t.working.set(false);
         this.log.getMessaging().debug("Set end of message interpretations");
         try {
-            this.t.join(this.conf.messagingExitWait());
+            this.t.join(JOIN_TIME);
             this.log.getMessaging().debug("message thread joined");
         }
         catch(InterruptedException e){

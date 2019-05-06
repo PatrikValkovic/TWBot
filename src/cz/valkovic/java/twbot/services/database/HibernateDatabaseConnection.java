@@ -33,7 +33,7 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
         this.message = message;
         this.factory = createFactory();
 
-        this.message.listenTo(ApplicationClosing.class, e -> this.close_noexc(e.getLog()));
+        this.message.listenTo(ApplicationClosing.class, e -> this.close());
     }
 
     private DirectoriesService dir;
@@ -82,6 +82,14 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
 
     @Override
     public synchronized void close() {
-        this.factory.close();
+        try {
+            this.log.getExit().debug("Closing database");
+            this.factory.close();
+            this.log.getExit().info("Database closed");
+        }
+        catch (HibernateException e) {
+            this.log.getExit().error("Unable to close database connection");
+            this.log.getExit().debug(e, e);
+        }
     }
 }

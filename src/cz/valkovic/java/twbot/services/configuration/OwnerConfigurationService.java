@@ -2,7 +2,8 @@ package cz.valkovic.java.twbot.services.configuration;
 
 import cz.valkovic.java.twbot.services.directories.DirectoriesService;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
-import lombok.Setter;
+import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.ConfigFactory;
 import org.aeonbits.owner.Mutable;
@@ -17,20 +18,28 @@ class OwnerConfigurationService implements ConfigurationService {
 
 
     @Inject
-    public OwnerConfigurationService(DirectoriesService dirs, LoggingService log) {
+    public OwnerConfigurationService(DirectoriesService dirs,
+                                     LoggingService log,
+                                     MessageService mess) {
         this.dirs = dirs;
         this.log = log;
+        this.mess = mess;
 
         conf = loadConfiguration(Configuration.class, getConfigFilepath());
         interConf = loadConfiguration(InterConfiguration.class, getInterConfigFilepath());
     }
 
-    @Setter
+
     private DirectoriesService dirs;
-
-    @Setter
     private LoggingService log;
+    private MessageService mess;
 
+    @Inject
+    public void injectMessagingService(MessageService service)
+    {
+        this.mess = service;
+        this.mess.listenTo(ApplicationClosing.class, e -> this.save());
+    }
 
     private synchronized <T extends Mutable> T loadConfiguration(Class<? extends T> type, String filepath) {
         log.getLoading().info("Loading configuration for " + type.getSimpleName());
@@ -84,16 +93,12 @@ class OwnerConfigurationService implements ConfigurationService {
     }
 
     @Override
-    public void save() throws IOException {
-        this.getInterConfiguration().setProperty("firstRun", "false");
-        saveConfiguration(this.getConfiguration(), getConfigFilepath());
-        saveConfiguration(this.getInterConfiguration(), getInterConfigFilepath());
-    }
-
-    @Override
-    public void save_noexc() {
+    public void save() {
         try {
-            this.save();
+            this.log.getExit().info("Saving configuration");
+            this.getInterConfiguration().setProperty("firstRun", "false");
+            saveConfiguration(this.getConfiguration(), getConfigFilepath());
+            saveConfiguration(this.getInterConfiguration(), getInterConfigFilepath());
         }
         catch (IOException e) {
             log.getExit().error("Configuration was not saved");

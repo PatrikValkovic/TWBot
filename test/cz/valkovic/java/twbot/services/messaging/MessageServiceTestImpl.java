@@ -22,7 +22,15 @@ public class MessageServiceTestImpl implements MessageService {
         if (!this.messages.containsKey(event.getClass()))
             return this;
         this.messages.get(event.getClass())
-                     .forEach(l -> l.invoke(event));
+                     .forEach(l -> {
+                         try {
+                             l.invoke(event);
+                         }
+                         catch (Exception e) {
+                             e.printStackTrace();
+                             System.exit(1);
+                         }
+                     });
         return this;
     }
 

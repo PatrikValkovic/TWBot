@@ -28,12 +28,6 @@ public interface InterConfiguration extends Mutable, Accessible {
     @DefaultValue("www.twstats.com")
     String twstatsDomain();
 
-    @DefaultValue("1000")
-    int messagingPollingTime();
-
-    @DefaultValue("10000")
-    int messagingExitWait();
-
     default String version() {
         return majorVersion() + "." + minorVersion() + "." + patchVersion();
     }

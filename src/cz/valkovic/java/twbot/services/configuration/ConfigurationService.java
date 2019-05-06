@@ -9,7 +9,4 @@ public interface ConfigurationService {
     InterConfiguration getInterConfiguration();
 
     void save() throws IOException;
-
-    void save_noexc();
-
 }
