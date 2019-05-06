@@ -1,5 +1,6 @@
 package cz.valkovic.java.twbot.services.messaging;
 
+import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,10 +16,12 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Singleton
 public class MessageServiceImpl implements MessageService {
 
+    //region threading
     @AllArgsConstructor
     @NoArgsConstructor
     private class Invokation {
@@ -30,66 +33,120 @@ public class MessageServiceImpl implements MessageService {
         Listener l;
     }
 
-    private static BlockingQueue<Invokation> invokations = new LinkedBlockingDeque<>();
+    private class MessagingThreadRuntime extends Thread {
+        MessagingThreadRuntime(LoggingService log, InterConfiguration conf) {
+            this.log = log;
+            this.conf = conf;
+            this.setName("Messaging thread");
+        }
 
-    private static void invokeThread() {
-        try {
-            while (true) {
-                Invokation i = invokations.take();
-                try {
-                    i.l.invoke(i.m);
-                }
-                catch (Exception e) {
-                    String m = String.format(
-                        "Failed when invoking listener %s for event %s",
-                            i.l.getClass().getName(),
-                            i.m.getClass().getName()
-                    );
-                    log.getMessaging().warn(m, e);
+        private LoggingService log;
+        private InterConfiguration conf;
+        private BlockingQueue<Invokation> invocations = new LinkedBlockingDeque<>();
+        private AtomicBoolean working = new AtomicBoolean(true);
+
+        @Override
+        public void run() {
+            int pollTime = this.conf.messagingPollingTime();
+            try {
+                while (working.get() || !this.invocations.isEmpty()) {
+                    Invokation i = this.invocations.poll(pollTime, TimeUnit.MILLISECONDS);
+                    if (i == null) {
+                        continue;
+                    }
+                    try {
+                        this.log.getMessaging().debug(String.format(
+                                "Invoking event %s on listener %s",
+                                i.m.getClass().getSimpleName(),
+                                i.l.getClass().getSimpleName()
+                        ));
+                        i.l.invoke(i.m);
+                    }
+                    catch (Exception e) {
+                        String m = String.format(
+                                "Failed when invoking listener %s for event %s",
+                                i.l.getClass().getSimpleName(),
+                                i.m.getClass().getSimpleName()
+                        );
+                        this.log.getMessaging().warn(m, e);
+                    }
                 }
             }
-        }
-        catch(InterruptedException e){
-            log.getMessaging().debug("Messaging thread interrupted, ending");
+            catch (InterruptedException e) {
+                this.log.getMessaging().warn("Messaging thread interrupted, ending");
+            }
         }
     }
 
-    private static LoggingService log;
+    private MessagingThreadRuntime t;
+    //endregion
+
+
+    private LoggingService log;
+    private InterConfiguration conf;
 
     @Inject
-    public MessageServiceImpl(LoggingService l)
-    {
-        log = l;
-        Thread t = new Thread(MessageServiceImpl::invokeThread);
-        t.setDaemon(true);
-        t.start();
+    public MessageServiceImpl(LoggingService log, InterConfiguration conf) {
+        this.log = log;
+        this.conf = conf;
+        this.t = new MessagingThreadRuntime(log, conf);
+        this.t.start();
     }
 
+
     //region interface
+    @Override
+    public void waitToAllEvents() throws InterruptedException {
+        this.t.working.set(false);
+        this.log.getMessaging().debug("Set end of message interpretations");
+        try {
+            this.t.join(this.conf.messagingExitWait());
+            this.log.getMessaging().debug("message thread joined");
+        }
+        catch(InterruptedException e){
+            this.log.getMessaging().error("Couldn't join the messaging thread", e);
+            throw e;
+        }
+    }
+
+
     private Map<Class<? extends Message>, List<Listener>> callbacks = new HashMap<>();
 
     @Override
-    public synchronized <Event extends Message> void listenTo(Class<Event> listenTo, Listener<Event> listener) {
-        if(!this.callbacks.containsKey(listenTo)){
+    public synchronized <Event extends Message> MessageServiceImpl listenTo(Class<Event> listenTo, Listener<Event> listener) {
+        if (!this.callbacks.containsKey(listenTo)) {
             this.callbacks.put(listenTo, new ArrayList<>());
         }
         callbacks.get(listenTo).add(listener);
-        log.getMessaging().debug("New listener for event " + listenTo.getName());
+        this.log.getMessaging().debug(String.format(
+                "New listener %s for event %s",
+                listener.getClass().getSimpleName(),
+                listenTo.getSimpleName()
+        ));
+        return this;
     }
 
     @Override
-    public synchronized <Event extends Message> void invoke(Event event) {
-        log.getMessaging().debug("Invoking event " + event.getClass().getName());
-        if(!this.callbacks.containsKey(event.getClass())){
-            return;
+    public synchronized <Event extends Message> MessageServiceImpl invoke(Event event) {
+        this.log.getMessaging().debug("Invoking event " + event.getClass().getSimpleName());
+
+        if (!this.callbacks.containsKey(event.getClass())) {
+            return this;
         }
+
         List<Listener> callbacks = this.callbacks.get(event.getClass());
-        log.getMessaging().debug("Event " + event.getClass().getName() + " has " + callbacks.size() + " listeners");
+
+        this.log.getMessaging().debug(String.format(
+                "Event %s has %d listeners",
+                event.getClass().getSimpleName(),
+                callbacks.size()
+        ));
+
         callbacks.stream()
                  .map(l -> new Invokation(event, l))
                  .forEach(i -> {
                      try {
-                         invokations.offer(i, 5000, TimeUnit.MILLISECONDS);
+                         this.t.invocations.put(i);
                      }
                      catch (InterruptedException e) {
                          String m = String.format(
@@ -97,9 +154,10 @@ public class MessageServiceImpl implements MessageService {
                                  i.l.getClass().getName(),
                                  event.getClass().getName()
                          );
-                         log.getMessaging().warn(m, e);
+                         this.log.getMessaging().warn(m, e);
                      }
                  });
+        return this;
     }
     //endregion
 }

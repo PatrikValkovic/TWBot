@@ -29,6 +29,5 @@ public class ConfigurationModule extends AbstractModule {
                 return this.confService.getInterConfiguration();
             }
         });
-        requestStaticInjection(OwnerConfigurationService.class);
     }
 }

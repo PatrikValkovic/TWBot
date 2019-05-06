@@ -2,7 +2,9 @@ package cz.valkovic.java.twbot.services.messaging;
 
 public interface MessageService {
 
-    <Event extends Message> void listenTo(Class<Event> listenTo, Listener<Event> listener);
+    <Event extends Message> MessageService listenTo(Class<Event> listenTo, Listener<Event> listener);
 
-    <Event extends Message> void invoke(Event event);
+    <Event extends Message> MessageService invoke(Event event);
+
+    void waitToAllEvents() throws InterruptedException;
 }

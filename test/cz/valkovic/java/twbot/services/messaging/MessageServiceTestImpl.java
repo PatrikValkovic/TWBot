@@ -10,17 +10,23 @@ public class MessageServiceTestImpl implements MessageService {
     private Map<Class<? extends Message>, List<Listener<? extends Message>>> messages = new HashMap<>();
 
     @Override
-    public <Event extends Message> void listenTo(Class<Event> listenTo, Listener<Event> listener) {
+    public <Event extends Message> MessageServiceTestImpl listenTo(Class<Event> listenTo, Listener<Event> listener) {
         if (!this.messages.containsKey(listenTo))
             this.messages.put(listenTo, new ArrayList<>());
         this.messages.get(listenTo).add(listener);
+        return this;
     }
 
     @Override
-    public <Event extends Message> void invoke(Event event) {
+    public <Event extends Message> MessageServiceTestImpl invoke(Event event) {
         if (!this.messages.containsKey(event.getClass()))
-            return;
+            return this;
         this.messages.get(event.getClass())
                      .forEach(l -> l.invoke(event));
+        return this;
+    }
+
+    @Override
+    public void waitToAllEvents() {
     }
 }

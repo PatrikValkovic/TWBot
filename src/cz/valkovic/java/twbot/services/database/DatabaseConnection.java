@@ -16,6 +16,7 @@ public interface DatabaseConnection extends Closeable {
     default void close_noexc(Logger l) {
         try {
             this.close();
+            l.info("Database closed");
         }
         catch (IOException e) {
             l.error("Unable to close database connection");

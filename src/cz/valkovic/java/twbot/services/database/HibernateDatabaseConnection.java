@@ -6,6 +6,7 @@ import cz.valkovic.java.twbot.services.directories.DirectoriesService;
 import cz.valkovic.java.twbot.services.logging.ExitWrapper;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
 import cz.valkovic.java.twbot.services.messaging.messages.HibernateLoaded;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -31,6 +32,8 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
         this.interConf = interConf;
         this.message = message;
         this.factory = createFactory();
+
+        this.message.listenTo(ApplicationClosing.class, e -> this.close_noexc(e.getLog()));
     }
 
     private DirectoriesService dir;
