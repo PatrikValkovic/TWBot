@@ -6,7 +6,13 @@ import cz.valkovic.java.twbot.services.logging.LoggingService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 @Singleton
 public class ResourceLoaderService {
@@ -22,6 +28,13 @@ public class ResourceLoaderService {
             throw new IOException("Resource " + name + " does not exists");
         }
         return url;
+    }
+
+    public String getResoureContent(String name) throws IOException, URISyntaxException {
+        URL location = this.getResource(name);
+        Path loc = Paths.get(location.toURI());
+        List<String> lines = Files.readAllLines(loc, Charset.forName("utf8"));
+        return String.join("", lines);
     }
 
 }

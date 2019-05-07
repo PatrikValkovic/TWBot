@@ -13,7 +13,7 @@ public class SeriesPipe implements ParsingPipe {
     private List<ParsingPipe> pipes = new ArrayList<>();
 
     @Override
-    public boolean process(URL location, String content) {
+    public boolean process(URL location, String content) throws Exception {
         for (ParsingPipe p : pipes)
             if (!p.process(location, content))
                 return false;

@@ -4,11 +4,16 @@ import com.google.inject.Inject;
 import cz.valkovic.java.twbot.services.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.ServicesModule;
 import cz.valkovic.java.twbot.services.browserManipulation.Actionable;
+import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
 import cz.valkovic.java.twbot.services.connectors.WebViewConnector;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.services.messaging.messages.WebLoaded;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,20 +25,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
 import javafx.scene.web.WebView;
-import org.w3c.dom.Document;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
-public class MyWebView extends VBox implements NavigationEngine, Actionable {
+public class MyWebView extends VBox implements Actionable {
 
+    //region injections
     @Inject
     private ResourceLoaderService resourceLoaderService;
 
@@ -43,42 +40,67 @@ public class MyWebView extends VBox implements NavigationEngine, Actionable {
     @Inject
     private WebViewConnector connector;
 
-    public MyWebView() {
+    @Inject
+    private MessageService messaging;
+
+    @Inject
+    private NavigationEngine nav;
+
+    @Inject
+    private Configuration conf;
+    //endregion
+
+
+    public MyWebView() throws IOException {
+        // inject members
         ServicesModule.getInjector().injectMembers(this);
+
+        // load template
         try {
             FXMLLoader loader = new FXMLLoader(resourceLoaderService.getResource("controls/MyWebView.fxml"));
             loader.setController(this);
             loader.setRoot(this);
             loader.load();
         }
-        catch (IOException exc) {
-            log.errorMissingFxml(MyWebView.class, exc).andExit();
+        catch (IOException e) {
+            log.errorMissingFxml(MyWebView.class, e);
+            throw e;
         }
 
-        //connection with rest of the app
+        // connection with rest of the app
         this.connector.bind(this);
 
-        this.getEngine().load("https://www.divokekmeny.cz");
+        // navigate to index page
+        this.getEngine().load(this.conf.homepage());
 
-        disableBack.bind(Bindings.createBooleanBinding(() -> {
-            WebHistory h = this.getEngine().getHistory();
-            return h.getCurrentIndex() == 0;
-        }, this.webview.getEngine().getHistory().currentIndexProperty()));
+        // bind properties
+        bindProperties();
 
-        disableForward.bind(Bindings.createBooleanBinding(() -> {
-            WebHistory h = this.getEngine().getHistory();
-            return h.getCurrentIndex() == h.getEntries().size() - 1 || h.getEntries().size() == 0;
-        }, this.webview.getEngine().getHistory().currentIndexProperty()));
-
+        // handle when engine navigates
         this.getEngine().getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
-                this.urlfield.setText(this.getEngine().getLocation());
-                this.loadedPage.setValue(this.getLocation());
+                this.urlfield.setText(this.nav.getLocation());
+                this.messaging.invoke(new WebLoaded(
+                        this.nav.getContent(),
+                        this.nav.getLocation()
+                ));
+
                 synchronized (getActionMonitor()){
                     getActionMonitor().notifyAll();
                 }
             }
         });
+    }
+
+    @Override
+    public WebEngine getEngine() {
+        return this.webview.getEngine();
+    }
+
+    private Object actionMonitor = new Object();
+    @Override
+    public Object getActionMonitor(){
+        return actionMonitor;
     }
 
     //region getters setters
@@ -106,60 +128,8 @@ public class MyWebView extends VBox implements NavigationEngine, Actionable {
         this.disableForward.set(disableForward);
     }
 
-
-    public void setLocation(String url) {
-        this.getEngine().load(url);
-    }
-
-    @Override
-    public WebEngine getEngine() {
-        return this.webview.getEngine();
-    }
-    private Object actionMonitor = new Object();
-
-    @Override
-    public Object getActionMonitor(){
-        return actionMonitor;
-    }
-
-    private StringProperty loadedPage = new SimpleStringProperty();
-
-    @Override
-    public ReadOnlyStringProperty loadedPageProperty(){
-        return loadedPage;
-    }
-
-    @Override
-    public String getLocation() {
-        return this.getEngine().getLocation();
-    }
-
     public ReadOnlyStringProperty locationProperty() {
         return this.getEngine().locationProperty();
-    }
-
-    @Override
-    public String getContent() {
-        Document doc = this.getEngine().getDocument();
-        try {
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, StandardCharsets.UTF_8.name());
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-
-            ByteArrayOutputStream str = new ByteArrayOutputStream();
-
-            transformer.transform(new DOMSource(doc), new StreamResult(str));
-            return new String(str.toByteArray(), StandardCharsets.UTF_8);
-        }
-        catch (TransformerException ex) {
-            log.getParsing().warn("Unable to transform content into string");
-            log.getParsing().debug(ex,ex);
-            return "";
-        }
-
     }
     //endregion
 
@@ -172,6 +142,19 @@ public class MyWebView extends VBox implements NavigationEngine, Actionable {
     private BooleanProperty disableBack = new SimpleBooleanProperty(this, "disableBack");
 
     private BooleanProperty disableForward = new SimpleBooleanProperty(this, "disableForward");
+
+    private void bindProperties()
+    {
+        disableBack.bind(Bindings.createBooleanBinding(() -> {
+            WebHistory h = this.getEngine().getHistory();
+            return h.getCurrentIndex() == 0;
+        }, this.webview.getEngine().getHistory().currentIndexProperty()));
+
+        disableForward.bind(Bindings.createBooleanBinding(() -> {
+            WebHistory h = this.getEngine().getHistory();
+            return h.getCurrentIndex() == h.getEntries().size() - 1 || h.getEntries().size() == 0;
+        }, this.webview.getEngine().getHistory().currentIndexProperty()));
+    }
     //endregion
 
     //region handlers
@@ -197,15 +180,9 @@ public class MyWebView extends VBox implements NavigationEngine, Actionable {
     @FXML
     private void fieldInput(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-            this.setLocation(this.urlfield.getText());
+            this.nav.setLocation(this.urlfield.getText());
             keyEvent.consume();
         }
-    }
-    //endregion
-
-    //region methods
-    public void refresh() {
-        this.getEngine().reload();
     }
     //endregion
 }

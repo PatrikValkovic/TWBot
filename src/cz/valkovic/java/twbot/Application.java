@@ -27,7 +27,7 @@ public class Application extends javafx.application.Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         ServicesModule.getInjector().injectMembers(this);
         try {
             Parent root = FXMLLoader.load(resourceLoaderService.getResource("views/MainWindow.fxml"));
@@ -46,8 +46,8 @@ public class Application extends javafx.application.Application {
         catch (IOException exc) {
             ServicesModule.getInjector()
                           .getInstance(LoggingService.class)
-                          .errorMissingFxml(Application.class, exc)
-                          .andExit();
+                          .errorMissingFxml(Application.class, exc);
+            throw exc;
         }
 
     }

@@ -20,7 +20,7 @@ public class ConditionPipe implements ParsingPipe {
     }
 
     @Override
-    public boolean process(URL location, String content) {
+    public boolean process(URL location, String content) throws Exception {
         if(predicate == null || !predicate.test(location, content) || next == null)
             return true;
 

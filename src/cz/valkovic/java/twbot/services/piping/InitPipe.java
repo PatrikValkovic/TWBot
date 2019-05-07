@@ -67,7 +67,13 @@ public class InitPipe implements ParsingPipe {
 
         @Override
         public void run() {
-            result = pipe.process(location, content);
+            try {
+                result = pipe.process(location, content);
+            }
+            catch (Exception e) {
+                //TODO handle
+                e.printStackTrace();
+            }
         }
     }
 

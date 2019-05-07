@@ -3,7 +3,6 @@ package cz.valkovic.java.twbot.services.database;
 
 import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 import cz.valkovic.java.twbot.services.directories.DirectoriesService;
-import cz.valkovic.java.twbot.services.logging.ExitWrapper;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
 import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
@@ -62,7 +61,7 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
         catch (HibernateException e) {
             log.getLoading().error("Cannot load hibernate");
             log.getLoading().debug(e, e);
-            new ExitWrapper().exit();
+            throw e;
         }
 
         log.getLoading().debug("Hibernate configuration loaded");

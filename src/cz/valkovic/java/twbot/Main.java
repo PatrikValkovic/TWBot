@@ -16,17 +16,17 @@ public class Main {
         log.getStartup().info("Dependency injection container created");
         i.getInstance(MessageService.class).invoke(new ApplicationStart());
 
+        try {
+            HibernateInitializationRunner.runInSeparateThread(ServicesModule.getInjector());
 
-        HibernateInitializationRunner.runInSeparateThread(ServicesModule.getInjector());
-
-
-        Application.main(args);
-
-
-        ServicesModule.getInjector()
-                      .getInstance(MessageService.class)
-                      .invoke(new ApplicationClosing(log.getExit()))
-                      .waitToAllEvents();
+            Application.main(args);
+        }
+        finally {
+            ServicesModule.getInjector()
+                          .getInstance(MessageService.class)
+                          .invoke(new ApplicationClosing(log.getExit()))
+                          .waitToAllEvents();
+        }
     }
 
 }

@@ -41,4 +41,7 @@ public interface Configuration extends Mutable, Accessible {
     String password();
 
     String serverName();
+
+    @DefaultValue("https://www.divokekmeny.cz")
+    String homepage();
 }

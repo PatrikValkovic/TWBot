@@ -1,8 +1,8 @@
 package cz.valkovic.java.twbot.services.connectors.webview;
 
-import com.google.inject.assistedinject.Assisted;
-import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.services.messaging.messages.WebLoaded;
 import cz.valkovic.java.twbot.services.piping.ParsingPipe;
 
 import javax.inject.Inject;
@@ -12,22 +12,27 @@ import java.net.URL;
 public class ToPipesConnectorImpl implements ToPipesConnector {
 
     @Inject
+    public static void createPipes(ToPipesConnector c, LoggingService log) {
+        log.getParsing().debug("ToPipesConnector created");
+    }
+
+    @Inject
     public ToPipesConnectorImpl(
-            @Assisted NavigationEngine engine,
             ParsingPipe pipe,
-            LoggingService log) {
+            LoggingService log,
+            MessageService messaging) {
 
         this.pipe = pipe;
 
-        engine.loadedPageProperty().addListener((observable, oldValue, newValue) -> {
-            log.getPiping().info("Attempt to process " + newValue);
+        messaging.listenTo(WebLoaded.class, e -> {
+            log.getPiping().info("Attempt to process " + e.getLocation());
             try {
-                URL url = new URL(newValue);
-                this.pipe.process(url, engine.getContent());
+                URL url = new URL(e.getLocation());
+                this.pipe.process(url, e.getContent());
             }
-            catch (MalformedURLException e) {
+            catch (MalformedURLException ex) {
                 log.getPiping().info("Unable to parse URL");
-                log.getPiping().debug(e, e);
+                log.getPiping().debug(ex, ex);
             }
         });
     }
