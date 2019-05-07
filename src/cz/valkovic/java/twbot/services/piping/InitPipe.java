@@ -53,13 +53,11 @@ public class InitPipe implements ParsingPipe {
     }
 
     private static class PipingClass implements Runnable {
-        private boolean result;
-
         private URL location;
         String content;
         ParsingPipe pipe;
 
-        public PipingClass(URL location, String content, ParsingPipe pipe) {
+        PipingClass(URL location, String content, ParsingPipe pipe) {
             this.location = location;
             this.content = content;
             this.pipe = pipe;
@@ -68,7 +66,7 @@ public class InitPipe implements ParsingPipe {
         @Override
         public void run() {
             try {
-                result = pipe.process(location, content);
+                pipe.process(location, content);
             }
             catch (Exception e) {
                 //TODO handle
@@ -79,7 +77,6 @@ public class InitPipe implements ParsingPipe {
 
     @Override
     public boolean process(URL location, String content) {
-        Boolean value;
         PipingClass p = new PipingClass(location, content, pipe);
         Thread th = new Thread(p, "Piping thread");
         th.setDaemon(true);

@@ -6,6 +6,7 @@ import cz.valkovic.java.twbot.services.ServicesModule;
 import cz.valkovic.java.twbot.services.browserManipulation.Actionable;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
+import cz.valkovic.java.twbot.services.connectors.NavigationEngineImpl;
 import cz.valkovic.java.twbot.services.connectors.WebViewConnector;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
@@ -79,10 +80,10 @@ public class MyWebView extends VBox implements Actionable {
         // handle when engine navigates
         this.getEngine().getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
-                this.urlfield.setText(this.nav.getLocation());
+                this.urlfield.setText(this.getEngine().getLocation());
                 this.messaging.invoke(new WebLoaded(
-                        this.nav.getContent(),
-                        this.nav.getLocation()
+                        NavigationEngineImpl.contentFromEngine(this.getEngine(), this.log),
+                        this.getEngine().getLocation()
                 ));
 
                 synchronized (getActionMonitor()){

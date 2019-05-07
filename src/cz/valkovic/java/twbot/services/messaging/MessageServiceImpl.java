@@ -60,6 +60,11 @@ public class MessageServiceImpl implements MessageService {
                                 i.l.getClass().getSimpleName()
                         ));
                         i.l.invoke(i.m);
+                        this.log.getMessaging().debug(String.format(
+                                "Invoked event %s on listener %s",
+                                i.m.getClass().getSimpleName(),
+                                i.l.getClass().getSimpleName()
+                        ));
                     }
                     catch (Exception e) {
                         String m = String.format(
@@ -125,7 +130,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public synchronized <Event extends Message> MessageServiceImpl invoke(Event event) {
-        this.log.getMessaging().debug("Invoking event " + event.getClass().getSimpleName());
+        this.log.getMessaging().debug("Received event " + event.getClass().getSimpleName());
 
         if (!this.callbacks.containsKey(event.getClass())) {
             return this;

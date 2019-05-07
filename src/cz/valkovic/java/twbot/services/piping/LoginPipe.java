@@ -1,7 +1,7 @@
 package cz.valkovic.java.twbot.services.piping;
 
 import cz.valkovic.java.twbot.services.ResourceLoaderService;
-import cz.valkovic.java.twbot.services.browserManipulation.ActionMiddleware;
+import cz.valkovic.java.twbot.services.browserManipulation.ActionsService;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 
@@ -13,13 +13,13 @@ import java.net.URL;
 public class LoginPipe implements ParsingPipe {
 
     private final InterConfiguration interConf;
-    private final ActionMiddleware actionable;
+    private final ActionsService actionable;
     private final Configuration conf;
     private final ResourceLoaderService resources;
 
     @Inject
     public LoginPipe(InterConfiguration interConf,
-                     ActionMiddleware actionable,
+                     ActionsService actionable,
                      Configuration conf,
                      ResourceLoaderService resources) {
         this.interConf = interConf;
@@ -46,7 +46,7 @@ public class LoginPipe implements ParsingPipe {
             }
             if (conf.serverName() != null) {
                 String navigate = "window.location = '/page/play/" + conf.serverName() + "'";
-                actionable.performAction(e -> {
+                actionable.performWaitAction(e -> {
                     e.executeScript(navigate);
                 });
             }

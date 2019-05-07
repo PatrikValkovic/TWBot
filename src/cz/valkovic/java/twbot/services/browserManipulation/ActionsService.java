@@ -6,8 +6,10 @@ import javafx.scene.web.WebEngine;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface ActionMiddleware extends ToActionServiceConnector {
-    void performAction(Consumer<WebEngine> callback);
+public interface ActionsService extends ToActionServiceConnector {
+    void performWaitAction(Consumer<WebEngine> callback);
+
+    void performNoWaitAction(Consumer<WebEngine> callback);
 
     void performAction(Function<WebEngine, Boolean> callback);
 }
