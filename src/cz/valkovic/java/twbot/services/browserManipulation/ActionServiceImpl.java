@@ -26,7 +26,6 @@ public class ActionServiceImpl implements ActionsService {
     private Configuration configuration;
     private LoggingService log;
     private InterConfiguration interConfiguration;
-    private final Object waitingLock = new Object();
 
     @Inject
     public ActionServiceImpl(Configuration configuration,
@@ -40,6 +39,12 @@ public class ActionServiceImpl implements ActionsService {
         message.listenTo(PerformAction.class, e -> this.performAction(e.getAction()));
         message.listenTo(PerformNoWaitAction.class, e -> this.performNoWaitAction(e.getAction()));
         message.listenTo(PerformWaitAction.class, e -> this.performWaitAction(e.getAction()));
+    }
+
+    @Inject
+    public static void injectInstance(ActionServiceImpl instance, LoggingService log)
+    {
+        log.getLoading().debug("Action service loaded");
     }
 
     private BlockingQueue<ActionHelper> queue = new LinkedBlockingDeque<>();
@@ -75,9 +80,7 @@ public class ActionServiceImpl implements ActionsService {
 
                 try {
                     log.getAction().debug("Thread will sleep for " + toWait + " milliseconds");
-                    synchronized (waitingLock) {
-                        waitingLock.wait(toWait);
-                    }
+                    Thread.sleep(toWait);
 
                     if (!queue.isEmpty()) {
                         Object monitor = actionable.getActionMonitor();
@@ -109,6 +112,7 @@ public class ActionServiceImpl implements ActionsService {
         navigationThread.start();
     }
 
+    //region ActionService interface
     @Override
     public void performWaitAction(Consumer<WebEngine> callback) {
         this.performAction(webEngine -> {
@@ -129,5 +133,5 @@ public class ActionServiceImpl implements ActionsService {
     public void performAction(Function<WebEngine, Boolean> callback) {
         this.queue.add(new ActionHelper(callback));
     }
-
+    //endregion
 }

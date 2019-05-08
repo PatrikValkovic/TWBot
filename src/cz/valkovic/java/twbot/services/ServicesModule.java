@@ -3,6 +3,7 @@ package cz.valkovic.java.twbot.services;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import cz.valkovic.java.twbot.services.browserManipulation.BrowserManipulationModule;
 import cz.valkovic.java.twbot.services.configuration.ConfigurationModule;
 import cz.valkovic.java.twbot.services.connectors.ConnectorsModule;
 import cz.valkovic.java.twbot.services.database.DatabaseModule;
@@ -33,6 +34,7 @@ public class ServicesModule extends AbstractModule {
         install(new PipingModule());
         install(new ParsersModule());
         install(new MessagingModule());
+        install(new BrowserManipulationModule());
         bind(ResourceLoaderService.class);
     }
 }

@@ -2,24 +2,25 @@ package cz.valkovic.java.twbot.services.connectors.webview;
 
 import cz.valkovic.java.twbot.controls.MyWebView;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.connectors.WebViewConnector;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
+import lombok.Getter;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class ConnectorImpl implements WebViewConnector {
+public class WebViewConnectorImpl implements WebViewConnector {
 
     private LoggingService log;
     private ToActionServiceConnector actionConnector;
     private Configuration conf;
 
-    private MyWebView view;
+    @Getter
+    private MyWebView view = null;
 
 
     @Inject
-    public ConnectorImpl(
+    public WebViewConnectorImpl(
             ToActionServiceConnector actionConnector,
             Configuration conf,
             LoggingService log) {
@@ -32,7 +33,8 @@ public class ConnectorImpl implements WebViewConnector {
     public void bind(MyWebView view) {
         this.view = view;
         this.view.getEngine().setUserAgent(conf.userAgent());
-        actionConnector.bind(view);
+        this.log.getLoading().debug("WebView binded to " + getClass().getSimpleName());
 
+        actionConnector.bind(view);
     }
 }

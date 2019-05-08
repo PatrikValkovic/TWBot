@@ -7,7 +7,7 @@ import cz.valkovic.java.twbot.services.browserManipulation.Actionable;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngineImpl;
-import cz.valkovic.java.twbot.services.connectors.WebViewConnector;
+import cz.valkovic.java.twbot.services.connectors.webview.WebViewConnector;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
 import cz.valkovic.java.twbot.services.messaging.messages.WebLoaded;
