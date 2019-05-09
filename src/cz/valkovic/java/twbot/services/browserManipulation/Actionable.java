@@ -7,4 +7,6 @@ public interface Actionable {
     WebEngine getEngine();
 
     Object getActionMonitor();
+
+    void waitForMonitor() throws InterruptedException;
 }

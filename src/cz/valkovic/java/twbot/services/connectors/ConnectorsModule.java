@@ -1,8 +1,11 @@
 package cz.valkovic.java.twbot.services.connectors;
 
 import com.google.inject.AbstractModule;
-import cz.valkovic.java.twbot.services.browserManipulation.ActionsService;
-import cz.valkovic.java.twbot.services.connectors.webview.*;
+import cz.valkovic.java.twbot.services.browserManipulation.Actionable;
+import cz.valkovic.java.twbot.services.connectors.webview.ToPipesConnector;
+import cz.valkovic.java.twbot.services.connectors.webview.ToPipesConnectorImpl;
+import cz.valkovic.java.twbot.services.connectors.webview.WebViewConnector;
+import cz.valkovic.java.twbot.services.connectors.webview.WebViewConnectorImpl;
 import cz.valkovic.java.twbot.services.navigation.NavigationMiddleware;
 import cz.valkovic.java.twbot.services.navigation.NavigationService;
 
@@ -14,7 +17,7 @@ public class ConnectorsModule extends AbstractModule {
         bind(ToPipesConnector.class).to(ToPipesConnectorImpl.class);
         bind(NavigationMiddleware.class).to(NavigationService.class);
         bind(WebViewConnector.class).to(WebViewConnectorImpl.class);
-        bind(ToActionServiceConnector.class).to(ActionsService.class);
+        bind(Actionable.class).to(WebViewConnectorImpl.class);
 
         requestStaticInjection(ToPipesConnectorImpl.class);
     }

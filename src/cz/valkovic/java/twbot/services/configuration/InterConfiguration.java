@@ -28,7 +28,7 @@ public interface InterConfiguration extends Mutable, Accessible {
     @DefaultValue("www.twstats.com")
     String twstatsDomain();
 
-    @DefaultValue("15000")
+    @DefaultValue("10000")
     int maxLockWaitingTime();
 
     default String version() {

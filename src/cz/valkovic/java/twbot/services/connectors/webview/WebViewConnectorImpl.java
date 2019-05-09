@@ -1,40 +1,67 @@
 package cz.valkovic.java.twbot.services.connectors.webview;
 
 import cz.valkovic.java.twbot.controls.MyWebView;
+import cz.valkovic.java.twbot.services.browserManipulation.Actionable;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
+import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
-import lombok.Getter;
+import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.services.messaging.messages.WebLoaded;
+import javafx.scene.web.WebEngine;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class WebViewConnectorImpl implements WebViewConnector {
+public class WebViewConnectorImpl implements WebViewConnector, Actionable {
 
     private LoggingService log;
-    private ToActionServiceConnector actionConnector;
     private Configuration conf;
+    private InterConfiguration interConf;
 
-    @Getter
     private MyWebView view = null;
 
 
     @Inject
     public WebViewConnectorImpl(
-            ToActionServiceConnector actionConnector,
             Configuration conf,
-            LoggingService log) {
-        this.actionConnector = actionConnector;
+            InterConfiguration interConf,
+            LoggingService log,
+            MessageService messages) {
         this.conf = conf;
         this.log = log;
+        this.interConf = interConf;
+
+        messages.listenTo(WebLoaded.class, e -> {
+            synchronized (this.actionMonitor){
+                this.actionMonitor.notifyAll();
+            }
+        });
     }
 
     @Override
     public void bind(MyWebView view) {
         this.view = view;
-        this.view.getEngine().setUserAgent(conf.userAgent());
+        this.getEngine().setUserAgent(conf.userAgent());
         this.log.getLoading().debug("WebView binded to " + getClass().getSimpleName());
+    }
 
-        actionConnector.bind(view);
+    @Override
+    public WebEngine getEngine() {
+        return this.view.getEngine();
+    }
+
+    private final Object actionMonitor = new Object();
+
+    @Override
+    public Object getActionMonitor() {
+        return this.actionMonitor;
+    }
+
+    @Override
+    public void waitForMonitor() throws InterruptedException {
+        synchronized (this.actionMonitor){
+            this.actionMonitor.wait(this.interConf.maxLockWaitingTime());
+        }
     }
 }

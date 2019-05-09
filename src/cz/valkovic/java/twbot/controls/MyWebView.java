@@ -3,7 +3,6 @@ package cz.valkovic.java.twbot.controls;
 import com.google.inject.Inject;
 import cz.valkovic.java.twbot.services.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.ServicesModule;
-import cz.valkovic.java.twbot.services.browserManipulation.Actionable;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngineImpl;
@@ -29,7 +28,7 @@ import javafx.scene.web.WebView;
 
 import java.io.IOException;
 
-public class MyWebView extends VBox implements Actionable {
+public class MyWebView extends VBox{
 
     //region injections
     @Inject
@@ -85,23 +84,12 @@ public class MyWebView extends VBox implements Actionable {
                         NavigationEngineImpl.contentFromEngine(this.getEngine(), this.log),
                         this.getEngine().getLocation()
                 ));
-
-                synchronized (getActionMonitor()){
-                    getActionMonitor().notifyAll();
-                }
             }
         });
     }
 
-    @Override
     public WebEngine getEngine() {
         return this.webview.getEngine();
-    }
-
-    private Object actionMonitor = new Object();
-    @Override
-    public Object getActionMonitor(){
-        return actionMonitor;
     }
 
     //region getters setters
