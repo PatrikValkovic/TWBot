@@ -3,10 +3,7 @@ package cz.valkovic.java.twbot.services.piping;
 import cz.valkovic.java.twbot.services.parsers.TWStatsBuildingsParser;
 import cz.valkovic.java.twbot.services.parsers.TWStatsSettingParser;
 import cz.valkovic.java.twbot.services.parsers.TWStatsUnitParser;
-import cz.valkovic.java.twbot.services.piping.elementary.FalsePipe;
-import cz.valkovic.java.twbot.services.piping.elementary.ParallelPipe;
-import cz.valkovic.java.twbot.services.piping.elementary.ParserPipeFactory;
-import cz.valkovic.java.twbot.services.piping.elementary.SeriesPipe;
+import cz.valkovic.java.twbot.services.piping.elementary.*;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -22,6 +19,7 @@ public class InitPipe implements ParsingPipe {
     public void init(Provider<SeriesPipe> series,
                      Provider<FalsePipe> falsePipe,
                      Provider<ParallelPipe> paralel,
+                     Provider<ThreadedPipe> threaded,
                      Provider<ShouldParsePipe> shouldParse,
                      Provider<TWStatsConfigurationPipe> twStatConfiguration,
                      Provider<ServernameExtractorPipe> servernameExtractor,
@@ -42,45 +40,22 @@ public class InitPipe implements ParsingPipe {
                                         .add(falsePipe.get())
                                         .add(falsePipe.get());
 
+        ParsingPipe beginning = series.get()
+                                      .add(login.get())
+                                      .add(shouldParse.get())
+                                      .add(servernameExtractor.get())
+                                      .add(twStatConfiguration.get())
+                                      .add(paralel.get()
+                                                  .add(TWstatsCondition.get().andFollow(twstatsParsing))
+                                                  .add(appCondition.get().andFollow(appParsing)));
+
         pipe = series.get()
-                     .add(login.get())
-                     .add(shouldParse.get())
-                     .add(servernameExtractor.get())
-                     .add(twStatConfiguration.get())
-                     .add(paralel.get()
-                                 .add(TWstatsCondition.get().andFollow(twstatsParsing))
-                                 .add(appCondition.get().andFollow(appParsing)));
-    }
-
-    private static class PipingClass implements Runnable {
-        private URL location;
-        String content;
-        ParsingPipe pipe;
-
-        PipingClass(URL location, String content, ParsingPipe pipe) {
-            this.location = location;
-            this.content = content;
-            this.pipe = pipe;
-        }
-
-        @Override
-        public void run() {
-            try {
-                pipe.process(location, content);
-            }
-            catch (Exception e) {
-                //TODO handle
-                e.printStackTrace();
-            }
-        }
+                     .add(threaded.get()
+                                  .to(beginning));
     }
 
     @Override
-    public boolean process(URL location, String content) {
-        PipingClass p = new PipingClass(location, content, pipe);
-        Thread th = new Thread(p, "Piping thread");
-        th.setDaemon(true);
-        th.start();
-        return true;
+    public boolean process(URL location, String content) throws Exception {
+        return this.pipe.process(location, content);
     }
 }

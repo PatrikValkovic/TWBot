@@ -103,7 +103,7 @@ public class MessageServiceImpl implements MessageService {
         this.log.getMessaging().debug("Set end of message interpretations");
         try {
             this.t.join(JOIN_TIME);
-            this.log.getMessaging().debug("message thread joined");
+            this.log.getMessaging().info("Message thread joined");
         }
         catch(InterruptedException e){
             this.log.getMessaging().error("Couldn't join the messaging thread", e);

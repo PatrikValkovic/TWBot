@@ -142,12 +142,12 @@ public class ActionServiceImpl implements ActionsService {
                             log.getAction().info("Action will be performed");
                             synchronized (h) {
                                 Platform.runLater(h);
-                                h.wait(this.interConfiguration.maxLockWaitingTime());
+                                h.wait(this.interConfiguration.maxLockWaitingTime() / 4);
                             }
                             boolean result = h.isResult();
                             if (result) {
                                 log.getAction().debug("Waiting for page load because of action");
-                                monitor.wait(this.interConfiguration.maxLockWaitingTime());
+                                monitor.wait(this.interConfiguration.maxLockWaitingTime() / 2);
                                 log.getAction().debug("Page loaded because of action");
                             } else
                                 log.getAction().debug("The proccess wil not wait for action to reload the page");

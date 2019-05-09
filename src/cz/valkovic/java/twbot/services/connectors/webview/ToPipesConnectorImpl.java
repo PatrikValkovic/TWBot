@@ -1,6 +1,5 @@
 package cz.valkovic.java.twbot.services.connectors.webview;
 
-import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
 import cz.valkovic.java.twbot.services.messaging.messages.WebLoaded;
@@ -21,16 +20,15 @@ public class ToPipesConnectorImpl implements ToPipesConnector {
     public ToPipesConnectorImpl(
             ParsingPipe pipe,
             LoggingService log,
-            MessageService messaging,
-            NavigationEngine navigation) {
+            MessageService messaging) {
 
         this.pipe = pipe;
 
         messaging.listenTo(WebLoaded.class, e -> {
-            log.getPiping().info("Attempt to process " + navigation.getLocation());
+            log.getPiping().info("Attempt to process " + e.getLocation());
             try {
-                URL url = new URL(navigation.getLocation());
-                this.pipe.process(url, navigation.getContent());
+                URL url = new URL(e.getLocation());
+                this.pipe.process(url, e.getContent());
             }
             catch (MalformedURLException ex) {
                 log.getPiping().info("Unable to parse URL");
