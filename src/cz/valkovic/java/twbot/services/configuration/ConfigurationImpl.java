@@ -1,5 +1,7 @@
 package cz.valkovic.java.twbot.services.configuration;
 
+import cz.valkovic.java.twbot.services.messaging.MessageService;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -11,7 +13,8 @@ public class ConfigurationImpl implements Configuration {
 
     @Inject
     public ConfigurationImpl(PublicConfiguration pubConf,
-                             InterConfiguration interConf) {
+                             InterConfiguration interConf,
+                             MessageService message) {
         this.pubConf = pubConf;
         this.interConf = interConf;
     }

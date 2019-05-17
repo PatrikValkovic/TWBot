@@ -3,7 +3,6 @@ package cz.valkovic.java.twbot.services.connectors.webview;
 import cz.valkovic.java.twbot.controls.MyWebView;
 import cz.valkovic.java.twbot.services.browserManipulation.Actionable;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
 import cz.valkovic.java.twbot.services.messaging.messages.WebLoaded;
@@ -17,7 +16,6 @@ public class WebViewConnectorImpl implements WebViewConnector, Actionable {
 
     private LoggingService log;
     private Configuration conf;
-    private InterConfiguration interConf;
 
     private MyWebView view = null;
 
@@ -25,12 +23,10 @@ public class WebViewConnectorImpl implements WebViewConnector, Actionable {
     @Inject
     public WebViewConnectorImpl(
             Configuration conf,
-            InterConfiguration interConf,
             LoggingService log,
             MessageService messages) {
         this.conf = conf;
         this.log = log;
-        this.interConf = interConf;
 
         messages.listenTo(WebLoaded.class, e -> {
             synchronized (this.actionMonitor){
@@ -61,7 +57,7 @@ public class WebViewConnectorImpl implements WebViewConnector, Actionable {
     @Override
     public void waitForMonitor() throws InterruptedException {
         synchronized (this.actionMonitor){
-            this.actionMonitor.wait(this.interConf.maxLockWaitingTime());
+            this.actionMonitor.wait(this.conf.maxLockWaitingTime());
         }
     }
 }

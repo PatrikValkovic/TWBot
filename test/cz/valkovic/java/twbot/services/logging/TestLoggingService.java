@@ -51,4 +51,9 @@ public class TestLoggingService implements LoggingService {
     public Logger getMessaging() {
         return log;
     }
+
+    @Override
+    public Logger getSettings() {
+        return log;
+    }
 }

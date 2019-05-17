@@ -6,6 +6,7 @@ import cz.valkovic.java.twbot.services.ServicesModule;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.services.messaging.messages.SettingsChangedAttempt;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class Settings extends VBox {
 
@@ -38,10 +40,12 @@ public class Settings extends VBox {
 
         // load template
         try {
+            URL styles = resourceLoaderService.getResource("controls/Settings.css");
             FXMLLoader loader = new FXMLLoader(resourceLoaderService.getResource("controls/Settings.fxml"));
             loader.setController(this);
             loader.setRoot(this);
             loader.load();
+            this.getStylesheets().add(styles.toExternalForm());
         }
         catch (IOException e) {
             log.errorMissingFxml(Settings.class, e);
@@ -103,9 +107,51 @@ public class Settings extends VBox {
     @FXML
     private TextField field_windowWidth;
 
+    private int parse(TextField field, int original){
+        try {
+            int val = Integer.parseInt(field.getText());
+            field.getStyleClass().removeAll("error");
+            return val;
+        } catch(NumberFormatException e){
+            field.getStyleClass().add("error");
+        }
+        return original;
+    }
+
     @FXML
     private void save(ActionEvent actionEvent) {
+        log.getSettings().debug("Parsing settings");
+        boolean fullscreen = field_fullscreen.isSelected();
+        String homepage = field_homepage.getText();
+        boolean maximalized = field_maximalized.isSelected();
+        String password = field_password.getText();
+        String serverName = field_serverName.getText();
+        String userAgent = field_userAgent.getText();
+        String username = field_username.getText();
+        int navigationTimeMax = this.parse(field_navigationTimeMax, conf.navigationTimeMax());
+        int navigationTimeMin = this.parse(field_navigationTimeMin, conf.navigationTimeMin());
+        int parseTime = this.parse(field_parseTime, conf.parseTime());
+        int reloadPageMax = this.parse(field_reloadPageMax, conf.reloadPageMax());
+        int reloadPageMin = this.parse(field_reloadPageMin, conf.reloadPageMin());
+        int windowHeight = this.parse(field_windowHeight, conf.windowHeight());
+        int windowWidth = this.parse(field_windowWidth, conf.windowWidth());
 
+        messaging.invoke(new SettingsChangedAttempt(
+                fullscreen,
+                homepage,
+                maximalized,
+                navigationTimeMax,
+                navigationTimeMin,
+                parseTime,
+                password,
+                reloadPageMax,
+                reloadPageMin,
+                serverName,
+                userAgent,
+                username,
+                windowHeight,
+                windowWidth
+        ));
     }
 
     @FXML

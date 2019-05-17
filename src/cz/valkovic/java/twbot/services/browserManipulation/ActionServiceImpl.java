@@ -33,7 +33,6 @@ public class ActionServiceImpl implements ActionsService {
     @Inject
     public ActionServiceImpl(Configuration conf,
                              LoggingService log,
-                             Configuration conf,
                              MessageService message,
                              Actionable actionable) {
         this.log = log;
@@ -41,8 +40,7 @@ public class ActionServiceImpl implements ActionsService {
 
         this.actionsThread = new ActionsThread(
                 actionable,
-                interConfiguration,
-                configuration,
+                conf,
                 log
         );
         this.actionsThread.start();
@@ -103,7 +101,6 @@ public class ActionServiceImpl implements ActionsService {
 
         private Actionable actionable;
         private Configuration conf;
-        private Configuration configuration;
         private LoggingService log;
 
         public ActionsThread(Actionable actionable,
@@ -111,7 +108,6 @@ public class ActionServiceImpl implements ActionsService {
                              LoggingService log) {
             this.actionable = actionable;
             this.conf = conf;
-            this.configuration = configuration;
             this.log = log;
 
             this.setName("Actions thread");
@@ -121,8 +117,8 @@ public class ActionServiceImpl implements ActionsService {
         public void run() {
             Random rand = new Random(conf.seed());
             while (this.processing.get()) {
-                int difference = Math.abs(configuration.navigationTimeMax() - configuration.navigationTimeMin());
-                int toWait = rand.nextInt(difference) + configuration.navigationTimeMin();
+                int difference = Math.abs(conf.navigationTimeMax() - conf.navigationTimeMin());
+                int toWait = rand.nextInt(difference) + conf.navigationTimeMin();
 
                 try {
                     log.getAction().debug("Thread will sleep for " + toWait + " milliseconds");

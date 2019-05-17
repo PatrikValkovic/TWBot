@@ -4,6 +4,8 @@ import cz.valkovic.java.twbot.services.directories.DirectoriesService;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
 import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
+import cz.valkovic.java.twbot.services.messaging.messages.SettingsChanged;
+import cz.valkovic.java.twbot.services.messaging.messages.SettingsChangedAttempt;
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.ConfigFactory;
 import org.aeonbits.owner.Mutable;
@@ -12,6 +14,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.*;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 @Singleton
 class OwnerConfigurationService implements ConfigurationService {
@@ -27,6 +31,23 @@ class OwnerConfigurationService implements ConfigurationService {
 
         pubConf = loadConfiguration(PublicConfiguration.class, getPublicConfigFilepath());
         interConf = loadConfiguration(InterConfiguration.class, getInterConfigFilepath());
+
+        mess.listenTo(SettingsChangedAttempt.class, (ev) -> {
+            Set<String> currentProps = new HashSet<>(this.pubConf.propertyNames());
+            currentProps.removeAll(ev.getProps().keySet());
+            if(currentProps.size() > 0){
+                log.getSettings().warn("Not all setting properties were set");
+                log.getSettings().debug(this.pubConf.propertyNames());
+                log.getSettings().debug(ev.getProps().keySet());
+            }
+            for(String k : this.pubConf.propertyNames()){
+                this.pubConf.setProperty(k, ev.getProps().get(k));
+            }
+            log.getSettings().info("Setting set up");
+            mess.invoke(new SettingsChanged(this.pubConf));
+        });
+
+        mess.listenTo(SettingsChanged.class, (ev) -> this.save());
     }
 
 

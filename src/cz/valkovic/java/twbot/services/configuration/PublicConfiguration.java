@@ -4,7 +4,7 @@ import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Mutable;
 
 
-interface PublicConfiguration extends
+public interface PublicConfiguration extends
         Mutable,
         Accessible,
         PublicConfProps {

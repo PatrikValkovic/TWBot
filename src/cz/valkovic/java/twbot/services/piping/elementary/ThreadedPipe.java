@@ -1,6 +1,6 @@
 package cz.valkovic.java.twbot.services.piping.elementary;
 
-import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
+import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
 import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
@@ -18,22 +18,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ThreadedPipe implements ParsingPipe {
 
-    private InterConfiguration interConf;
+    private Configuration conf;
     private LoggingService log;
 
     @Inject
-    public ThreadedPipe(InterConfiguration interConf,
+    public ThreadedPipe(Configuration conf,
                         MessageService messages,
                         LoggingService log) {
-        this.interConf = interConf;
+        this.conf = conf;
         this.log = log;
 
-        this.t = new ParsingThread(interConf, log);
+        this.t = new ParsingThread(conf, log);
         this.t.start();
 
         messages.listenTo(ApplicationClosing.class, e -> {
             this.t.getWorking().set(false);
-            this.t.join(interConf.maxLockWaitingTime());
+            this.t.join(conf.maxLockWaitingTime());
             if(this.t.isAlive()){
                 log.getPiping().warn("Couldn't join piping thread");
                 this.t.interrupt();
@@ -53,7 +53,7 @@ public class ThreadedPipe implements ParsingPipe {
 
     @Override
     public boolean process(URL location, String content) throws Exception {
-        if(!this.t.getToProcess().offer(new Pair<>(location, content), interConf.maxLockWaitingTime(), TimeUnit.MILLISECONDS)){
+        if(!this.t.getToProcess().offer(new Pair<>(location, content), conf.maxLockWaitingTime(), TimeUnit.MILLISECONDS)){
             this.log.getPiping().warn("Couldn't insert new content to the piping thread");
         } else {
             this.log.getPiping().debug("Content inserted to the piping thread");
@@ -75,13 +75,13 @@ public class ThreadedPipe implements ParsingPipe {
         @Setter
         private ParsingPipe pipe;
 
-        private InterConfiguration interConf;
+        private Configuration conf;
         private LoggingService log;
 
-        ParsingThread(InterConfiguration interConf,
+        ParsingThread(Configuration conf,
                              LoggingService log)
         {
-            this.interConf = interConf;
+            this.conf = conf;
             this.log = log;
 
             this.setName("Piping thread");
@@ -93,7 +93,7 @@ public class ThreadedPipe implements ParsingPipe {
             while(this.working.get() || !toProcess.isEmpty()){
                 try {
                     Pair<URL, String> next =
-                            this.toProcess.poll(this.interConf.maxLockWaitingTime() / 4, TimeUnit.MILLISECONDS);
+                            this.toProcess.poll(this.conf.maxLockWaitingTime() / 4, TimeUnit.MILLISECONDS);
                     if (next == null) {
                         continue;
                     }

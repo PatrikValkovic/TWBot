@@ -5,15 +5,17 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.WebView?>
-<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" >
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
     <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
         <children>
             <Button mnemonicParsing="false" text="Back" onAction="#backClicked" disable="${controller.disableBack}"/>
-            <Button mnemonicParsing="false" text="Forward" onAction="#forwardClicked" disable="${controller.disableForward}" />
-            <TextField fx:id="urlfield" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"
-                        onKeyPressed="#fieldInput"/>
+            <Button mnemonicParsing="false" text="Forward" onAction="#forwardClicked"
+                    disable="${controller.disableForward}"/>
+            <TextField fx:id="urlfield"
+                       HBox.hgrow="ALWAYS"
+                       onKeyPressed="#fieldInput"/>
             <Button mnemonicParsing="false" text="Refresh" onAction="#refreshClicked"/>
         </children>
     </HBox>
-    <WebView fx:id="webview" VBox.vgrow="ALWAYS" />
+    <WebView fx:id="webview" VBox.vgrow="ALWAYS"/>
 </fx:root>
