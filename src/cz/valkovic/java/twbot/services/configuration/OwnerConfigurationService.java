@@ -25,7 +25,7 @@ class OwnerConfigurationService implements ConfigurationService {
         this.log = log;
         this.mess = mess;
 
-        conf = loadConfiguration(Configuration.class, getConfigFilepath());
+        pubConf = loadConfiguration(PublicConfiguration.class, getPublicConfigFilepath());
         interConf = loadConfiguration(InterConfiguration.class, getInterConfigFilepath());
     }
 
@@ -52,20 +52,20 @@ class OwnerConfigurationService implements ConfigurationService {
                 log.getLoading().warn("Unable to load config from " + filepath, e);
             }
         }
-        log.getLoading().info("Configuration for " + type.getSimpleName() + " loaded");
+        log.getLoading().info("PublicConfiguration for " + type.getSimpleName() + " loaded");
         return config;
     }
 
-    //region Configuration
-    private Configuration conf;
+    //region PublicConfiguration
+    private PublicConfiguration pubConf;
 
-    private String getConfigFilepath() {
+    private String getPublicConfigFilepath() {
         return Paths.get(dirs.getConfigDir(), "config.txt").toString();
     }
 
     @Override
-    public Configuration getConfiguration() {
-        return conf;
+    public PublicConfiguration getPublicConfiguration() {
+        return pubConf;
     }
 
     //endregion
@@ -97,11 +97,11 @@ class OwnerConfigurationService implements ConfigurationService {
         try {
             this.log.getExit().info("Saving configuration");
             this.getInterConfiguration().setProperty("firstRun", "false");
-            saveConfiguration(this.getConfiguration(), getConfigFilepath());
+            saveConfiguration(this.getPublicConfiguration(), getPublicConfigFilepath());
             saveConfiguration(this.getInterConfiguration(), getInterConfigFilepath());
         }
         catch (IOException e) {
-            log.getExit().error("Configuration was not saved");
+            log.getExit().error("PublicConfiguration was not saved");
             log.getExit().debug(e, e);
         }
     }

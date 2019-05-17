@@ -1,7 +1,7 @@
 package cz.valkovic.java.twbot.services.browserManipulation;
 
-import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
+import cz.valkovic.java.twbot.services.configuration.PublicConfiguration;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
 import cz.valkovic.java.twbot.services.messaging.messages.PerformAction;
@@ -23,17 +23,17 @@ import java.util.function.Function;
 @Singleton
 public class ActionServiceImpl implements ActionsService {
 
-    private Configuration configuration;
+    private PublicConfiguration pubConf;
     private LoggingService log;
     private InterConfiguration interConfiguration;
     private final Object waitingLock = new Object();
 
     @Inject
-    public ActionServiceImpl(Configuration configuration,
+    public ActionServiceImpl(PublicConfiguration pubConf,
                              LoggingService log,
                              InterConfiguration interConfiguration,
                              MessageService message) {
-        this.configuration = configuration;
+        this.pubConf = pubConf;
         this.log = log;
         this.interConfiguration = interConfiguration;
 
@@ -70,8 +70,8 @@ public class ActionServiceImpl implements ActionsService {
         Thread navigationThread = new Thread(() -> {
             Random rand = new Random(interConfiguration.seed());
             while (true) {
-                int difference = Math.abs(configuration.navigationTimeMax() - configuration.navigationTimeMin());
-                int toWait = rand.nextInt(difference) + configuration.navigationTimeMin();
+                int difference = Math.abs(pubConf.navigationTimeMax() - pubConf.navigationTimeMin());
+                int toWait = rand.nextInt(difference) + pubConf.navigationTimeMin();
 
                 try {
                     log.getAction().debug("Thread will sleep for " + toWait + " milliseconds");

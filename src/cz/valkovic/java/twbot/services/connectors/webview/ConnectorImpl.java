@@ -1,7 +1,7 @@
 package cz.valkovic.java.twbot.services.connectors.webview;
 
 import cz.valkovic.java.twbot.controls.MyWebView;
-import cz.valkovic.java.twbot.services.configuration.Configuration;
+import cz.valkovic.java.twbot.services.configuration.PublicConfiguration;
 import cz.valkovic.java.twbot.services.connectors.WebViewConnector;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 
@@ -13,7 +13,7 @@ public class ConnectorImpl implements WebViewConnector {
 
     private LoggingService log;
     private ToActionServiceConnector actionConnector;
-    private Configuration conf;
+    private PublicConfiguration pubConf;
 
     private MyWebView view;
 
@@ -21,17 +21,17 @@ public class ConnectorImpl implements WebViewConnector {
     @Inject
     public ConnectorImpl(
             ToActionServiceConnector actionConnector,
-            Configuration conf,
+            PublicConfiguration pubConf,
             LoggingService log) {
         this.actionConnector = actionConnector;
-        this.conf = conf;
+        this.pubConf = pubConf;
         this.log = log;
     }
 
     @Override
     public void bind(MyWebView view) {
         this.view = view;
-        this.view.getEngine().setUserAgent(conf.userAgent());
+        this.view.getEngine().setUserAgent(pubConf.userAgent());
         actionConnector.bind(view);
 
     }
