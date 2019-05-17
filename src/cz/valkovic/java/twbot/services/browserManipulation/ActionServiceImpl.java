@@ -1,7 +1,6 @@
 package cz.valkovic.java.twbot.services.browserManipulation;
 
-import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
-import cz.valkovic.java.twbot.services.configuration.PublicConfiguration;
+import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
 import cz.valkovic.java.twbot.services.messaging.messages.PerformAction;
@@ -23,19 +22,16 @@ import java.util.function.Function;
 @Singleton
 public class ActionServiceImpl implements ActionsService {
 
-    private PublicConfiguration pubConf;
+    private Configuration conf;
     private LoggingService log;
-    private InterConfiguration interConfiguration;
     private final Object waitingLock = new Object();
 
     @Inject
-    public ActionServiceImpl(PublicConfiguration pubConf,
+    public ActionServiceImpl(Configuration conf,
                              LoggingService log,
-                             InterConfiguration interConfiguration,
                              MessageService message) {
-        this.pubConf = pubConf;
+        this.conf = conf;
         this.log = log;
-        this.interConfiguration = interConfiguration;
 
         message.listenTo(PerformAction.class, e -> this.performAction(e.getAction()));
         message.listenTo(PerformNoWaitAction.class, e -> this.performNoWaitAction(e.getAction()));
@@ -68,10 +64,10 @@ public class ActionServiceImpl implements ActionsService {
     public void bind(Actionable actionable) {
 
         Thread navigationThread = new Thread(() -> {
-            Random rand = new Random(interConfiguration.seed());
+            Random rand = new Random(conf.seed());
             while (true) {
-                int difference = Math.abs(pubConf.navigationTimeMax() - pubConf.navigationTimeMin());
-                int toWait = rand.nextInt(difference) + pubConf.navigationTimeMin();
+                int difference = Math.abs(conf.navigationTimeMax() - conf.navigationTimeMin());
+                int toWait = rand.nextInt(difference) + conf.navigationTimeMin();
 
                 try {
                     log.getAction().debug("Thread will sleep for " + toWait + " milliseconds");

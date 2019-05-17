@@ -29,5 +29,6 @@ public class ConfigurationModule extends AbstractModule {
                 return this.confService.getInterConfiguration();
             }
         });
+        bind(Configuration.class).to(ConfigurationImpl.class);
     }
 }

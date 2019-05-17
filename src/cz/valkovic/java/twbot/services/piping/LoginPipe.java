@@ -2,8 +2,7 @@ package cz.valkovic.java.twbot.services.piping;
 
 import cz.valkovic.java.twbot.services.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.browserManipulation.ActionsService;
-import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
-import cz.valkovic.java.twbot.services.configuration.PublicConfiguration;
+import cz.valkovic.java.twbot.services.configuration.Configuration;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -12,40 +11,37 @@ import java.net.URL;
 
 public class LoginPipe implements ParsingPipe {
 
-    private final InterConfiguration interConf;
+    private final Configuration conf;
     private final ActionsService actionable;
-    private final PublicConfiguration pubConf;
     private final ResourceLoaderService resources;
 
     @Inject
-    public LoginPipe(InterConfiguration interConf,
+    public LoginPipe(Configuration conf,
                      ActionsService actionable,
-                     PublicConfiguration pubConf,
                      ResourceLoaderService resources) {
-        this.interConf = interConf;
+        this.conf = conf;
         this.actionable = actionable;
-        this.pubConf = pubConf;
         this.resources = resources;
     }
 
     @Override
     public boolean process(URL location, String content) throws URISyntaxException, IOException {
-        if(location.getHost().matches(interConf.loginPageRegex())){
+        if(location.getHost().matches(conf.loginPageRegex())){
 
-            if (pubConf.username() != null && pubConf.password() != null) {
+            if (conf.username() != null && conf.password() != null) {
                 String script = resources.getResoureContent("scripts/loginScript.js");
                 String toExecute = String.format(
                     script,
-                    pubConf.username(),
-                    pubConf.password()
+                    conf.username(),
+                    conf.password()
                 );
                 actionable.performAction(e -> {
                     e.executeScript(toExecute);
                     return false;
                 });
             }
-            if (pubConf.serverName() != null) {
-                String navigate = "window.location = '/page/play/" + pubConf.serverName() + "'";
+            if (conf.serverName() != null) {
+                String navigate = "window.location = '/page/play/" + conf.serverName() + "'";
                 actionable.performWaitAction(e -> e.executeScript(navigate));
             }
 

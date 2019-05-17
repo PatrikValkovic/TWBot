@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.WebView?>
-
-
 <fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" >
     <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
         <children>
@@ -15,5 +15,5 @@
             <Button mnemonicParsing="false" text="Refresh" onAction="#refreshClicked"/>
         </children>
     </HBox>
-    <WebView fx:id="webview" minHeight="600.0" minWidth="800.0" VBox.vgrow="ALWAYS" />
+    <WebView fx:id="webview" VBox.vgrow="ALWAYS" />
 </fx:root>
