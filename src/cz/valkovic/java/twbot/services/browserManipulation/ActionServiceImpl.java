@@ -1,7 +1,6 @@
 package cz.valkovic.java.twbot.services.browserManipulation;
 
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
 import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
@@ -25,17 +24,20 @@ import java.util.function.Function;
 @Singleton
 public class ActionServiceImpl implements ActionsService {
 
+    private Configuration conf;
     private LoggingService log;
 
     private ActionsThread actionsThread;
+    private final Object waitingLock = new Object();
 
     @Inject
-    public ActionServiceImpl(Configuration configuration,
+    public ActionServiceImpl(Configuration conf,
                              LoggingService log,
-                             InterConfiguration interConfiguration,
+                             Configuration conf,
                              MessageService message,
                              Actionable actionable) {
         this.log = log;
+        this.conf = conf;
 
         this.actionsThread = new ActionsThread(
                 actionable,
@@ -53,7 +55,7 @@ public class ActionServiceImpl implements ActionsService {
            synchronized(this.actionsThread.sleepLock){
                this.actionsThread.sleepLock.notify();
            }
-           this.actionsThread.join(interConfiguration.maxLockWaitingTime());
+           this.actionsThread.join(conf.maxLockWaitingTime());
            if(!this.actionsThread.isAlive()){
                log.getAction().info("Action thread joined");
            }
@@ -100,16 +102,15 @@ public class ActionServiceImpl implements ActionsService {
         private final AtomicBoolean processing = new AtomicBoolean(true);
 
         private Actionable actionable;
-        private InterConfiguration interConfiguration;
+        private Configuration conf;
         private Configuration configuration;
         private LoggingService log;
 
         public ActionsThread(Actionable actionable,
-                             InterConfiguration interConfiguration,
-                             Configuration configuration,
+                             Configuration conf,
                              LoggingService log) {
             this.actionable = actionable;
-            this.interConfiguration = interConfiguration;
+            this.conf = conf;
             this.configuration = configuration;
             this.log = log;
 
@@ -118,7 +119,7 @@ public class ActionServiceImpl implements ActionsService {
 
         @Override
         public void run() {
-            Random rand = new Random(interConfiguration.seed());
+            Random rand = new Random(conf.seed());
             while (this.processing.get()) {
                 int difference = Math.abs(configuration.navigationTimeMax() - configuration.navigationTimeMin());
                 int toWait = rand.nextInt(difference) + configuration.navigationTimeMin();
@@ -142,12 +143,12 @@ public class ActionServiceImpl implements ActionsService {
                             log.getAction().info("Action will be performed");
                             synchronized (h) {
                                 Platform.runLater(h);
-                                h.wait(this.interConfiguration.maxLockWaitingTime() / 4);
+                                h.wait(conf.maxLockWaitingTime() / 4);
                             }
                             boolean result = h.isResult();
                             if (result) {
                                 log.getAction().debug("Waiting for page load because of action");
-                                monitor.wait(this.interConfiguration.maxLockWaitingTime() / 2);
+                                monitor.wait(conf.maxLockWaitingTime() / 2);
                                 log.getAction().debug("Page loaded because of action");
                             } else
                                 log.getAction().debug("The proccess wil not wait for action to reload the page");

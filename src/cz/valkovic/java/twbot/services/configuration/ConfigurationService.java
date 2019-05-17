@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public interface ConfigurationService {
 
-    Configuration getConfiguration();
+    PublicConfiguration getPublicConfiguration();
 
     InterConfiguration getInterConfiguration();
 

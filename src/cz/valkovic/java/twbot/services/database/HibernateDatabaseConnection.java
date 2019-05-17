@@ -1,7 +1,7 @@
 package cz.valkovic.java.twbot.services.database;
 
 
-import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
+import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.directories.DirectoriesService;
 import cz.valkovic.java.twbot.services.logging.LoggingService;
 import cz.valkovic.java.twbot.services.messaging.MessageService;
@@ -9,7 +9,6 @@ import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
 import cz.valkovic.java.twbot.services.messaging.messages.HibernateLoaded;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,11 +23,11 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
     @Inject
     public HibernateDatabaseConnection(DirectoriesService dir,
                                        LoggingService log,
-                                       InterConfiguration interConf,
+                                       Configuration conf,
                                        MessageService message) {
         this.dir = dir;
         this.log = log;
-        this.interConf = interConf;
+        this.conf = conf;
         this.message = message;
         this.factory = createFactory();
 
@@ -37,7 +36,7 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
 
     private DirectoriesService dir;
     private LoggingService log;
-    private InterConfiguration interConf;
+    private Configuration conf;
     private SessionFactory factory;
     private MessageService message;
 
@@ -48,15 +47,15 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
     private SessionFactory createFactory() {
         log.getLoading().debug("Loading configuration for Hibernate");
 
-        Configuration conf = new Configuration();
+        org.hibernate.cfg.Configuration hiberConf = new org.hibernate.cfg.Configuration();
         try {
-            conf.configure();
-            conf.setProperty("hibernate.connection.url", this.getConnectionString());
-            if (interConf.firstRun()) {
+            hiberConf.configure();
+            hiberConf.setProperty("hibernate.connection.url", this.getConnectionString());
+            if (this.conf.firstRun()) {
                 log.getLoading().info("Running for first time, Hibernate will create database");
-                conf.setProperty("hibernate.hbm2ddl.auto", "create");
+                hiberConf.setProperty("hibernate.hbm2ddl.auto", "create");
             }
-            factory = conf.buildSessionFactory();
+            factory = hiberConf.buildSessionFactory();
         }
         catch (HibernateException e) {
             log.getLoading().error("Cannot load hibernate");

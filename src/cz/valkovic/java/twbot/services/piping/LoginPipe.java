@@ -3,7 +3,6 @@ package cz.valkovic.java.twbot.services.piping;
 import cz.valkovic.java.twbot.services.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.browserManipulation.ActionsService;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.configuration.InterConfiguration;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -12,25 +11,22 @@ import java.net.URL;
 
 public class LoginPipe implements ParsingPipe {
 
-    private final InterConfiguration interConf;
-    private final ActionsService actionable;
     private final Configuration conf;
+    private final ActionsService actionable;
     private final ResourceLoaderService resources;
 
     @Inject
-    public LoginPipe(InterConfiguration interConf,
+    public LoginPipe(Configuration conf,
                      ActionsService actionable,
-                     Configuration conf,
                      ResourceLoaderService resources) {
-        this.interConf = interConf;
-        this.actionable = actionable;
         this.conf = conf;
+        this.actionable = actionable;
         this.resources = resources;
     }
 
     @Override
     public boolean process(URL location, String content) throws URISyntaxException, IOException {
-        if(location.getHost().matches(interConf.loginPageRegex())){
+        if(location.getHost().matches(conf.loginPageRegex())){
 
             if (conf.username() != null && conf.password() != null) {
                 String script = resources.getResoureContent("scripts/loginScript.js");
@@ -46,9 +42,7 @@ public class LoginPipe implements ParsingPipe {
             }
             if (conf.serverName() != null) {
                 String navigate = "window.location = '/page/play/" + conf.serverName() + "'";
-                actionable.performWaitAction(e -> {
-                    e.executeScript(navigate);
-                });
+                actionable.performWaitAction(e -> e.executeScript(navigate));
             }
 
         }

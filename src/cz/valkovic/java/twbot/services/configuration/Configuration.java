@@ -1,47 +1,24 @@
 package cz.valkovic.java.twbot.services.configuration;
 
-import org.aeonbits.owner.Accessible;
-import org.aeonbits.owner.Mutable;
+import java.util.Random;
 
+public interface Configuration extends
+        PublicConfProps,
+        InterConfProps {
 
-public interface Configuration extends Mutable, Accessible {
+    int majorVersion();
 
-    @DefaultValue("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134")
-    String userAgent();
+    int minorVersion();
 
-    @DefaultValue("10000")
-    int reloadPageMin();
+    int patchVersion();
 
-    @DefaultValue("20000")
-    int reloadPageMax();
+    default String version() {
+        return majorVersion() + "." + minorVersion() + "." + patchVersion();
+    }
 
-    @DefaultValue("1000")
-    int parseTime();
+    default long seed() {
+        Random rand = new Random();
+        return rand.nextLong();
+    }
 
-    @DefaultValue("1500")
-    int navigationTimeMin();
-
-    @DefaultValue("8000")
-    int navigationTimeMax();
-
-    @DefaultValue("1280")
-    int windowWidth();
-
-    @DefaultValue("768")
-    int windowHeight();
-
-    @DefaultValue("False")
-    boolean maximalized();
-
-    @DefaultValue("False")
-    boolean fullscreen();
-
-    String username();
-
-    String password();
-
-    String serverName();
-
-    @DefaultValue("https://www.divokekmeny.cz")
-    String homepage();
 }

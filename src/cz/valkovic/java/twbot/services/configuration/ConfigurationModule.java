@@ -9,14 +9,14 @@ public class ConfigurationModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(ConfigurationService.class).to(OwnerConfigurationService.class);
-        bind(Configuration.class).toProvider(new Provider<Configuration>() {
+        bind(PublicConfiguration.class).toProvider(new Provider<PublicConfiguration>() {
 
             @Inject
             private ConfigurationService confService;
 
             @Override
-            public Configuration get() {
-                return this.confService.getConfiguration();
+            public PublicConfiguration get() {
+                return this.confService.getPublicConfiguration();
             }
         });
         bind(InterConfiguration.class).toProvider(new Provider<InterConfiguration>() {
@@ -29,5 +29,6 @@ public class ConfigurationModule extends AbstractModule {
                 return this.confService.getInterConfiguration();
             }
         });
+        bind(Configuration.class).to(ConfigurationImpl.class);
     }
 }
