@@ -1,12 +1,12 @@
 package cz.valkovic.java.twbot.services.messaging.messages;
 
-import cz.valkovic.java.twbot.services.messaging.Message;
+import cz.valkovic.java.twbot.modules.core.events.Event;
 import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SettingsChangedAttempt implements Message {
+public class SettingsChangedAttempt implements Event {
 
     public SettingsChangedAttempt(boolean fullscreen,
                                   String homepage,

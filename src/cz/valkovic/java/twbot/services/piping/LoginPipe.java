@@ -1,6 +1,6 @@
 package cz.valkovic.java.twbot.services.piping;
 
-import cz.valkovic.java.twbot.services.ResourceLoaderService;
+import cz.valkovic.java.twbot.modules.core.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.browserManipulation.ActionsService;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
 

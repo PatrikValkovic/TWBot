@@ -1,4 +1,4 @@
-package cz.valkovic.java.twbot.services.logging;
+package cz.valkovic.java.twbot.modules.core.logging;
 
 
 import org.apache.logging.log4j.LogManager;
@@ -41,6 +41,10 @@ public class Log4jLoggingService implements LoggingService {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".piping");
     }
 
+    public Logger getExecution() {
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".execution");
+    }
+
     @Override
     public Logger getAction() {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".action");
@@ -52,11 +56,17 @@ public class Log4jLoggingService implements LoggingService {
     }
 
     @Override
-    public Logger getMessaging() {
-        return LogManager.getFormatterLogger(BASE_PACKAGE + ".messaging");
+    public Logger getEvents() {
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".events");
     }
 
+    @Override
     public Logger getSettings() {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".settings");
+    }
+
+    @Override
+    public Logger getObservable() {
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".observable");
     }
 }

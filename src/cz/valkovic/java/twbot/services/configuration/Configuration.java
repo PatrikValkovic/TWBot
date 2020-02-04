@@ -1,10 +1,12 @@
 package cz.valkovic.java.twbot.services.configuration;
 
+import cz.valkovic.java.twbot.modules.core.settings.instances.CorePrivateSetting;
+import cz.valkovic.java.twbot.modules.core.settings.instances.CorePublicSetting;
 import java.util.Random;
 
 public interface Configuration extends
-        PublicConfProps,
-        InterConfProps {
+        CorePublicSetting,
+        CorePrivateSetting {
 
     int majorVersion();
 

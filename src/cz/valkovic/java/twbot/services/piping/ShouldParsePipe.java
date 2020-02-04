@@ -1,7 +1,7 @@
 package cz.valkovic.java.twbot.services.piping;
 
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 
 import javax.inject.Inject;
 import java.net.URL;

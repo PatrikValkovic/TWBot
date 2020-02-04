@@ -1,30 +1,14 @@
 package cz.valkovic.java.twbot.services.navigation;
 
-import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
+import java.net.URL;
+import java.util.Arrays;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+public interface NavigationService {
 
-@Singleton
-public class NavigationService implements NavigationMiddleware {
+    NavigationService queue(String... urls);
 
-    private NavigationEngine navigation;
-    private LoggingService log;
-
-    @Inject
-    public NavigationService(NavigationEngine navigation, LoggingService log) {
-        this.navigation = navigation;
-        this.log = log;
+    default NavigationService queue(URL... urls) {
+        return this.queue(Arrays.stream(urls).map(URL::toString).toArray(String[]::new));
     }
 
-
-    @Override
-    public NavigationMiddleware queue(String... urls) {
-        for (String url : urls) {
-            log.getNavigationAction().info("Adding navigation to the queue: " + url);
-            this.navigation.setLocation(url);
-        }
-        return this;
-    }
 }

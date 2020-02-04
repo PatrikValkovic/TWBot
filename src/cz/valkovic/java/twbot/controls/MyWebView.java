@@ -1,14 +1,14 @@
 package cz.valkovic.java.twbot.controls;
 
 import com.google.inject.Inject;
-import cz.valkovic.java.twbot.services.ResourceLoaderService;
-import cz.valkovic.java.twbot.services.ServicesModule;
+import cz.valkovic.java.twbot.modules.ModulesLoader;
+import cz.valkovic.java.twbot.modules.core.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngine;
 import cz.valkovic.java.twbot.services.connectors.NavigationEngineImpl;
 import cz.valkovic.java.twbot.services.connectors.webview.WebViewConnector;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.java.twbot.services.messaging.messages.WebLoaded;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -41,7 +41,7 @@ public class MyWebView extends VBox{
     private WebViewConnector connector;
 
     @Inject
-    private MessageService messaging;
+    private EventBrokerService messaging;
 
     @Inject
     private NavigationEngine nav;
@@ -53,7 +53,7 @@ public class MyWebView extends VBox{
 
     public MyWebView() throws IOException {
         // inject members
-        ServicesModule.getInjector().injectMembers(this);
+        ModulesLoader.getInjector().injectMembers(this);
 
         // load template
         try {

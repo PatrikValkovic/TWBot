@@ -1,8 +1,9 @@
-package cz.valkovic.java.twbot.services.configuration;
+package cz.valkovic.java.twbot.modules.core.settings.instances;
 
+import cz.valkovic.java.twbot.modules.core.settings.StorableSettings;
 import org.aeonbits.owner.Config;
 
-public interface InterConfProps {
+public interface CorePrivateSetting extends StorableSettings {
 
     @Config.DefaultValue("true")
     boolean firstRun();

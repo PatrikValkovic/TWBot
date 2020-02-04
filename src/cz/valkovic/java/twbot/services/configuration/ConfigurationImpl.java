@@ -1,7 +1,8 @@
 package cz.valkovic.java.twbot.services.configuration;
 
-import cz.valkovic.java.twbot.services.messaging.MessageService;
-
+import java.beans.PropertyChangeListener;
+import java.io.*;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -13,8 +14,7 @@ public class ConfigurationImpl implements Configuration {
 
     @Inject
     public ConfigurationImpl(PublicConfiguration pubConf,
-                             InterConfiguration interConf,
-                             MessageService message) {
+                             InterConfiguration interConf) {
         this.pubConf = pubConf;
         this.interConf = interConf;
     }
@@ -130,6 +130,91 @@ public class ConfigurationImpl implements Configuration {
     @Override
     public int maxLockWaitingTime() {
         return this.interConf.maxLockWaitingTime();
+    }
+
+
+
+
+
+
+
+    @Override
+    public String setProperty(String s, String s1) {
+        return null;
+    }
+
+    @Override
+    public String removeProperty(String s) {
+        return null;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public void load(InputStream inputStream) throws IOException {
+
+    }
+
+    @Override
+    public void load(Reader reader) throws IOException {
+
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+
+    }
+
+    @Override
+    public void addPropertyChangeListener(String s, PropertyChangeListener propertyChangeListener) {
+
+    }
+
+
+
+
+
+    @Override
+    public void list(PrintStream printStream) {
+
+    }
+
+    @Override
+    public void list(PrintWriter printWriter) {
+
+    }
+
+    @Override
+    public void store(OutputStream outputStream, String s) throws IOException {
+
+    }
+
+    @Override
+    public String getProperty(String s) {
+        return null;
+    }
+
+    @Override
+    public String getProperty(String s, String s1) {
+        return null;
+    }
+
+    @Override
+    public void storeToXML(OutputStream outputStream, String s) throws IOException {
+
+    }
+
+    @Override
+    public Set<String> propertyNames() {
+        return null;
     }
     //endregion
 }

@@ -2,10 +2,10 @@ package cz.valkovic.java.twbot.services.database;
 
 
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.directories.DirectoriesService;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.messaging.MessageService;
-import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
+import cz.valkovic.java.twbot.modules.core.directories.DirectoriesService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
+import cz.valkovic.java.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.java.twbot.services.messaging.messages.HibernateLoaded;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -24,46 +24,46 @@ public class HibernateDatabaseConnection implements DatabaseConnection, Closeabl
     public HibernateDatabaseConnection(DirectoriesService dir,
                                        LoggingService log,
                                        Configuration conf,
-                                       MessageService message) {
+                                       EventBrokerService message) {
         this.dir = dir;
         this.log = log;
         this.conf = conf;
         this.message = message;
         this.factory = createFactory();
 
-        this.message.listenTo(ApplicationClosing.class, e -> this.close());
+        this.message.listenTo(ApplicationCloseEvent.class, e -> this.close());
     }
 
     private DirectoriesService dir;
     private LoggingService log;
     private Configuration conf;
     private SessionFactory factory;
-    private MessageService message;
+    private EventBrokerService message;
 
     private String getConnectionString() {
         return "jdbc:sqlite:" + Paths.get(this.dir.getDataDir(), "database.db").toString();
     }
 
     private SessionFactory createFactory() {
-        log.getLoading().debug("Loading configuration for Hibernate");
+        log.getStartup().debug("Loading configuration for Hibernate");
 
         org.hibernate.cfg.Configuration hiberConf = new org.hibernate.cfg.Configuration();
         try {
             hiberConf.configure();
             hiberConf.setProperty("hibernate.connection.url", this.getConnectionString());
             if (this.conf.firstRun()) {
-                log.getLoading().info("Running for first time, Hibernate will create database");
+                log.getStartup().info("Running for first time, Hibernate will create database.");
                 hiberConf.setProperty("hibernate.hbm2ddl.auto", "create");
             }
             factory = hiberConf.buildSessionFactory();
         }
         catch (HibernateException e) {
-            log.getLoading().error("Cannot load hibernate");
-            log.getLoading().debug(e, e);
+            log.getStartup().error("Can't load hibernate");
+            log.getStartup().debug(e, e);
             throw e;
         }
 
-        log.getLoading().debug("Hibernate configuration loaded");
+        log.getStartup().debug("Hibernate configuration loaded");
         this.message.invoke(new HibernateLoaded());
         return factory;
     }

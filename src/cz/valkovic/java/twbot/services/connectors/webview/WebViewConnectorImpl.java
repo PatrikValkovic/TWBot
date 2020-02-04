@@ -3,8 +3,8 @@ package cz.valkovic.java.twbot.services.connectors.webview;
 import cz.valkovic.java.twbot.controls.MyWebView;
 import cz.valkovic.java.twbot.services.browserManipulation.Actionable;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.java.twbot.services.messaging.messages.WebLoaded;
 import javafx.scene.web.WebEngine;
 
@@ -24,7 +24,7 @@ public class WebViewConnectorImpl implements WebViewConnector, Actionable {
     public WebViewConnectorImpl(
             Configuration conf,
             LoggingService log,
-            MessageService messages) {
+            EventBrokerService messages) {
         this.conf = conf;
         this.log = log;
 

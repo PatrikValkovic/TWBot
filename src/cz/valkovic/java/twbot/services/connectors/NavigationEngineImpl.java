@@ -1,7 +1,7 @@
 package cz.valkovic.java.twbot.services.connectors;
 
-import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.java.twbot.services.messaging.messages.PerformWaitAction;
 import cz.valkovic.java.twbot.services.messaging.messages.WebLoaded;
 import javafx.scene.web.WebEngine;
@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 
 public class NavigationEngineImpl implements NavigationEngine {
 
-    private MessageService messages;
+    private EventBrokerService messages;
     private LoggingService log;
 
     private final Object sync = new Object();
@@ -27,7 +27,7 @@ public class NavigationEngineImpl implements NavigationEngine {
     private String url = "";
 
     @Inject
-    public NavigationEngineImpl(MessageService messages,
+    public NavigationEngineImpl(EventBrokerService messages,
                                 LoggingService log) {
         this.messages = messages;
         this.log = log;

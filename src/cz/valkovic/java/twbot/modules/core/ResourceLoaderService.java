@@ -1,14 +1,14 @@
-package cz.valkovic.java.twbot.services;
+package cz.valkovic.java.twbot.modules.core;
 
 
-import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 
+import java.nio.charset.StandardCharsets;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,7 +33,7 @@ public class ResourceLoaderService {
     public String getResoureContent(String name) throws IOException, URISyntaxException {
         URL location = this.getResource(name);
         Path loc = Paths.get(location.toURI());
-        List<String> lines = Files.readAllLines(loc, Charset.forName("utf8"));
+        List<String> lines = Files.readAllLines(loc, StandardCharsets.UTF_8);
         return String.join("", lines);
     }
 

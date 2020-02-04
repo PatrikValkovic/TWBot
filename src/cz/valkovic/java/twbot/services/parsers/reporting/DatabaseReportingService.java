@@ -2,7 +2,7 @@ package cz.valkovic.java.twbot.services.parsers.reporting;
 
 import cz.valkovic.java.twbot.models.*;
 import cz.valkovic.java.twbot.services.database.DatabaseConnection;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.java.twbot.services.piping.ServerInformationProvider;
 
 import javax.inject.Inject;

@@ -1,9 +1,9 @@
 package cz.valkovic.java.twbot.services.browserManipulation;
 
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.messaging.MessageService;
-import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
+import cz.valkovic.java.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.java.twbot.services.messaging.messages.PerformAction;
 import cz.valkovic.java.twbot.services.messaging.messages.PerformNoWaitAction;
 import cz.valkovic.java.twbot.services.messaging.messages.PerformWaitAction;
@@ -33,7 +33,7 @@ public class ActionServiceImpl implements ActionsService {
     @Inject
     public ActionServiceImpl(Configuration conf,
                              LoggingService log,
-                             MessageService message,
+                             EventBrokerService message,
                              Actionable actionable) {
         this.log = log;
         this.conf = conf;
@@ -48,7 +48,7 @@ public class ActionServiceImpl implements ActionsService {
         message.listenTo(PerformAction.class, e -> this.performAction(e.getAction()));
         message.listenTo(PerformNoWaitAction.class, e -> this.performNoWaitAction(e.getAction()));
         message.listenTo(PerformWaitAction.class, e -> this.performWaitAction(e.getAction()));
-        message.listenTo(ApplicationClosing.class, e -> {
+        message.listenTo(ApplicationCloseEvent.class, e -> {
            this.actionsThread.processing.set(false);
            synchronized(this.actionsThread.sleepLock){
                this.actionsThread.sleepLock.notify();
@@ -66,7 +66,7 @@ public class ActionServiceImpl implements ActionsService {
 
     @Inject
     public static void injectInstance(ActionServiceImpl instance, LoggingService log) {
-        log.getLoading().debug("Action service loaded");
+        log.getLoading().debug("Action service loaded");  //TODO what?
     }
 
     //region actions threading

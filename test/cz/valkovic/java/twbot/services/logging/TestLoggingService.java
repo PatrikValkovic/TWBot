@@ -1,5 +1,6 @@
 package cz.valkovic.java.twbot.services.logging;
 
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,6 +39,11 @@ public class TestLoggingService implements LoggingService {
     }
 
     @Override
+    public Logger getExecution() {
+        return log;
+    }
+
+    @Override
     public Logger getAction() {
         return log;
     }
@@ -48,12 +54,17 @@ public class TestLoggingService implements LoggingService {
     }
 
     @Override
-    public Logger getMessaging() {
+    public Logger getEvents() {
         return log;
     }
 
     @Override
     public Logger getSettings() {
+        return log;
+    }
+
+    @Override
+    public Logger getObservable() {
         return log;
     }
 }

@@ -1,9 +1,8 @@
-package cz.valkovic.java.twbot.services.directories;
+package cz.valkovic.java.twbot.modules.core.directories;
 
 
-import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import net.harawata.appdirs.AppDirs;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -17,15 +16,15 @@ public class AppDirsDirectoriesService implements DirectoriesService {
     private static final String VERSION = "1.0";
     private static final String AUTHOR = "kowalsky";
 
+    private LoggingService log;
+    private AppDirs dirs;
+
     @Inject
     public AppDirsDirectoriesService(LoggingService log, AppDirs dirs) {
         this.log = log;
         this.dirs = dirs;
     }
 
-    private LoggingService log;
-
-    private AppDirs dirs;
 
     @Override
     public String getConfigDir() {

@@ -1,30 +1,30 @@
 package cz.valkovic.java.twbot;
 
 import com.google.inject.Injector;
+import cz.valkovic.java.twbot.modules.ModulesLoader;
 import cz.valkovic.java.twbot.runners.HibernateInitializationRunner;
-import cz.valkovic.java.twbot.services.ServicesModule;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.messaging.MessageService;
-import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
-import cz.valkovic.java.twbot.services.messaging.messages.ApplicationStart;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
+import cz.valkovic.java.twbot.modules.core.events.instances.ApplicationCloseEvent;
+import cz.valkovic.java.twbot.modules.core.events.instances.ApplicationStartEvent;
 
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        Injector i = ServicesModule.getInjector();
+        Injector i = ModulesLoader.getInjector();
         LoggingService log = i.getInstance(LoggingService.class);
         log.getStartup().info("Dependency injection container created");
-        i.getInstance(MessageService.class).invoke(new ApplicationStart());
+        i.getInstance(EventBrokerService.class).invoke(new ApplicationStartEvent());
 
         try {
-            HibernateInitializationRunner.runInSeparateThread(ServicesModule.getInjector());
+            HibernateInitializationRunner.runInSeparateThread(ModulesLoader.getInjector());
 
             Application.main(args);
         }
         finally {
-            ServicesModule.getInjector()
-                          .getInstance(MessageService.class)
-                          .invoke(new ApplicationClosing(log.getExit()))
+            ModulesLoader.getInjector()
+                          .getInstance(EventBrokerService.class)
+                          .invoke(new ApplicationCloseEvent(log.getExit()))
                           .waitToAllEvents();
         }
     }

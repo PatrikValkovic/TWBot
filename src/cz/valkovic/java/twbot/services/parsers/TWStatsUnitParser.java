@@ -4,7 +4,7 @@ import cz.valkovic.java.twbot.exceptions.UnknownUnitException;
 import cz.valkovic.java.twbot.models.UnitInfo;
 import cz.valkovic.java.twbot.models.UnitTypes;
 import cz.valkovic.java.twbot.models.UnitsSettings;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.java.twbot.services.parsers.reporting.UnitsSettingsReportingService;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

@@ -1,9 +1,9 @@
 package cz.valkovic.java.twbot.services.piping.elementary;
 
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.messaging.MessageService;
-import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
+import cz.valkovic.java.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.java.twbot.services.piping.ParsingPipe;
 import javafx.util.Pair;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class ThreadedPipe implements ParsingPipe {
 
     @Inject
     public ThreadedPipe(Configuration conf,
-                        MessageService messages,
+                        EventBrokerService messages,
                         LoggingService log) {
         this.conf = conf;
         this.log = log;
@@ -31,7 +31,7 @@ public class ThreadedPipe implements ParsingPipe {
         this.t = new ParsingThread(conf, log);
         this.t.start();
 
-        messages.listenTo(ApplicationClosing.class, e -> {
+        messages.listenTo(ApplicationCloseEvent.class, e -> {
             this.t.getWorking().set(false);
             this.t.join(conf.maxLockWaitingTime());
             if(this.t.isAlive()){

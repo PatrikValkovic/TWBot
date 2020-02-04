@@ -4,7 +4,7 @@ import cz.valkovic.java.twbot.exceptions.UnknownBuildingException;
 import cz.valkovic.java.twbot.models.BuildingInfo;
 import cz.valkovic.java.twbot.models.BuildingSettings;
 import cz.valkovic.java.twbot.models.BuildingTypes;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.java.twbot.services.parsers.reporting.BuildingSettingsReportingService;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

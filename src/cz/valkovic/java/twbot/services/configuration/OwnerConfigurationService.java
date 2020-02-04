@@ -1,9 +1,9 @@
 package cz.valkovic.java.twbot.services.configuration;
 
-import cz.valkovic.java.twbot.services.directories.DirectoriesService;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.messaging.MessageService;
-import cz.valkovic.java.twbot.services.messaging.messages.ApplicationClosing;
+import cz.valkovic.java.twbot.modules.core.directories.DirectoriesService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
+import cz.valkovic.java.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.java.twbot.services.messaging.messages.SettingsChanged;
 import cz.valkovic.java.twbot.services.messaging.messages.SettingsChangedAttempt;
 import org.aeonbits.owner.Accessible;
@@ -24,7 +24,7 @@ class OwnerConfigurationService implements ConfigurationService {
     @Inject
     public OwnerConfigurationService(DirectoriesService dirs,
                                      LoggingService log,
-                                     MessageService mess) {
+                                     EventBrokerService mess) {
         this.dirs = dirs;
         this.log = log;
         this.mess = mess;
@@ -53,13 +53,13 @@ class OwnerConfigurationService implements ConfigurationService {
 
     private DirectoriesService dirs;
     private LoggingService log;
-    private MessageService mess;
+    private EventBrokerService mess;
 
     @Inject
-    public void injectMessagingService(MessageService service)
+    public void injectMessagingService(EventBrokerService service)
     {
         this.mess = service;
-        this.mess.listenTo(ApplicationClosing.class, e -> this.save());
+        this.mess.listenTo(ApplicationCloseEvent.class, e -> this.save());
     }
 
     private synchronized <T extends Mutable> T loadConfiguration(Class<? extends T> type, String filepath) {

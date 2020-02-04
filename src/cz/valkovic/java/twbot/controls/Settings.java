@@ -1,11 +1,11 @@
 package cz.valkovic.java.twbot.controls;
 
 import com.google.inject.Inject;
-import cz.valkovic.java.twbot.services.ResourceLoaderService;
-import cz.valkovic.java.twbot.services.ServicesModule;
+import cz.valkovic.java.twbot.modules.ModulesLoader;
+import cz.valkovic.java.twbot.modules.core.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
-import cz.valkovic.java.twbot.services.messaging.MessageService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.java.twbot.services.messaging.messages.SettingsChangedAttempt;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,7 +27,7 @@ public class Settings extends VBox {
     private LoggingService log;
 
     @Inject
-    private MessageService messaging;
+    private EventBrokerService messaging;
 
     @Inject
     private Configuration conf;
@@ -36,7 +36,7 @@ public class Settings extends VBox {
 
     public Settings() throws IOException {
         // inject members
-        ServicesModule.getInjector().injectMembers(this);
+        ModulesLoader.getInjector().injectMembers(this);
 
         // load template
         try {

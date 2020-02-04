@@ -1,9 +1,9 @@
 package cz.valkovic.java.twbot;
 
-import cz.valkovic.java.twbot.services.ResourceLoaderService;
-import cz.valkovic.java.twbot.services.ServicesModule;
+import cz.valkovic.java.twbot.modules.ModulesLoader;
+import cz.valkovic.java.twbot.modules.core.ResourceLoaderService;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -28,7 +28,7 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        ServicesModule.getInjector().injectMembers(this);
+        ModulesLoader.getInjector().injectMembers(this);
         try {
             Parent root = FXMLLoader.load(resourceLoaderService.getResource("views/MainWindow.fxml"));
 
@@ -44,7 +44,7 @@ public class Application extends javafx.application.Application {
             primaryStage.show();
         }
         catch (IOException exc) {
-            ServicesModule.getInjector()
+            ModulesLoader.getInjector()
                           .getInstance(LoggingService.class)
                           .errorMissingFxml(Application.class, exc);
             throw exc;

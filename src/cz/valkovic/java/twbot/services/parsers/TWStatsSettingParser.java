@@ -1,7 +1,7 @@
 package cz.valkovic.java.twbot.services.parsers;
 
 import cz.valkovic.java.twbot.models.ServerSetting;
-import cz.valkovic.java.twbot.services.logging.LoggingService;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.java.twbot.services.parsers.reporting.ServerSettingsReportingService;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
