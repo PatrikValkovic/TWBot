@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<?import cz.valkovic.java.twbot.controls.MyWebView?>
-<?import cz.valkovic.java.twbot.controls.Settings?>
+<?import cz.valkovic.twbot.controls.MyWebView?>
+<?import cz.valkovic.twbot.controls.Settings?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <TabPane xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
-         fx:controller="cz.valkovic.java.twbot.Application"
+         fx:controller="cz.valkovic.twbot.Application"
 >
 
     <Tab text="Browser" closable="false">
