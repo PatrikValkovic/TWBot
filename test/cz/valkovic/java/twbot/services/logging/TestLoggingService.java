@@ -67,4 +67,9 @@ public class TestLoggingService implements LoggingService {
     public Logger getObservable() {
         return log;
     }
+
+    @Override
+    public Logger getDatabase() {
+        return log;
+    }
 }

@@ -1,22 +1,21 @@
 package cz.valkovic.java.twbot.services.piping;
 
 import cz.valkovic.java.twbot.models.Server;
-import cz.valkovic.java.twbot.services.database.DatabaseConnection;
+import cz.valkovic.java.twbot.modules.core.database.DatabaseConnectionService;
 import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.java.twbot.services.navigation.NavigationService;
-
-import javax.inject.Inject;
 import java.net.URL;
+import javax.inject.Inject;
 
 public class TWStatsConfigurationPipe implements ParsingPipe {
 
     private LoggingService log;
-    private DatabaseConnection connection;
+    private DatabaseConnectionService connection;
     private NavigationService navigation;
     private ServerInformationProvider serverInformation;
 
     @Inject
-    public TWStatsConfigurationPipe(LoggingService log, DatabaseConnection connection, NavigationService navigation, ServerInformationProvider serverInformation) {
+    public TWStatsConfigurationPipe(LoggingService log, DatabaseConnectionService connection, NavigationService navigation, ServerInformationProvider serverInformation) {
         this.log = log;
         this.connection = connection;
         this.navigation = navigation;

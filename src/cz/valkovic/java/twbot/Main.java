@@ -2,11 +2,10 @@ package cz.valkovic.java.twbot;
 
 import com.google.inject.Injector;
 import cz.valkovic.java.twbot.modules.ModulesLoader;
-import cz.valkovic.java.twbot.runners.HibernateInitializationRunner;
-import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.java.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.java.twbot.modules.core.events.instances.ApplicationStartEvent;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 
 public class Main {
 
@@ -17,15 +16,12 @@ public class Main {
         i.getInstance(EventBrokerService.class).invoke(new ApplicationStartEvent());
 
         try {
-            HibernateInitializationRunner.runInSeparateThread(ModulesLoader.getInjector());
-
             Application.main(args);
         }
         finally {
-            ModulesLoader.getInjector()
-                          .getInstance(EventBrokerService.class)
-                          .invoke(new ApplicationCloseEvent(log.getExit()))
-                          .waitToAllEvents();
+            i.getInstance(EventBrokerService.class)
+             .invoke(new ApplicationCloseEvent(log.getExit()))
+             .waitToAllEvents();
         }
     }
 

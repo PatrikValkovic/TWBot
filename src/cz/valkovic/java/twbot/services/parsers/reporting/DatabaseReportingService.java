@@ -1,20 +1,19 @@
 package cz.valkovic.java.twbot.services.parsers.reporting;
 
 import cz.valkovic.java.twbot.models.*;
-import cz.valkovic.java.twbot.services.database.DatabaseConnection;
+import cz.valkovic.java.twbot.modules.core.database.DatabaseConnectionService;
 import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.java.twbot.services.piping.ServerInformationProvider;
-
 import javax.inject.Inject;
 
 public class DatabaseReportingService implements ReportingService {
 
     private LoggingService log;
-    private DatabaseConnection connection;
+    private DatabaseConnectionService connection;
     private ServerInformationProvider serverInformation;
 
     @Inject
-    public DatabaseReportingService(LoggingService log, DatabaseConnection connection, ServerInformationProvider serverInformation) {
+    public DatabaseReportingService(LoggingService log, DatabaseConnectionService connection, ServerInformationProvider serverInformation) {
         this.log = log;
         this.connection = connection;
         this.serverInformation = serverInformation;

@@ -1,13 +1,12 @@
 package cz.valkovic.java.twbot.services.piping;
 
 import cz.valkovic.java.twbot.models.Server;
+import cz.valkovic.java.twbot.modules.core.database.DatabaseConnectionService;
 import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.services.database.DatabaseConnection;
-import lombok.Getter;
-
+import java.net.URL;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.net.URL;
+import lombok.Getter;
 
 @Singleton
 public class ServernameExtractorPipe implements ParsingPipe, ServerInformationProvider {
@@ -20,10 +19,10 @@ public class ServernameExtractorPipe implements ParsingPipe, ServerInformationPr
     private Server server;
 
     private Configuration conf;
-    private DatabaseConnection connection;
+    private DatabaseConnectionService connection;
 
     @Inject
-    public ServernameExtractorPipe(Configuration conf, DatabaseConnection connection) {
+    public ServernameExtractorPipe(Configuration conf, DatabaseConnectionService connection) {
         this.conf = conf;
         this.connection = connection;
     }

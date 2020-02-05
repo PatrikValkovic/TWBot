@@ -1,22 +1,12 @@
 package cz.valkovic.java.twbot.models;
 
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-
 @Entity
 @Table(name = "building_info")
-public class BuildingInfo {
-
-    public static final String ID = "buildinginfo_id";
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = ID, nullable = false, unique = true)
-    @Getter
-    @Setter
-    private int Id;
+public class BuildingInfo extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="building_settings_id", nullable = false)

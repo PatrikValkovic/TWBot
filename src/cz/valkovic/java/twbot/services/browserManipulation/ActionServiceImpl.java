@@ -1,30 +1,28 @@
 package cz.valkovic.java.twbot.services.browserManipulation;
 
-import cz.valkovic.java.twbot.services.configuration.Configuration;
-import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.java.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.java.twbot.modules.core.events.instances.ApplicationCloseEvent;
+import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.services.messaging.messages.PerformAction;
 import cz.valkovic.java.twbot.services.messaging.messages.PerformNoWaitAction;
 import cz.valkovic.java.twbot.services.messaging.messages.PerformWaitAction;
-import javafx.application.Platform;
-import javafx.scene.web.WebEngine;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import javafx.application.Platform;
+import javafx.scene.web.WebEngine;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import lombok.Getter;
+import lombok.Setter;
 
 @Singleton
 public class ActionServiceImpl implements ActionsService {
 
-    private Configuration conf;
     private LoggingService log;
 
     private ActionsThread actionsThread;
@@ -36,7 +34,6 @@ public class ActionServiceImpl implements ActionsService {
                              EventBrokerService message,
                              Actionable actionable) {
         this.log = log;
-        this.conf = conf;
 
         this.actionsThread = new ActionsThread(
                 actionable,

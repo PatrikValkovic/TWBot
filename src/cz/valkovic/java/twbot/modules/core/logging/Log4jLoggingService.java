@@ -1,10 +1,9 @@
 package cz.valkovic.java.twbot.modules.core.logging;
 
 
+import javax.inject.Singleton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import javax.inject.Singleton;
 
 @Singleton
 public class Log4jLoggingService implements LoggingService {
@@ -68,5 +67,10 @@ public class Log4jLoggingService implements LoggingService {
     @Override
     public Logger getObservable() {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".observable");
+    }
+
+    @Override
+    public Logger getDatabase() {
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".database");
     }
 }

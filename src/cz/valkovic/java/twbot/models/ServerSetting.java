@@ -1,15 +1,13 @@
 package cz.valkovic.java.twbot.models;
 
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-
 @Entity
 @Table(name = "server_setting")
-public class ServerSetting {
-    @Id
-    @Column(name = Server.ID_COLUMN, unique = true)
+public class ServerSetting extends BaseEntity {
+
     @Getter
     @Setter
     private String serverName;

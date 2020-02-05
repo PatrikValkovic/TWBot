@@ -12,16 +12,6 @@
         <property name="flushMode">ALWAYS</property>
         <property name="cache.use_second_level_cache" >false</property>
         <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
-        <property name="hbm2ddl.auto">create-drop</property>
-        <property name="connection.url">jdbc:sqlite:./database.db</property>
-
-        <!--Mappings-->
-        <mapping class="cz.valkovic.java.twbot.models.Server" />
-        <mapping class="cz.valkovic.java.twbot.models.ServerSetting" />
-        <mapping class="cz.valkovic.java.twbot.models.UnitsSettings" />
-        <mapping class="cz.valkovic.java.twbot.models.UnitInfo" />
-        <mapping class="cz.valkovic.java.twbot.models.BuildingSettings" />
-        <mapping class="cz.valkovic.java.twbot.models.BuildingInfo" />
 
     </session-factory>
 </hibernate-configuration>

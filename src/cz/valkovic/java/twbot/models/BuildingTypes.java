@@ -2,7 +2,7 @@ package cz.valkovic.java.twbot.models;
 
 import lombok.Getter;
 
-public enum BuildingTypes {
+public enum BuildingTypes{
 
     Headquarters("Headquarters"),
     Barracks("Barracks"),

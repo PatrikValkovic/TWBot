@@ -7,7 +7,8 @@
 <?import javafx.scene.control.TabPane?>
 <TabPane xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
-         fx:controller="cz.valkovic.java.twbot.Application">
+         fx:controller="cz.valkovic.java.twbot.Application"
+>
 
     <Tab text="Browser" closable="false">
         <MyWebView />

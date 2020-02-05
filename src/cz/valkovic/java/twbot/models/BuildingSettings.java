@@ -1,18 +1,15 @@
 package cz.valkovic.java.twbot.models;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Table(name = "buildings_settings")
-public class BuildingSettings {
+public class BuildingSettings extends BaseEntity{
 
-    @Id
-    @Column(name = Server.ID_COLUMN, unique = true)
     @Getter
     @Setter
     private String serverName;

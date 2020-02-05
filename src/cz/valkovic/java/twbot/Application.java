@@ -2,20 +2,18 @@ package cz.valkovic.java.twbot;
 
 import cz.valkovic.java.twbot.modules.ModulesLoader;
 import cz.valkovic.java.twbot.modules.core.ResourceLoaderService;
-import cz.valkovic.java.twbot.services.configuration.Configuration;
 import cz.valkovic.java.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.java.twbot.services.configuration.Configuration;
+import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
 import javax.inject.Inject;
-import java.io.IOException;
 
 public class Application extends javafx.application.Application {
-
     @Inject
     private ResourceLoaderService resourceLoaderService;
 
@@ -31,6 +29,8 @@ public class Application extends javafx.application.Application {
         ModulesLoader.getInjector().injectMembers(this);
         try {
             Parent root = FXMLLoader.load(resourceLoaderService.getResource("views/MainWindow.fxml"));
+
+            //root.getTabs().add
 
             Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
             double width = Math.min(screenSize.getWidth(), conf.windowWidth());
@@ -49,6 +49,5 @@ public class Application extends javafx.application.Application {
                           .errorMissingFxml(Application.class, exc);
             throw exc;
         }
-
     }
 }

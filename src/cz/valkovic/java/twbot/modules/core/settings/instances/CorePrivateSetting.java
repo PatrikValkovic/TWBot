@@ -17,6 +17,6 @@ public interface CorePrivateSetting extends StorableSettings {
     @Config.DefaultValue("www.twstats.com")
     String twstatsDomain();
 
-    @Config.DefaultValue("15000")
+    @Config.DefaultValue("10000")
     int maxLockWaitingTime();
 }
