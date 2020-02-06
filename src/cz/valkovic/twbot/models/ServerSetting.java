@@ -6,7 +6,13 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "server_setting")
-public class ServerSetting extends BaseEntity {
+public class ServerSetting implements BaseEntity {
+
+    @Id
+    @GeneratedValue
+    @Getter
+    @Setter
+    int id;
 
     @Getter
     @Setter

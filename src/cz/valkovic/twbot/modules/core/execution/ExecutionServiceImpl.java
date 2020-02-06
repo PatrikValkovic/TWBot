@@ -10,16 +10,13 @@ public class ExecutionServiceImpl implements ExecutionService {
 
     private final LoggingService log;
     private final LockTimeProvider locktime;
-    private final ExecutionThread execution;
-    private final Thread thread;
+    private ExecutionThread execution;
+    private Thread thread;
 
     @Inject
     public ExecutionServiceImpl(LoggingService log, LockTimeProvider locktime) {
         this.log = log;
         this.locktime = locktime;
-        this.execution = new ExecutionThread(this.log);
-        this.thread = new Thread(execution, "ExecutionThread");
-        this.thread.start();
     }
 
     //region interface
@@ -29,6 +26,13 @@ public class ExecutionServiceImpl implements ExecutionService {
      */
     @Override
     public void run(Runnable action) {
+        if(execution == null){
+            this.log.getExecution().info("Creating execution thread");
+            this.execution = new ExecutionThread(this.log, this.locktime.getLockTime() / 2);
+            this.thread = new Thread(execution, "ExecutionThread");
+            this.thread.start();
+        }
+
         this.log.getExecution().debug(String.format("Adding execution %s into the queue", action.getClass().getSimpleName()));
         this.execution.getQueue().add(action);
     }

@@ -17,6 +17,9 @@ import cz.valkovic.twbot.modules.core.observable.ObservableFactory;
 import cz.valkovic.twbot.modules.core.observable.ObservableFactoryImpl;
 import cz.valkovic.twbot.modules.core.settings.*;
 import cz.valkovic.twbot.modules.core.settings.instances.CoreSettingDemand;
+import cz.valkovic.twbot.modules.core.tabs.TabRegistrationService;
+import cz.valkovic.twbot.modules.core.tabs.TabsContainer;
+import cz.valkovic.twbot.modules.core.tabs.TabsRetrieveService;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
@@ -60,5 +63,9 @@ public class CoreModule extends AbstractModule {
         bind(DatabaseConnectionService.class).to(HibernateDatabaseConnectionService.class);
         requestStaticInjection(DatabaseSettingDemand.class);
         requestStaticInjection(SessionFactoryImpl.class);
+
+        //tabs
+        bind(TabRegistrationService.class).to(TabsContainer.class);
+        bind(TabsRetrieveService.class).to(TabsContainer.class);
     }
 }

@@ -8,7 +8,13 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "units_setting")
-public class UnitsSettings extends BaseEntity {
+public class UnitsSettings implements BaseEntity {
+
+    @Id
+    @GeneratedValue
+    @Getter
+    @Setter
+    int id;
 
     @Getter
     @Setter

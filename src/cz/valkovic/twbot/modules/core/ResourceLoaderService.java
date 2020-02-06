@@ -13,6 +13,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+/**
+ * Service that translate resource path to the absolute URL.
+ */
 @Singleton
 public class ResourceLoaderService {
 

@@ -1,8 +1,8 @@
 package cz.valkovic.twbot.modules.core.database;
 
 import cz.valkovic.twbot.models.BaseEntity;
-import cz.valkovic.twbot.modules.core.database.events.EntityRegistered;
-import cz.valkovic.twbot.modules.core.database.events.HibernateLoaded;
+import cz.valkovic.twbot.modules.core.database.events.EntityRegisteredEvent;
+import cz.valkovic.twbot.modules.core.database.events.HibernateLoadedEvent;
 import cz.valkovic.twbot.modules.core.database.setting.DatabasePrivateSetting;
 import cz.valkovic.twbot.modules.core.database.setting.DatabaseStaticSetting;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
@@ -85,7 +85,7 @@ public class SessionFactoryImpl implements
         }
 
         log.getDatabase().debug("Hibernate configuration loaded");
-        this.event.invoke(new HibernateLoaded());
+        this.event.invoke(new HibernateLoadedEvent());
         return factory;
     }
 
@@ -96,6 +96,6 @@ public class SessionFactoryImpl implements
                 entity.getCanonicalName()
         ));
         this.entities.add(entity);
-        this.event.invoke(new EntityRegistered(entity));
+        this.event.invoke(new EntityRegisteredEvent(entity));
     }
 }

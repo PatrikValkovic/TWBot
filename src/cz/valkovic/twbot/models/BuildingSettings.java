@@ -8,7 +8,14 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "buildings_settings")
-public class BuildingSettings extends BaseEntity{
+public class BuildingSettings implements BaseEntity{
+
+    @Id
+    @GeneratedValue
+    @Getter
+    @Setter
+    int id;
+
 
     @Getter
     @Setter

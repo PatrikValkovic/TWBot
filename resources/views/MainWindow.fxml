@@ -2,20 +2,19 @@
 
 
 <?import cz.valkovic.twbot.controls.MyWebView?>
-<?import cz.valkovic.twbot.controls.Settings?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <TabPane xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
-         fx:controller="cz.valkovic.twbot.Application"
+         fx:controller="cz.valkovic.twbot.modules.core.controls.MainWindow"
+         fx:id="pane"
+         onMouseMoved="#mouseMoved"
 >
 
-    <Tab text="Browser" closable="false">
+    <Tab text="Browser" closable="false" onSelectionChanged="#tabChanged">
         <MyWebView />
     </Tab>
 
-    <Tab text="Settings" closable="false">
-        <Settings />
-    </Tab>
+    <Tab text="+" closable="false" fx:id="plusTab" onSelectionChanged="#tabChanged"/>
 
 </TabPane>

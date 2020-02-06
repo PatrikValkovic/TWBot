@@ -1,7 +1,5 @@
 package cz.valkovic.twbot.controls;
 
-import com.google.inject.Inject;
-import cz.valkovic.twbot.Main;
 import cz.valkovic.twbot.modules.core.ResourceLoaderService;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
@@ -15,28 +13,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javax.inject.Inject;
 
 public class Settings extends VBox {
 
-    //region injections
-    @Inject
-    private ResourceLoaderService resourceLoaderService;
-
-    @Inject
     private LoggingService log;
-
-    @Inject
     private EventBrokerService messaging;
+    private Configuration conf;
 
     @Inject
-    private Configuration conf;
-    //endregion
-
-
-    public Settings() throws IOException {
-        // inject members
-        Main.getInjector().injectMembers(this);
-
+    public Settings(
+            ResourceLoaderService resourceLoaderService,
+            LoggingService log,
+            EventBrokerService messaging,
+            Configuration conf
+    ) throws IOException {
+        this.log = log;
+        this.messaging = messaging;
+        this.conf = conf;
         // load template
         try {
             URL styles = resourceLoaderService.getResource("controls/Settings.css");
@@ -47,14 +41,9 @@ public class Settings extends VBox {
             this.getStylesheets().add(styles.toExternalForm());
         }
         catch (IOException e) {
-            log.errorMissingFxml(Settings.class, e);
+            this.log.errorMissingFxml(Settings.class, e);
             throw e;
         }
-    }
-
-    @FXML
-    void initialize(){
-        this.fillValues();
     }
 
     private void fillValues() {

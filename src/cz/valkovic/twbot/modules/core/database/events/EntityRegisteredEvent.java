@@ -10,7 +10,7 @@ import lombok.Setter;
  * Event that is called when database entity is registered.
  */
 @AllArgsConstructor
-public class EntityRegistered implements Event {
+public class EntityRegisteredEvent implements Event {
 
     /**
      * Registered entity.

@@ -6,7 +6,13 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "unit_info")
-public class UnitInfo extends BaseEntity {
+public class UnitInfo implements BaseEntity {
+
+    @Id
+    @GeneratedValue
+    @Getter
+    @Setter
+    int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="units_settings_id", nullable = false)

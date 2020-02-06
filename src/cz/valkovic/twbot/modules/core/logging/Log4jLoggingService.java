@@ -73,4 +73,9 @@ public class Log4jLoggingService implements LoggingService {
     public Logger getDatabase() {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".database");
     }
+
+    @Override
+    public Logger getGUI() {
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".gui");
+    }
 }

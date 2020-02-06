@@ -1,6 +1,7 @@
 package cz.valkovic.twbot;
 
 import com.google.inject.Injector;
+import cz.valkovic.twbot.modules.core.controls.Application;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.twbot.modules.core.events.instances.ApplicationStartEvent;

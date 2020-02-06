@@ -76,6 +76,11 @@ public interface LoggingService {
     Logger getDatabase();
 
     /**
+     * Logs events in GUI.
+     */
+    Logger getGUI();
+
+    /**
      * Log error about missing FXML file.
      * @param cls Class that required the file.
      * @param e The exception occurred.

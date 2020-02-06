@@ -72,4 +72,9 @@ public class TestLoggingService implements LoggingService {
     public Logger getDatabase() {
         return log;
     }
+
+    @Override
+    public Logger getGUI() {
+        return log;
+    }
 }

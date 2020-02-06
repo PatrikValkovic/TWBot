@@ -11,6 +11,7 @@ import lombok.Getter;
 public class ExecutionThread implements Runnable {
 
     private LoggingService log;
+    private long lockTime;
 
     @Getter
     private final BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
@@ -18,15 +19,16 @@ public class ExecutionThread implements Runnable {
     private final AtomicBoolean end = new AtomicBoolean(false);
 
 
-    public ExecutionThread(LoggingService log) {
+    public ExecutionThread(LoggingService log, long lockTime) {
         this.log = log;
+        this.lockTime = lockTime;
     }
 
     @Override
     public void run() {
         try {
             while (!this.end.get() || !this.queue.isEmpty()) {
-                Runnable to_execute = this.queue.poll(1000, TimeUnit.MILLISECONDS);
+                Runnable to_execute = this.queue.poll(this.lockTime, TimeUnit.MILLISECONDS);
                 if(to_execute == null){
                     this.log.getExecution().debug("No execution in queue, looping.");
                     continue;
@@ -43,7 +45,7 @@ public class ExecutionThread implements Runnable {
                     ));
                 }
                 catch(Exception e) {
-                    this.log.getExecution().debug(String.format(
+                    this.log.getExecution().warn(String.format(
                             "Error in execution %s",
                             to_execute.getClass().getCanonicalName()
                     ), e);

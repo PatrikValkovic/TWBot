@@ -82,7 +82,16 @@ public class SettingsContainer implements
 
     @Override
     public <T> Object observe(Class<T> type, Consumer<T> callback) throws IllegalArgumentException {
-        return this.observable.observe((b) -> {
+        return this.observable.observe(handleObserve(type, callback));
+    }
+
+    @Override
+    public <T> Object observeInRender(Class<T> type, Consumer<T> callback) throws IllegalArgumentException {
+        return this.observable.observeInRender(handleObserve(type, callback));
+    }
+
+    private <T> Consumer<Boolean> handleObserve(Class<T> type, Consumer<T> callback) {
+        return (b) -> {
             Lock l = lock.readLock();
             l.lock();
             try {
@@ -99,7 +108,7 @@ public class SettingsContainer implements
             finally {
                 l.unlock();
             }
-        });
+        };
     }
 
     @Override
@@ -111,7 +120,6 @@ public class SettingsContainer implements
                 this.log.getSettings().warn("CorePrivateSetting is not present, can't acquire lock time.");
                 throw new IllegalArgumentException("CorePrivateSetting is not present, can't acquire lock time.");
             }
-            //noinspection unchecked
             return ((CorePrivateSetting)this.settingsMap.get(CorePrivateSetting.class)).maxLockWaitingTime();
         }
         finally {

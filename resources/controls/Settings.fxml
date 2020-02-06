@@ -3,7 +3,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml" >
+<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
     <HBox>
         <TextField fx:id="field_username"/>
         <Label>username</Label>
