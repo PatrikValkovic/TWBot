@@ -1,7 +1,6 @@
 package cz.valkovic.twbot.controls;
 
 import com.google.inject.Inject;
-import cz.valkovic.twbot.Main;
 import cz.valkovic.twbot.modules.core.ResourceLoaderService;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
@@ -29,31 +28,22 @@ import javafx.scene.web.WebView;
 
 public class MyWebView extends VBox{
 
-    //region injections
-    @Inject
-    private ResourceLoaderService resourceLoaderService;
-
-    @Inject
     private LoggingService log;
-
-    @Inject
-    private WebViewConnector connector;
-
-    @Inject
     private EventBrokerService messaging;
-
-    @Inject
     private NavigationEngine nav;
 
     @Inject
-    private Configuration conf;
-    //endregion
-
-
-    public MyWebView() throws IOException {
-        // inject members
-        Main.getInjector().injectMembers(this);
-
+    public MyWebView(
+            ResourceLoaderService resourceLoaderService,
+            LoggingService log,
+            WebViewConnector connector,
+            EventBrokerService messaging,
+            NavigationEngine nav,
+            Configuration conf
+    ) throws IOException {
+        this.log = log;
+        this.messaging = messaging;
+        this.nav = nav;
         // load template
         try {
             FXMLLoader loader = new FXMLLoader(resourceLoaderService.getResource("controls/MyWebView.fxml"));
@@ -62,15 +52,15 @@ public class MyWebView extends VBox{
             loader.load();
         }
         catch (IOException e) {
-            log.errorMissingFxml(MyWebView.class, e);
+            this.log.errorMissingFxml(MyWebView.class, e);
             throw e;
         }
 
         // connection with rest of the app
-        this.connector.bind(this);
+        connector.bind(this);
 
         // navigate to index page
-        this.getEngine().load(this.conf.homepage());
+        this.getEngine().load(conf.homepage());
 
         // bind properties
         bindProperties();

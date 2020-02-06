@@ -2,7 +2,6 @@ package cz.valkovic.twbot.modules.core.settings;
 
 import com.google.inject.Injector;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
-import cz.valkovic.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.twbot.modules.core.execution.LockTimeProvider;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.observable.Observable;
@@ -42,9 +41,6 @@ public class SettingsContainer implements
         this.log = log;
         this.observable = observFact.Create(true);
         this.injector = injector;
-
-
-        event.listenTo(ApplicationCloseEvent.class, c -> this.store());
     }
 
     @Override

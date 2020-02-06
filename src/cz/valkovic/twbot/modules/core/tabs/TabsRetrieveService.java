@@ -8,10 +8,16 @@ import javafx.scene.Node;
 public interface TabsRetrieveService {
 
     /**
-     * Get all possible tab names.
+     * Get all possible tab names that can be opened.
      * @return Array with names of all the tabs that have been registered.
      */
     String[] tabsNames();
+
+    /**
+     * Get all tabs, that are not closable and thus need's to be opened all the time.
+     * @return Array with names of tabs that needs to be opened.
+     */
+    String[] requiredTabsNames();
 
     /**
      * Return class that represent tab with concrete tab.

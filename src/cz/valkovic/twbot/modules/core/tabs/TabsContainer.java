@@ -47,7 +47,22 @@ public class TabsContainer implements TabRegistrationService, TabsRetrieveServic
 
     @Override
     public String[] tabsNames() {
-        return this.tabs.keySet().toArray(String[]::new);
+        return this.tabs
+                .values()
+                .stream()
+                .filter(r -> r.closable)
+                .map(r -> r.title)
+                .toArray(String[]::new);
+    }
+
+    @Override
+    public String[] requiredTabsNames() {
+        return this.tabs
+                .values()
+                .stream()
+                .filter(r -> !r.closable)
+                .map(r -> r.title)
+                .toArray(String[]::new);
     }
 
     @Override

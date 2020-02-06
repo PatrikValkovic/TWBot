@@ -2,7 +2,10 @@ package cz.valkovic.twbot.modules.core.controls;
 
 import com.google.inject.Injector;
 import cz.valkovic.twbot.Main;
+import cz.valkovic.twbot.modules.core.events.EventBrokerService;
+import cz.valkovic.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.twbot.modules.core.tabs.LastSessionTabs;
 import cz.valkovic.twbot.modules.core.tabs.TabsRetrieveService;
 import java.util.function.Consumer;
 import javafx.event.Event;
@@ -35,9 +38,38 @@ public class MainWindow {
     private Injector injector;
     @Inject
     private LoggingService log;
+    @Inject
+    LastSessionTabs lastSessionTabs;
+    @Inject
+    EventBrokerService event;
 
     public MainWindow() {
         Main.getInjector().injectMembers(this);
+    }
+
+    @FXML
+    protected void initialize() {
+        this.log.getStartup().debug("Loading default tabs");
+
+        // create tabs from last session
+        for (String lastTab : lastSessionTabs.openedTabs()) {
+            this.createTab(lastTab);
+        }
+        for (String requiredTab : tabs.requiredTabsNames())
+            if (this.pane.getTabs().stream().map(Tab::getText).filter(t -> t.equals(requiredTab)).findFirst().isEmpty())
+                this.createTab(requiredTab);
+        this.pane.getSelectionModel().select(0);
+        allowModal = true;
+
+        // register for application closing and store tabs
+        event.listenTo(ApplicationCloseEvent.class, e -> {
+            lastSessionTabs.storeOpenedTabs(this.pane.getTabs()
+                                                     .stream()
+                                                     .map(Tab::getText)
+                                                     .limit(pane.getTabs().size() - 1)
+                                                     .toArray(String[]::new)
+            );
+        });
     }
 
     @FXML
@@ -45,40 +77,44 @@ public class MainWindow {
     @FXML
     public Tab plusTab;
     private Tab lastKnowTab;
+    private boolean allowModal = false;
 
     public void tabChanged(Event event) {
-        Tab t = (Tab)event.getTarget();
+        Tab t = (Tab) event.getTarget();
         lastKnowTab = t != plusTab ? t : lastKnowTab;
-        if(t == plusTab) {
+        if (t == plusTab && allowModal) {
             this.log.getGUI().debug("Initialized creation of tab");
             pane.getSelectionModel().select(pane.getTabs().indexOf(lastKnowTab));
             String[] names = this.tabs.tabsNames();
-            if(names.length > 0)
-                this.showTabsBox(this.tabs.tabsNames(), this::createTab);
+            if (names.length > 0)
+                this.showTabsBox(this.tabs.tabsNames(), name -> {
+                    this.createTab(name);
+                    this.pane.getSelectionModel().select(this.pane.getTabs().size() - 2);
+                });
         }
     }
 
     private void showTabsBox(String[] possibleNames, Consumer<String> callback) {
         // dialog
-        Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initStyle(StageStyle.UNDECORATED);
-        dialog.setAlwaysOnTop(true);
-        dialog.setX(mouseX);
-        dialog.setY(mouseY);
+        Stage modalDialog = new Stage();
+        modalDialog.initModality(Modality.APPLICATION_MODAL);
+        modalDialog.initStyle(StageStyle.UNDECORATED);
+        modalDialog.setAlwaysOnTop(true);
+        modalDialog.setX(mouseX);
+        modalDialog.setY(mouseY);
         //items
         VBox box = new VBox();
         Background b = new Background(
                 new BackgroundFill(Color.AQUAMARINE, null, null)
         );
         this.log.getGUI().debug("Get " + possibleNames.length + " possible tabs to add.");
-        for(String title : possibleNames) {
+        for (String title : possibleNames) {
             Label l = new Label(title);
             l.setFont(Font.font(16));
-            l.setOnMouseEntered(e -> ((Label)e.getTarget()).setBackground(b));
-            l.setOnMouseExited(e -> ((Label)e.getTarget()).setBackground(Background.EMPTY));
+            l.setOnMouseEntered(e -> ((Label) e.getTarget()).setBackground(b));
+            l.setOnMouseExited(e -> ((Label) e.getTarget()).setBackground(Background.EMPTY));
             l.setOnMouseClicked(e -> {
-                dialog.close();
+                modalDialog.close();
                 this.log.getGUI().debug("User picked up " + l.getText() + " tab.");
                 callback.accept(l.getText());
             });
@@ -86,12 +122,12 @@ public class MainWindow {
         }
         // scene
         Scene dialogScene = new Scene(box);
-        dialog.setScene(dialogScene);
+        modalDialog.setScene(dialogScene);
         dialogScene.setOnKeyPressed(e -> {
-            if(e.getCode() == KeyCode.ESCAPE)
-                dialog.close();
+            if (e.getCode() == KeyCode.ESCAPE)
+                modalDialog.close();
         });
-        dialog.show();
+        modalDialog.show();
     }
 
     private void createTab(String tabName) {
@@ -106,12 +142,12 @@ public class MainWindow {
                 this.pane.getTabs().size() - 1,
                 tabToAdd
         );
-        this.pane.getSelectionModel().select(this.pane.getTabs().size() - 2);
         this.log.getGUI().info("Tab " + tabToAdd.getText() + " successfully created.");
     }
 
     private double mouseX;
     private double mouseY;
+
     public void mouseMoved(MouseEvent mouseEvent) {
         mouseX = mouseEvent.getScreenX();
         mouseY = mouseEvent.getScreenY();
