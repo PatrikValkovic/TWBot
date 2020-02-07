@@ -1,10 +1,10 @@
 package cz.valkovic.twbot.services.configuration;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 @Singleton
 public class ConfigurationImpl implements Configuration {
@@ -41,13 +41,13 @@ public class ConfigurationImpl implements Configuration {
     }
 
     @Override
-    public int navigationTimeMin() {
-        return this.pubConf.navigationTimeMin();
+    public int actionTimeMin() {
+        return this.pubConf.actionTimeMin();
     }
 
     @Override
-    public int navigationTimeMax() {
-        return this.pubConf.navigationTimeMax();
+    public int actionTimeMax() {
+        return this.pubConf.actionTimeMax();
     }
 
     @Override

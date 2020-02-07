@@ -1,5 +1,6 @@
 package cz.valkovic.twbot.modules.core.settings;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -33,5 +34,19 @@ public interface SettingsProviderService {
      * @param o Object returned from `observe` method.
      */
     void removeObserver(Object o);
+
+    /**
+     * Allows to observe public settings only.
+     * @param callback Callback to be called by observer.
+     * @return Object that can be later used to delete the observer.
+     */
+    Object observePublicSettings(Consumer<List<PublicSettings>> callback);
+
+    /**
+     * Allows to observe public settings only.
+     * @param callback Callback to be called by observer.
+     * @return Object that can be later used to delete the observer.
+     */
+    Object observePublicSettingsInRender(Consumer<List<PublicSettings>> callback);
 
 }

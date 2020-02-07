@@ -1,69 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.*?>
-<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
-    <HBox>
-        <TextField fx:id="field_username"/>
-        <Label>username</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_password"/>
-        <Label>password</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_serverName"/>
-        <Label>serverName</Label>
-    </HBox>
-    <HBox>
-        <CheckBox fx:id="field_fullscreen"/>
-        <Label>fullscreen</Label>
-    </HBox>
-    <HBox>
-        <CheckBox fx:id="field_maximalized"/>
-        <Label>maximalized</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_homepage"/>
-        <Label>homepage</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_userAgent"/>
-        <Label>userAgent</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_navigationTimeMax"/>
-        <Label>navigationTimeMax</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_navigationTimeMin"/>
-        <Label>navigationTimeMin</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_parseTime"/>
-        <Label>parseTime</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_reloadPageMax"/>
-        <Label>reloadPageMax</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_reloadPageMin"/>
-        <Label>reloadPageMin</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_windowHeight"/>
-        <Label>windowHeight</Label>
-    </HBox>
-    <HBox>
-        <TextField fx:id="field_windowWidth"/>
-        <Label>windowWidth</Label>
-    </HBox>
-    <Button onAction="#save">
-        Save
-    </Button>
-    <Button onAction="#reload">
-        Reload
-    </Button>
+<fx:root type="javafx.scene.layout.VBox"
+         xmlns="http://javafx.com/javafx/10.0.2-internal"
+         xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="cz.valkovic.twbot.modules.setting.SettingController"
+>
+    <VBox>
+        <ScrollPane hbarPolicy="NEVER">
+            <VBox fx:id="mainContainer" styleClass="inner_box">
+            </VBox>
+        </ScrollPane>
+
+        <HBox styleClass="button_box">
+            <VBox>
+                <Button onAction="#save">
+                    Save
+                </Button>
+            </VBox>
+            <VBox>
+                <Button onAction="#reload">
+                    Reload
+                </Button>
+            </VBox>
+        </HBox>
+    </VBox>
 </fx:root>

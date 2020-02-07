@@ -1,46 +1,61 @@
 package cz.valkovic.twbot.modules.core.settings.instances;
 
 import cz.valkovic.twbot.modules.core.settings.PublicSettings;
-import org.aeonbits.owner.Config;
+import cz.valkovic.twbot.modules.setting.SettingDescription;
 
 public interface CorePublicSetting extends PublicSettings {
 
-    @Config.DefaultValue("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134")
+    @SettingDescription("UserAgent to use, so the application will not know your browser.")
+    @DefaultValue("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134")
     String userAgent();
 
-    @Config.DefaultValue("10000")
+    @SettingDescription("Minimum time in milliseconds, in which should be the page reloaded.")
+    @DefaultValue("10000")
     int reloadPageMin();
 
-    @Config.DefaultValue("20000")
+    @SettingDescription("Maximum time in milliseconds, in which will be the page reloaded. Complementary to reloadPageMin and uses random value between the range.")
+    @DefaultValue("20000")
     int reloadPageMax();
 
-    @Config.DefaultValue("1000")
+    @SettingDescription("How often in milliseconds parse the website. Doesn't require reloading of the website.")
+    @DefaultValue("1000")
     int parseTime();
 
-    @Config.DefaultValue("1500")
-    int navigationTimeMin();
+    @SettingDescription("Defines the minimum time in milliseconds, that is allowed to perform action (navigate to different site or execute script).\nLeft part of the interval with actionTimeMax. Random number from this interval will be chosen.")
+    @DefaultValue("1500")
+    int actionTimeMin();
 
-    @Config.DefaultValue("8000")
-    int navigationTimeMax();
+    @SettingDescription("Defines the maximum time in milliseconds, that is allowed to perform action (navigate to different site or execute script).\nRight part of the interval with actionTimeMin. Random number from this interval will be chosen.")
+    @DefaultValue("8000")
+    int actionTimeMax();
 
-    @Config.DefaultValue("1280")
+    @SettingDescription("Window width on startup.")
+    @DefaultValue("1280")
     int windowWidth();
 
-    @Config.DefaultValue("768")
+    @SettingDescription("Window height on startup.")
+    @DefaultValue("768")
     int windowHeight();
 
-    @Config.DefaultValue("False")
+    @SettingDescription("To run application is maximized mode by default.")
+    @DefaultValue("False")
     boolean maximalized();
 
-    @Config.DefaultValue("False")
+    @SettingDescription("To run application in fullscreen by default.")
+    @DefaultValue("False")
     boolean fullscreen();
 
+    //TODO move away
+    @SettingDescription("Your username, that can be used to log in. Please note that your username and password is stored unsecurely on this computer.")
     String username();
 
+    @SettingDescription("Your password, that can be used to log in. Please note that your username and password is stored unsecurely on this computer!")
     String password();
 
+    @SettingDescription("Default server, that you want to log in by default. Leave empty if you want to choose server yourself.")
     String serverName();
 
-    @Config.DefaultValue("https://www.divokekmeny.cz")
+    @SettingDescription("Website, that should be load on startup of the application.")
+    @DefaultValue("https://www.divokekmeny.cz")
     String homepage();
 }

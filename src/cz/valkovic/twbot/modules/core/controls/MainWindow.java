@@ -7,7 +7,6 @@ import cz.valkovic.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.tabs.LastSessionTabs;
 import cz.valkovic.twbot.modules.core.tabs.TabsRetrieveService;
-import java.util.function.Consumer;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -26,6 +25,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javax.inject.Inject;
+import java.util.function.Consumer;
 
 /**
  * Controller of the main window.
@@ -131,7 +131,14 @@ public class MainWindow {
     }
 
     private void createTab(String tabName) {
-        Class<? extends Node> controlClass = this.tabs.getRepresentativeClass(tabName);
+        Class<? extends Node> controlClass;
+        try {
+            controlClass = this.tabs.getRepresentativeClass(tabName);
+        }
+        catch(NullPointerException e) {
+            this.log.getGUI().warn(String.format("Coudn't load tab for %s", tabName));
+            return;
+        }
         Tab tabToAdd = new Tab(
                 tabName,
                 this.injector.getInstance(controlClass)

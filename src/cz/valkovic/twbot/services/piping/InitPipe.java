@@ -1,18 +1,20 @@
 package cz.valkovic.twbot.services.piping;
 
+import cz.valkovic.twbot.modules.core.pipeping.ParsingService;
 import cz.valkovic.twbot.services.parsers.TWStatsBuildingsParser;
 import cz.valkovic.twbot.services.parsers.TWStatsSettingParser;
 import cz.valkovic.twbot.services.parsers.TWStatsUnitParser;
 import cz.valkovic.twbot.services.piping.elementary.*;
-import java.net.URL;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import java.net.URL;
 
 @Singleton
 public class InitPipe implements ParsingPipe {
 
     private ParsingPipe pipe = null;
+    private ParsingService parsing;
 
     @Inject
     public void init(Provider<SeriesPipe> series,
@@ -27,9 +29,13 @@ public class InitPipe implements ParsingPipe {
                      Provider<LoginPipe> login,
                      ParserPipeFactory parserPipeFactory,
 
+                     ParsingService parsing,
+
                      Provider<TWStatsSettingParser> twstatsSettingParser,
                      Provider<TWStatsUnitParser> twStatsUnitParser,
                      Provider<TWStatsBuildingsParser> twStatsBuildingParser) {
+
+        this.parsing = parsing;
 
         ParsingPipe twstatsParsing = paralel.get()
                                             .add(parserPipeFactory.create(twstatsSettingParser.get()))
@@ -55,6 +61,7 @@ public class InitPipe implements ParsingPipe {
 
     @Override
     public boolean process(URL location, String content) throws Exception {
+        this.parsing.parse(location, content);
         return this.pipe.process(location, content);
     }
 }

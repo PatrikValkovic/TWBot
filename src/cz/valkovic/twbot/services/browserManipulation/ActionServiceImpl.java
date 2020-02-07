@@ -7,18 +7,18 @@ import cz.valkovic.twbot.services.configuration.Configuration;
 import cz.valkovic.twbot.services.messaging.messages.PerformAction;
 import cz.valkovic.twbot.services.messaging.messages.PerformNoWaitAction;
 import cz.valkovic.twbot.services.messaging.messages.PerformWaitAction;
+import javafx.application.Platform;
+import javafx.scene.web.WebEngine;
+import lombok.Getter;
+import lombok.Setter;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import javafx.application.Platform;
-import javafx.scene.web.WebEngine;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import lombok.Getter;
-import lombok.Setter;
 
 @Singleton
 public class ActionServiceImpl implements ActionsService {
@@ -114,8 +114,8 @@ public class ActionServiceImpl implements ActionsService {
         public void run() {
             Random rand = new Random(conf.seed());
             while (this.processing.get()) {
-                int difference = Math.abs(conf.navigationTimeMax() - conf.navigationTimeMin());
-                int toWait = rand.nextInt(difference) + conf.navigationTimeMin();
+                int difference = Math.abs(conf.actionTimeMax() - conf.actionTimeMin());
+                int toWait = rand.nextInt(difference) + conf.actionTimeMin();
 
                 try {
                     log.getAction().debug("Thread will sleep for " + toWait + " milliseconds");

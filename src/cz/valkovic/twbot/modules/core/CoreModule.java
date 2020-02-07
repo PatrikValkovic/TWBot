@@ -15,6 +15,7 @@ import cz.valkovic.twbot.modules.core.logging.Log4jLoggingService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.observable.ObservableFactory;
 import cz.valkovic.twbot.modules.core.observable.ObservableFactoryImpl;
+import cz.valkovic.twbot.modules.core.pipeping.*;
 import cz.valkovic.twbot.modules.core.settings.*;
 import cz.valkovic.twbot.modules.core.settings.instances.CoreSettingDemand;
 import cz.valkovic.twbot.modules.core.tabs.*;
@@ -35,7 +36,7 @@ public class CoreModule extends AbstractModule {
         bind(ObservableFactory.class).to(ObservableFactoryImpl.class);
 
         // logging
-        this.bind(LoggingService.class).to(Log4jLoggingService.class);
+        bind(LoggingService.class).to(Log4jLoggingService.class);
 
         // directories
         bind(AppDirs.class).toProvider(AppDirsFactory::getInstance);
@@ -53,7 +54,7 @@ public class CoreModule extends AbstractModule {
         bind(SettingRegistrationService.class).to(SettingsContainer.class);
         bind(SettingsProviderService.class).to(SettingsContainer.class);
         bind(SettingStorageService.class).to(SettingsContainer.class);
-        this.requestStaticInjection(CoreSettingDemand.class);
+        requestStaticInjection(CoreSettingDemand.class);
 
         // database
         bind(SessionFactoryService.class).to(SessionFactoryImpl.class);
@@ -62,9 +63,15 @@ public class CoreModule extends AbstractModule {
         requestStaticInjection(DatabaseSettingDemand.class);
         requestStaticInjection(SessionFactoryImpl.class);
 
-        //tabs
+        // tabs
         bind(TabRegistrationService.class).to(TabsContainer.class);
         bind(TabsRetrieveService.class).to(TabsContainer.class);
         bind(LastSessionTabs.class).to(LastSessionTabsImpl.class);
+
+        // pipeping
+        bind(PipesRegistrationService.class).to(PipesContainer.class);
+        bind(PipesRetrieveService.class).to(PipesContainer.class);
+        bind(ParsingService.class).to(ParsingServiceImpl.class);
+        requestStaticInjection(PipesSettingDemand.class);
     }
 }

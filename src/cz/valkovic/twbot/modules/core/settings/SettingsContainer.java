@@ -7,14 +7,16 @@ import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.observable.Observable;
 import cz.valkovic.twbot.modules.core.observable.ObservableFactory;
 import cz.valkovic.twbot.modules.core.settings.instances.CorePrivateSetting;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.util.stream.Collectors;
 
 @Singleton
 public class SettingsContainer implements
@@ -86,11 +88,30 @@ public class SettingsContainer implements
         return this.observable.observeInRender(handleObserve(type, callback));
     }
 
+    @Override
+    public Object observePublicSettings(Consumer<List<PublicSettings>> callback) {
+        return this.observable.observe(handlePublicObserve(callback));
+    }
+
+    @Override
+    public Object observePublicSettingsInRender(Consumer<List<PublicSettings>> callback) {
+        return this.observable.observeInRender(handlePublicObserve(callback));
+    }
+
+    private void executeInReadLock(Runnable run) {
+        Lock l = lock.readLock();
+        l.lock();
+        try {
+            run.run();
+        }
+        finally {
+            l.unlock();
+        }
+    }
+
     private <T> Consumer<Boolean> handleObserve(Class<T> type, Consumer<T> callback) {
         return (b) -> {
-            Lock l = lock.readLock();
-            l.lock();
-            try {
+            executeInReadLock(() -> {
                 if(!this.settingsMap.containsKey(type)){
                     this.log.getSettings().warn(String.format(
                             "Attempt to access setting %s, that is not present.",
@@ -100,10 +121,21 @@ public class SettingsContainer implements
                 }
                 //noinspection unchecked
                 callback.accept((T)this.settingsMap.get(type));
-            }
-            finally {
-                l.unlock();
-            }
+            });
+        };
+    }
+
+    private Consumer<Boolean> handlePublicObserve(Consumer<List<PublicSettings>> callback) {
+        return (b) -> {
+            this.executeInReadLock(() -> {
+                List<PublicSettings> setting = this.settingsMap
+                        .keySet()
+                        .stream()
+                        .filter(PublicSettings.class::isAssignableFrom)
+                        .map(k -> (PublicSettings)settingsMap.get(k))
+                        .collect(Collectors.toList());
+                callback.accept(setting);
+            });
         };
     }
 
