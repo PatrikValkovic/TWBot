@@ -2,7 +2,11 @@ package cz.valkovic.twbot.modules.core.observable;
 
 import cz.valkovic.twbot.modules.core.execution.ExecutionService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
-import java.util.LinkedList;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -24,8 +28,19 @@ public class Observable<T> {
 
 
     private T value;
-    private LinkedList<Consumer<T>> consumers = new LinkedList<>();
+    private List<WeakReference<Consumer<T>>> consumers = new ArrayList<>();
+    @AllArgsConstructor
+    private class ObservableLock {
+        @Getter
+        WeakReference<Consumer<T>> ref;
+        @Getter
+        Consumer<T> val;
+    }
 
+    /**
+     * Get value of the observable item.
+     * @return Current value without observation.
+     */
     public synchronized T getValue() {
         return this.value;
     }
@@ -37,21 +52,28 @@ public class Observable<T> {
      */
     public synchronized void setValue(T value) {
         this.value = value;
-        for (Consumer<T> c : this.consumers)
-            this.callCallback(c);
+        for (WeakReference<Consumer<T>> c : new ArrayList<>(this.consumers)) {
+            if(c.get() == null) {
+                this.log.getObservable().debug("Removing observable because its null");
+                this.consumers.remove(c);
+            }
+            else
+                this.callCallback(c.get());
+        }
     }
 
     /**
      * Add observer, that get notified about the changes.
-     * The callback is called immediately (not after the first change).
-     *
+     * The callback is called immediately (not after the first change) in the same thread.
+     * Callbacks during lifetime are called in execution thread.
      * @param callback Callback to call when value changes.
      * @return Return reference to Object, that can be later use to remove the observer.
      */
     public synchronized Object observe(Consumer<T> callback) {
-        this.consumers.add(callback);
-        this.callCallback(callback);
-        return callback;
+        var ref = new WeakReference<>(callback);
+        this.consumers.add(ref);
+        callback.accept(this.getValue());
+        return new ObservableLock(ref, callback);
     }
 
     /**
@@ -75,7 +97,8 @@ public class Observable<T> {
      * @return True if the object was removed, false otherwise.
      */
     public synchronized boolean unregister(Object o) {
-        boolean removed = this.consumers.remove(o);
+        @SuppressWarnings("unchecked")
+        boolean removed = this.consumers.remove(((ObservableLock)o).ref);
         if (!removed)
             this.log.getObservable().warn("Couldn't remove callback from observer");
         return removed;
@@ -84,7 +107,7 @@ public class Observable<T> {
     private void callCallback(Consumer<T> callback) {
         try {
             this.log.getObservable().debug(String.format(
-                    "Adding observer %s because of change.",
+                    "Adding observer to execution because of change: %s.",
                     callback.getClass().getSimpleName()
             ));
             this.execution.run(() -> callback.accept(this.getValue()));

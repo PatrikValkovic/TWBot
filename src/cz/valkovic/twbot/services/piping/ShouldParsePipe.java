@@ -1,28 +1,29 @@
 package cz.valkovic.twbot.services.piping;
 
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
-import cz.valkovic.twbot.services.configuration.Configuration;
-import java.net.URL;
+import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
+import cz.valkovic.twbot.modules.core.settings.instances.CorePrivateSetting;
 import javax.inject.Inject;
+import java.net.URL;
 
 public class ShouldParsePipe implements ParsingPipe {
 
     private LoggingService log;
-    private Configuration conf;
+    private CorePrivateSetting setting;
 
     @Inject
-    public ShouldParsePipe(LoggingService log, Configuration conf) {
+    public ShouldParsePipe(LoggingService log, SettingsProviderService settingsProvider) {
         this.log = log;
-        this.conf = conf;
+        settingsProvider.observe(CorePrivateSetting.class, s -> setting = s);
     }
 
     @Override
     public boolean process(URL location, String content) {
-        boolean willBeParsed = location.getHost().matches(conf.appDomainRegex()) ||
-                location.getHost().equals(conf.twstatsDomain());
+        boolean willBeParsed = location.getHost().matches(setting.appDomainRegex()) ||
+                location.getHost().equals(setting.twstatsDomain());
 
-        if(willBeParsed)
-            log.getPiping().info(location.toString() + " will be parsed");
+        if (willBeParsed)
+            log.getPipeping().info(location.toString() + " will be parsed");
 
         return willBeParsed;
     }

@@ -4,8 +4,8 @@ import cz.valkovic.twbot.models.Server;
 import cz.valkovic.twbot.modules.core.database.DatabaseConnectionService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.services.navigation.NavigationService;
-import java.net.URL;
 import javax.inject.Inject;
+import java.net.URL;
 
 public class TWStatsConfigurationPipe implements ParsingPipe {
 
@@ -26,7 +26,7 @@ public class TWStatsConfigurationPipe implements ParsingPipe {
     public boolean process(URL location, String content) {
         String server = serverInformation.getName();
 
-        log.getPiping().info("Check if server " + server + " exists");
+        log.getPipeping().info("Check if server " + server + " exists");
 
         return connection.entityManager(db -> {
             Server serverDb = db.find(Server.class, server);
@@ -47,7 +47,7 @@ public class TWStatsConfigurationPipe implements ParsingPipe {
             db.persist(s);
 
             //navigate to info pages
-            log.getPiping().info("Server " + server + " does not exists, navigating to twstats");
+            log.getPipeping().info("Server " + server + " does not exists, navigating to twstats");
             navigation.queue("http://www.twstats.com/"+ server +"/index.php?page=settings");
             navigation.queue("http://www.twstats.com/"+ server +"/index.php?page=units");
             navigation.queue("http://www.twstats.com/"+ server +"/index.php?page=buildings");

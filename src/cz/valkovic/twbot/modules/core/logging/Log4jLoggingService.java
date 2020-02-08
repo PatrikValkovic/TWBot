@@ -1,9 +1,9 @@
 package cz.valkovic.twbot.modules.core.logging;
 
 
-import javax.inject.Singleton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import javax.inject.Singleton;
 
 @Singleton
 public class Log4jLoggingService implements LoggingService {
@@ -36,7 +36,7 @@ public class Log4jLoggingService implements LoggingService {
     }
 
     @Override
-    public Logger getPiping() {
+    public Logger getPipeping() {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".piping");
     }
 

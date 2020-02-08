@@ -21,7 +21,7 @@ public class DatabaseReportingService implements ReportingService {
 
     @Override
     public void report(ServerSetting settings) {
-        log.getPiping().info("Storing settings for " + serverInformation.getServer().getServerName());
+        log.getPipeping().info("Storing settings for " + serverInformation.getServer().getServerName());
 
         connection.entityManager(db -> {
             Server server = serverInformation.getServer();
@@ -29,12 +29,12 @@ public class DatabaseReportingService implements ReportingService {
             db.merge(server);
         });
 
-        log.getPiping().info("Settings for " + serverInformation.getServer().getServerName() + " stored");
+        log.getPipeping().info("Settings for " + serverInformation.getServer().getServerName() + " stored");
     }
 
     @Override
     public void report(UnitsSettings units) {
-        log.getPiping().info("Storing units settings for " + serverInformation.getServer().getServerName());
+        log.getPipeping().info("Storing units settings for " + serverInformation.getServer().getServerName());
 
         connection.entityManager(db -> {
             Server server = serverInformation.getServer();
@@ -47,12 +47,12 @@ public class DatabaseReportingService implements ReportingService {
             db.persist(units);
         });
 
-        log.getPiping().info("Units settings for " + serverInformation.getServer().getServerName() + " stored");
+        log.getPipeping().info("Units settings for " + serverInformation.getServer().getServerName() + " stored");
     }
 
     @Override
     public void report(BuildingSettings buildings) {
-        log.getPiping().info("Storing building settings for " + serverInformation.getServer().getServerName());
+        log.getPipeping().info("Storing building settings for " + serverInformation.getServer().getServerName());
 
         connection.entityManager(db -> {
             Server server = serverInformation.getServer();
@@ -65,6 +65,6 @@ public class DatabaseReportingService implements ReportingService {
             db.persist(buildings);
         });
 
-        log.getPiping().info("Building settings for " + serverInformation.getServer().getServerName() + " stored");
+        log.getPipeping().info("Building settings for " + serverInformation.getServer().getServerName() + " stored");
     }
 }

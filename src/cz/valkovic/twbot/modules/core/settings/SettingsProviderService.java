@@ -1,6 +1,7 @@
 package cz.valkovic.twbot.modules.core.settings;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -40,13 +41,13 @@ public interface SettingsProviderService {
      * @param callback Callback to be called by observer.
      * @return Object that can be later used to delete the observer.
      */
-    Object observePublicSettings(Consumer<List<PublicSettings>> callback);
+    Object observePublicSettings(Consumer<List<Map.Entry<Class<PublicSettings>, PublicSettings>>> callback);
 
     /**
      * Allows to observe public settings only.
      * @param callback Callback to be called by observer.
      * @return Object that can be later used to delete the observer.
      */
-    Object observePublicSettingsInRender(Consumer<List<PublicSettings>> callback);
+    Object observePublicSettingsInRender(Consumer<List<Map.Entry<Class<PublicSettings>, PublicSettings>>> callback);
 
 }

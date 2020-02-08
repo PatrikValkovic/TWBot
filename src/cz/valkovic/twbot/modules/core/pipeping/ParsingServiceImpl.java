@@ -44,8 +44,9 @@ public class ParsingServiceImpl implements ParsingService {
         log.getParsing().info("Initializing parsing on " + url.toString());
         exe.run(() -> {
             Document doc = createDocument(content);
+
             if(doc == null){
-                log.getPiping().warn(String.format(
+                log.getPipeping().warn(String.format(
                         "Couldn't obtain document from %s",
                         url.toString()
                 ));
@@ -54,21 +55,22 @@ public class ParsingServiceImpl implements ParsingService {
                             dir.getLogDir(),
                             System.currentTimeMillis() + ".html"
                     );
-                    log.getPiping().info("Website is going to be saved into " + path.toString());
+                    log.getPipeping().info("Website is going to be saved into " + path.toString());
                     try {
                         Files.createDirectories(path);
                         Files.writeString(path, content, StandardCharsets.UTF_8);
                     }
                     catch(IOException e){
-                        this.log.getPiping().warn(String.format(
+                        this.log.getPipeping().warn(String.format(
                                 "Couldn't save content of %s into file %s because of %s",
                                 url.toString(), path.toString(), e.getMessage()
                         ));
-                        this.log.getPiping().debug(e, e);
+                        this.log.getPipeping().debug(e, e);
                     }
                 }
                 return;
             }
+
             List<ParsingPipe> p = pipes.getRelevantPipes(url, doc);
             log.getParsing().info(String.format(
                     "Found %d parsing pipes for url %s",

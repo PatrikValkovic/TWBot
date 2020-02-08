@@ -6,7 +6,7 @@ package cz.valkovic.twbot.modules.core.settings;
 public interface SettingStorageService {
 
     /**
-     * Store all settings into the files.
+     * Stores all setting into the files and notify application about it.
      */
     void store();
 

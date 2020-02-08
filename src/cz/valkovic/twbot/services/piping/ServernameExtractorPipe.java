@@ -2,11 +2,12 @@ package cz.valkovic.twbot.services.piping;
 
 import cz.valkovic.twbot.models.Server;
 import cz.valkovic.twbot.modules.core.database.DatabaseConnectionService;
-import cz.valkovic.twbot.services.configuration.Configuration;
-import java.net.URL;
+import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
+import cz.valkovic.twbot.modules.core.settings.instances.CorePrivateSetting;
+import lombok.Getter;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import lombok.Getter;
+import java.net.URL;
 
 @Singleton
 public class ServernameExtractorPipe implements ParsingPipe, ServerInformationProvider {
@@ -18,25 +19,26 @@ public class ServernameExtractorPipe implements ParsingPipe, ServerInformationPr
     @Getter
     private Server server;
 
-    private Configuration conf;
     private DatabaseConnectionService connection;
+    private CorePrivateSetting setting;
 
     @Inject
-    public ServernameExtractorPipe(Configuration conf, DatabaseConnectionService connection) {
-        this.conf = conf;
+    public ServernameExtractorPipe(SettingsProviderService settingsProvider, DatabaseConnectionService connection) {
         this.connection = connection;
+
+        settingsProvider.observe(CorePrivateSetting.class, s -> setting = s);
     }
 
     @Override
     public boolean process(URL location, String content) {
         try {
-            if (location.getHost().matches(conf.appDomainRegex())) {
+            if (location.getHost().matches(setting.appDomainRegex())) {
 
                 name = location.getHost().substring(0, location.getHost().indexOf("."));
                 host = location.getHost().substring(location.getHost().indexOf(".") + 1);
 
                 return true;
-            } else if (location.getHost().equals(conf.twstatsDomain())) {
+            } else if (location.getHost().equals(setting.twstatsDomain())) {
 
                 name = location.getPath().substring(1, location.getPath().indexOf("/", 1));
                 host = null;

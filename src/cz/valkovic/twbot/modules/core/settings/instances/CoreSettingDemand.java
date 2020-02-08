@@ -6,6 +6,7 @@ import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.settings.*;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CoreSettingDemand extends SettingDemand {
 
@@ -19,10 +20,14 @@ public class CoreSettingDemand extends SettingDemand {
         reg.register(new CoreSettingDemand());
 
         event.listenTo(ApplicationCloseEvent.class, c -> {
+            AtomicBoolean runned = new AtomicBoolean(false);
             setting.get().observe(CorePrivateSetting.class, s -> {
+                if(runned.get())
+                    return;
                 s.setProperty("firstRun", "false");
                 log.getSettings().debug("Storing core setting");
                 settingStorage.get().store();
+                runned.set(true);
             });
         });
     }

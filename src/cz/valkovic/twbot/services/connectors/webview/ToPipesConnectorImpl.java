@@ -4,9 +4,9 @@ import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.services.messaging.messages.WebLoaded;
 import cz.valkovic.twbot.services.piping.ParsingPipe;
+import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.inject.Inject;
 
 public class ToPipesConnectorImpl implements ToPipesConnector {
 
@@ -24,14 +24,14 @@ public class ToPipesConnectorImpl implements ToPipesConnector {
         this.pipe = pipe;
 
         messaging.listenTo(WebLoaded.class, e -> {
-            log.getPiping().info("Attempt to process " + e.getLocation());
+            log.getPipeping().info("Attempt to process " + e.getLocation());
             try {
                 URL url = new URL(e.getLocation());
                 this.pipe.process(url, e.getContent());
             }
             catch (MalformedURLException ex) {
-                log.getPiping().info("Unable to parse URL");
-                log.getPiping().debug(ex, ex);
+                log.getPipeping().info("Unable to parse URL");
+                log.getPipeping().debug(ex, ex);
             }
         });
     }

@@ -3,6 +3,7 @@ package cz.valkovic.twbot.modules.setting;
 import cz.valkovic.twbot.Main;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.settings.PublicSettings;
+import cz.valkovic.twbot.modules.core.settings.SettingStorageService;
 import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,27 +12,27 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javax.inject.Inject;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SettingController {
 
     @Inject
-    SettingsProviderService setting;
+    private SettingsProviderService setting;
     @Inject
-    LoggingService log;
+    private SettingStorageService storage;
+    @Inject
+    private LoggingService log;
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private Object settingObserverLock = null;
 
     @FXML
     protected void initialize() {
         Main.getInjector().injectMembers(this);
-        this.setting.observePublicSettingsInRender((settings) -> {
+        settingObserverLock = this.setting.observePublicSettingsInRender((settings) -> {
             this.settings = settings;
             this.createEntries();
         });
@@ -41,8 +42,21 @@ public class SettingController {
     public VBox mainContainer;
 
     @FXML
-    public void save(ActionEvent e) {
-        System.out.printf("save");
+    public void save(ActionEvent ignore) {
+        this.log.getSettings().debug("Attempt to store setting");
+        String changesDebugString = changesCache.values()
+                .stream()
+                .flatMap(entry -> entry.entrySet().stream().map(e -> e.getKey() + "-" + e.getValue()))
+                .collect(Collectors.joining("\n"));
+        this.log.getSettings().debug("Changes in the setting:\n" + changesDebugString);
+
+        changesCache.forEach((setting, changes) -> {
+            for (Map.Entry<String, String> ch : changes.entrySet())
+                setting.setProperty(ch.getKey(), ch.getValue());
+        });
+        this.storage.store();
+        this.log.getSettings().info("Setting stored");
+        changesCache.clear();
     }
 
     @FXML
@@ -50,7 +64,9 @@ public class SettingController {
         this.createEntries();
     }
 
-    private List<PublicSettings> settings;
+
+    private List<Map.Entry<Class<PublicSettings>, PublicSettings>> settings;
+    private Map<PublicSettings, Map<String, String>> changesCache = new HashMap<>(16, 0.5f);
 
     private void createEntries() {
         log.getGUI().debug("Creating entries in the Setting view");
@@ -61,38 +77,35 @@ public class SettingController {
             return;
         }
 
-        for(PublicSettings setting : settings) {
+        for(Map.Entry<Class<PublicSettings>, PublicSettings> setting : settings) {
             Set<String> properties = new HashSet<>(16, 0.5f);
-            Class<? extends PublicSettings> settingClass = null;
-            //TODO so ugly, accessing private properties
-            try {
-                InvocationHandler handler = Proxy.getInvocationHandler(setting);
-                Field f = handler.getClass().getDeclaredField("jmxSupport");
-                f.setAccessible(true);
-                var jmxsupport = f.get(handler);
-                Field clazzField = jmxsupport.getClass().getDeclaredField("clazz");
-                clazzField.setAccessible(true);
-                //noinspection unchecked
-                settingClass = (Class<? extends PublicSettings>) clazzField.get(jmxsupport);
-                List<String> declared = Stream.of(settingClass.getDeclaredMethods())
-                                              .map(Method::getName)
-                                              .collect(Collectors.toList());
-                properties.addAll(declared);
-                properties.addAll(setting.propertyNames());
-            }
-            catch (Exception ignored) {}
-
+            Class<? extends PublicSettings> settingClass = setting.getKey();
+            PublicSettings settingInstance = setting.getValue();
+            List<String> declared = Stream.of(settingClass.getDeclaredMethods())
+                                          .map(Method::getName)
+                                          .collect(Collectors.toList());
+            properties.addAll(declared);
+            properties.addAll(settingInstance.propertyNames());
 
             for(String prop : properties){
+                // create content
                 Label title = new Label(prop);
                 Label description = new Label("No description provided");
-                TextField content = new TextField(setting.getProperty(prop));
+                TextField content = new TextField(settingInstance.getProperty(prop));
+                // get annotations
                 try {
                         var annotation = settingClass.getDeclaredMethod(prop)
                                                      .getAnnotation(SettingDescription.class);
                         description.setText(annotation.value());
                 }
                 catch(Exception ignored) {}
+                // handle text field changes
+                content.textProperty().addListener((observable, old_value, new_value) -> {
+                    if(!changesCache.containsKey(settingInstance))
+                        changesCache.put(settingInstance, new HashMap<>(16, 0.5f));
+                    changesCache.get(settingInstance).put(prop, new_value);
+                });
+                // create containers
                 VBox box = new VBox(
                         new HBox(
                             content,

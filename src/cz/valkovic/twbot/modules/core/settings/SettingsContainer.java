@@ -16,6 +16,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -27,6 +28,7 @@ public class SettingsContainer implements
 
     private final SettingPersistingService persisting;
     private final LoggingService log;
+    private final EventBrokerService event;
 
     private final Observable<Boolean> observable;
     private final Injector injector;
@@ -41,8 +43,9 @@ public class SettingsContainer implements
                              EventBrokerService event) {
         persisting = per;
         this.log = log;
-        this.observable = observFact.Create(true);
         this.injector = injector;
+        this.event = event;
+        this.observable = observFact.Create(true);
     }
 
     @Override
@@ -80,63 +83,75 @@ public class SettingsContainer implements
 
     @Override
     public <T> Object observe(Class<T> type, Consumer<T> callback) throws IllegalArgumentException {
-        return this.observable.observe(handleObserve(type, callback));
+        return this.observable.observe((ignored) -> {
+            T v = handleObserve(type);
+            callback.accept(v);
+        });
     }
 
     @Override
     public <T> Object observeInRender(Class<T> type, Consumer<T> callback) throws IllegalArgumentException {
-        return this.observable.observeInRender(handleObserve(type, callback));
+        return this.observable.observeInRender((ignored) -> {
+            T v = handleObserve(type);
+            callback.accept(v);
+        });
     }
 
     @Override
-    public Object observePublicSettings(Consumer<List<PublicSettings>> callback) {
-        return this.observable.observe(handlePublicObserve(callback));
+    public Object observePublicSettings(Consumer<List<Map.Entry<Class<PublicSettings>, PublicSettings>>> callback) {
+        return this.observable.observe((ignored) -> {
+            var settings = handlePublicObserve();
+            callback.accept(settings);
+        });
     }
 
     @Override
-    public Object observePublicSettingsInRender(Consumer<List<PublicSettings>> callback) {
-        return this.observable.observeInRender(handlePublicObserve(callback));
+    public Object observePublicSettingsInRender(Consumer<List<Map.Entry<Class<PublicSettings>, PublicSettings>>> callback) {
+        return this.observable.observeInRender((ignored) -> {
+            var settings = handlePublicObserve();
+            callback.accept(settings);
+        });
     }
 
-    private void executeInReadLock(Runnable run) {
+    private <T> T executeInReadLock(Supplier<T> run) {
         Lock l = lock.readLock();
         l.lock();
         try {
-            run.run();
+            return run.get();
         }
         finally {
             l.unlock();
         }
     }
 
-    private <T> Consumer<Boolean> handleObserve(Class<T> type, Consumer<T> callback) {
-        return (b) -> {
-            executeInReadLock(() -> {
+    private <T> T handleObserve(Class<T> type) {
+        return executeInReadLock(() -> {
                 if(!this.settingsMap.containsKey(type)){
                     this.log.getSettings().warn(String.format(
                             "Attempt to access setting %s, that is not present.",
                             type.getCanonicalName()
                     ));
-                    return;
+                    return null;
                 }
                 //noinspection unchecked
-                callback.accept((T)this.settingsMap.get(type));
+                return (T)this.settingsMap.get(type);
             });
-        };
     }
 
-    private Consumer<Boolean> handlePublicObserve(Consumer<List<PublicSettings>> callback) {
-        return (b) -> {
-            this.executeInReadLock(() -> {
-                List<PublicSettings> setting = this.settingsMap
-                        .keySet()
-                        .stream()
-                        .filter(PublicSettings.class::isAssignableFrom)
-                        .map(k -> (PublicSettings)settingsMap.get(k))
-                        .collect(Collectors.toList());
-                callback.accept(setting);
-            });
-        };
+    private List<Map.Entry<Class<PublicSettings>, PublicSettings>> handlePublicObserve() {
+        return this.executeInReadLock(() -> {
+            @SuppressWarnings("unchecked")
+            List<Map.Entry<Class<PublicSettings>, PublicSettings>> setting = this.settingsMap
+                    .keySet()
+                    .stream()
+                    .filter(PublicSettings.class::isAssignableFrom)
+                    .map(k -> Map.entry(
+                            (Class<PublicSettings>)k,
+                            (PublicSettings)settingsMap.get(k)
+                    ))
+                    .collect(Collectors.toList());
+            return setting;
+        });
     }
 
     @Override
@@ -164,7 +179,7 @@ public class SettingsContainer implements
     @Override
     public void store() {
         log.getSettings().debug("Starting storing setting");
-        Lock l = lock.readLock();
+        Lock l = lock.writeLock();
         l.lock();
         try {
             settingsMap.forEach((Class<?> type, Object instance) -> {
@@ -176,6 +191,7 @@ public class SettingsContainer implements
             l.unlock();
         }
         log.getSettings().debug("All setting stored");
-        //TODO handle change
+        observable.setValue(true);
+        event.invoke(new SettingsChangedEvent());
     }
 }

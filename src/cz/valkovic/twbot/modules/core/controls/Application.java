@@ -6,7 +6,6 @@ import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
 import cz.valkovic.twbot.modules.core.settings.instances.CorePublicSetting;
-import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -14,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javax.inject.Inject;
+import java.io.IOException;
 
 /**
  * JavaFX application.
@@ -30,7 +30,6 @@ public class Application extends javafx.application.Application {
         launch(args);
     }
 
-
     @Override
     public void start(Stage primaryStage) throws IOException {
         Main.getInjector().injectMembers(this);
@@ -46,8 +45,7 @@ public class Application extends javafx.application.Application {
             throw exc;
         }
 
-
-        Object observerReference = setting.observeInRender(CorePublicSetting.class, s -> {
+        setting.observeInRender(CorePublicSetting.class, s -> {
             Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
             double width = Math.min(screenSize.getWidth(), s.windowWidth());
             double height = Math.min(screenSize.getHeight(), s.windowHeight());
@@ -64,7 +62,5 @@ public class Application extends javafx.application.Application {
 
             event.invoke(new ApplicationShowEvent());
         });
-
-        event.listenTo(ApplicationShowEvent.class, (e) -> setting.removeObserver(observerReference));
     }
 }

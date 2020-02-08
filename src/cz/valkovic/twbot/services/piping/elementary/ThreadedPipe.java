@@ -3,42 +3,44 @@ package cz.valkovic.twbot.services.piping.elementary;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
-import cz.valkovic.twbot.services.configuration.Configuration;
+import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
+import cz.valkovic.twbot.modules.core.settings.instances.CorePrivateSetting;
 import cz.valkovic.twbot.services.piping.ParsingPipe;
+import javafx.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
+import javax.inject.Inject;
 import java.net.URL;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javafx.util.Pair;
-import javax.inject.Inject;
-import lombok.Getter;
-import lombok.Setter;
 
 public class ThreadedPipe implements ParsingPipe {
 
-    private Configuration conf;
     private LoggingService log;
+    private CorePrivateSetting privSet;
 
     @Inject
-    public ThreadedPipe(Configuration conf,
+    public ThreadedPipe(SettingsProviderService settingsProvider,
                         EventBrokerService messages,
                         LoggingService log) {
-        this.conf = conf;
         this.log = log;
 
-        this.t = new ParsingThread(conf, log);
+        this.t = new ParsingThread(settingsProvider, log);
         this.t.start();
+
+        settingsProvider.observe(CorePrivateSetting.class, s -> privSet = s);
 
         messages.listenTo(ApplicationCloseEvent.class, e -> {
             this.t.getWorking().set(false);
-            this.t.join(conf.maxLockWaitingTime());
+            this.t.join(privSet.maxLockWaitingTime());
             if(this.t.isAlive()){
-                log.getPiping().warn("Couldn't join piping thread");
+                log.getPipeping().warn("Couldn't join piping thread");
                 this.t.interrupt();
             }
             else {
-                log.getPiping().info("Piping thread joined");
+                log.getPipeping().info("Piping thread joined");
             }
         });
     }
@@ -52,10 +54,10 @@ public class ThreadedPipe implements ParsingPipe {
 
     @Override
     public boolean process(URL location, String content) throws Exception {
-        if(!this.t.getToProcess().offer(new Pair<>(location, content), conf.maxLockWaitingTime(), TimeUnit.MILLISECONDS)){
-            this.log.getPiping().warn("Couldn't insert new content to the piping thread");
+        if(!this.t.getToProcess().offer(new Pair<>(location, content), privSet.maxLockWaitingTime(), TimeUnit.MILLISECONDS)){
+            this.log.getPipeping().warn("Couldn't insert new content to the piping thread");
         } else {
-            this.log.getPiping().debug("Content inserted to the piping thread");
+            this.log.getPipeping().debug("Content inserted to the piping thread");
         }
         return true;
     }
@@ -74,25 +76,26 @@ public class ThreadedPipe implements ParsingPipe {
         @Setter
         private ParsingPipe pipe;
 
-        private Configuration conf;
         private LoggingService log;
+        private CorePrivateSetting setting;
 
-        ParsingThread(Configuration conf,
-                             LoggingService log)
+        ParsingThread(SettingsProviderService settingProvider,
+                     LoggingService log)
         {
-            this.conf = conf;
             this.log = log;
 
             this.setName("Piping thread");
+
+            settingProvider.observe(CorePrivateSetting.class, s -> setting = s);
         }
 
         @Override
         public void run() {
-            this.log.getPiping().debug("Starting piping thread");
+            this.log.getPipeping().debug("Starting piping thread");
             while(this.working.get() || !toProcess.isEmpty()){
                 try {
                     Pair<URL, String> next =
-                            this.toProcess.poll(this.conf.maxLockWaitingTime() / 4, TimeUnit.MILLISECONDS);
+                            this.toProcess.poll(this.setting.maxLockWaitingTime() / 4, TimeUnit.MILLISECONDS);
                     if (next == null) {
                         continue;
                     }
@@ -101,14 +104,14 @@ public class ThreadedPipe implements ParsingPipe {
                             this.pipe.process(next.getKey(), next.getValue());
                         }
                         catch (Exception e) {
-                            log.getPiping().warn("Exception during handling piping");
-                            log.getPiping().debug(e,e );
+                            log.getPipeping().warn("Exception during handling piping");
+                            log.getPipeping().debug(e,e );
                         }
                     }
                 }
                 catch(InterruptedException e){
-                    log.getPiping().warn("Piping thread interrupted, thread is ending");
-                    log.getPiping().debug(e, e);
+                    log.getPipeping().warn("Piping thread interrupted, thread is ending");
+                    log.getPipeping().debug(e, e);
                 }
             }
         }

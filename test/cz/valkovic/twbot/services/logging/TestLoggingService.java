@@ -34,7 +34,7 @@ public class TestLoggingService implements LoggingService {
     }
 
     @Override
-    public Logger getPiping() {
+    public Logger getPipeping() {
         return log;
     }
 

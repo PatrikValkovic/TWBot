@@ -27,20 +27,20 @@ public class PipesContainer implements PipesRegistrationService, PipesRetrieveSe
 
     @Override
     public void registerLocationPipe(String from, String namespace, Class<? extends LocationPipe> pipeClass) {
-        this.log.getPiping().debug(String.format(
+        this.log.getPipeping().debug(String.format(
                 "Registering pipe on %s defining %s using class %s",
                 from, namespace, pipeClass.getCanonicalName()
         ));
 
         if (!this.pipes.containsKey(from)) {
-            this.log.getPiping().warn(String.format(
+            this.log.getPipeping().warn(String.format(
                     "Namespace %s not defined for pipe %s",
                     from, pipeClass.getCanonicalName()
             ));
             this.pipes.put(from, this.injector.getInstance(PipeStep.class));
         }
         if (!this.pipes.containsKey(namespace)) {
-            this.log.getPiping().debug(String.format(
+            this.log.getPipeping().debug(String.format(
                     "Namespace %s creating",
                     namespace
             ));
@@ -49,7 +49,7 @@ public class PipesContainer implements PipesRegistrationService, PipesRetrieveSe
 
         LocationPipe instance = injector.getInstance(pipeClass);
         this.pipes.get(from).addLocationPipe(instance, namespace);
-        this.log.getPiping().info(String.format(
+        this.log.getPipeping().info(String.format(
                 "Registered pipe from %s to %s using class %s",
                 from, namespace, pipeClass.getCanonicalName()
         ));
@@ -57,13 +57,13 @@ public class PipesContainer implements PipesRegistrationService, PipesRetrieveSe
 
     @Override
     public void registerParsingPipe(String from, Class<? extends ParsingPipe> pipeClass) {
-        this.log.getPiping().debug(String.format(
+        this.log.getPipeping().debug(String.format(
                 "Registering pipe on %s using class %s",
                 from, pipeClass.getCanonicalName()
         ));
 
         if (!this.pipes.containsKey(from)) {
-            this.log.getPiping().warn(String.format(
+            this.log.getPipeping().warn(String.format(
                     "Namespace %s not defined for pipe %s",
                     from, pipeClass.getCanonicalName()
             ));
@@ -72,7 +72,7 @@ public class PipesContainer implements PipesRegistrationService, PipesRetrieveSe
 
         ParsingPipe instance = injector.getInstance(pipeClass);
         this.pipes.get(from).addParsingPipe(instance);
-        this.log.getPiping().info(String.format(
+        this.log.getPipeping().info(String.format(
                 "Registered pipe from %s using class %s",
                 from, pipeClass.getCanonicalName()
         ));
@@ -105,6 +105,10 @@ public class PipesContainer implements PipesRegistrationService, PipesRetrieveSe
                     pipes.get(processing).getRelevantLocations(url, content).collect(Collectors.toList())
             );
         }
+        this.log.getPipeping().debug(String.format(
+                "User is now in the following locations: %s",
+                relevant.stream().collect(Collectors.joining(";"))
+        ));
         return relevant;
     }
 }

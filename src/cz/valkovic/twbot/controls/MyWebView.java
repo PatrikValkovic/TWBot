@@ -4,12 +4,12 @@ import com.google.inject.Inject;
 import cz.valkovic.twbot.modules.core.ResourceLoaderService;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
-import cz.valkovic.twbot.services.configuration.Configuration;
+import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
+import cz.valkovic.twbot.modules.core.settings.instances.CorePublicSetting;
 import cz.valkovic.twbot.services.connectors.NavigationEngine;
 import cz.valkovic.twbot.services.connectors.NavigationEngineImpl;
 import cz.valkovic.twbot.services.connectors.webview.WebViewConnector;
 import cz.valkovic.twbot.services.messaging.messages.WebLoaded;
-import java.io.IOException;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
 import javafx.scene.web.WebView;
+import java.io.IOException;
 
 public class MyWebView extends VBox{
 
@@ -39,7 +40,7 @@ public class MyWebView extends VBox{
             WebViewConnector connector,
             EventBrokerService messaging,
             NavigationEngine nav,
-            Configuration conf
+            SettingsProviderService setting
     ) throws IOException {
         this.log = log;
         this.messaging = messaging;
@@ -60,7 +61,9 @@ public class MyWebView extends VBox{
         connector.bind(this);
 
         // navigate to index page
-        this.getEngine().load(conf.homepage());
+        setting.observe(CorePublicSetting.class, s -> {
+            this.getEngine().load(s.homepage());
+        });
 
         // bind properties
         bindProperties();

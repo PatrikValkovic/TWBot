@@ -38,7 +38,7 @@ public interface LoggingService {
      * Logs events related to pipes.
      * Note that parsing logs should rather use `getParsing()` method.
      */
-    Logger getPiping();
+    Logger getPipeping();
 
     /**
      * Logs event related to execution tasks.

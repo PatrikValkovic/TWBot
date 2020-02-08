@@ -2,12 +2,12 @@ package cz.valkovic.twbot.modules.core.settings;
 
 import cz.valkovic.twbot.modules.core.directories.DirectoriesService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
-import java.io.*;
-import java.nio.file.Paths;
-import javax.inject.Inject;
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.ConfigFactory;
 import org.aeonbits.owner.Mutable;
+import javax.inject.Inject;
+import java.io.*;
+import java.nio.file.Paths;
 
 public class SettingPersistingServiceImpl implements SettingPersistingService {
 
@@ -51,7 +51,7 @@ public class SettingPersistingServiceImpl implements SettingPersistingService {
 
     @Override
     public <T extends Accessible> void store(Class<? extends T> type, T settings) {
-        log.getSettings().info("Storing " + settings.getClass().getCanonicalName());
+        log.getSettings().debug("Storing " + settings.getClass().getCanonicalName());
         String filepath = this.getSettingFilePath(type);
         try (OutputStream str = new FileOutputStream(filepath)) {
             settings.store(str, null);
@@ -60,6 +60,6 @@ public class SettingPersistingServiceImpl implements SettingPersistingService {
             log.getSettings().error("Cannot save setting for " + settings.getClass().getCanonicalName());
             log.getSettings().debug(e, e);
         }
-        log.getSettings().debug("Setting " + settings.getClass().getCanonicalName() + " stored");
+        log.getSettings().info("Setting " + settings.getClass().getCanonicalName() + " stored");
     }
 }
