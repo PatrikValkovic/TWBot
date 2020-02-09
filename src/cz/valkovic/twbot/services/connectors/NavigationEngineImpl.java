@@ -1,12 +1,11 @@
 package cz.valkovic.twbot.services.connectors;
 
+import cz.valkovic.twbot.modules.core.actions.events.ActionRequestEvent;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
-import cz.valkovic.twbot.services.messaging.messages.PerformWaitAction;
 import cz.valkovic.twbot.services.messaging.messages.WebLoaded;
-import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
 import javafx.scene.web.WebEngine;
+import org.w3c.dom.Document;
 import javax.inject.Inject;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -14,7 +13,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 
 public class NavigationEngineImpl implements NavigationEngine {
 
@@ -80,7 +80,7 @@ public class NavigationEngineImpl implements NavigationEngine {
     @Override
     public void setLocation(String location) {
         log.getNavigationAction().debug("Attempt to set location to " + location);
-        this.messages.invoke(new PerformWaitAction(engine -> {
+        this.messages.invoke(new ActionRequestEvent(engine -> {
             log.getNavigationAction().info("Navigating to " + location);
             engine.load(location);
         }));

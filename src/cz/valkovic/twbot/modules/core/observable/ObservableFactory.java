@@ -11,5 +11,5 @@ public interface ObservableFactory {
      * @param <T> Type of the observable.
      * @return Observable object.
      */
-    <T> Observable<T> Create(T value);
+    <T> Observable<T> create(T value);
 }

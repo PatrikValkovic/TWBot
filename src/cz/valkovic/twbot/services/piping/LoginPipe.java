@@ -1,10 +1,10 @@
 package cz.valkovic.twbot.services.piping;
 
 import cz.valkovic.twbot.modules.core.ResourceLoaderService;
+import cz.valkovic.twbot.modules.core.actions.ActionsService;
 import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
 import cz.valkovic.twbot.modules.core.settings.instances.CorePrivateSetting;
 import cz.valkovic.twbot.modules.core.settings.instances.CorePublicSetting;
-import cz.valkovic.twbot.services.browserManipulation.ActionsService;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -35,21 +35,21 @@ public class LoginPipe implements ParsingPipe {
     public boolean process(URL location, String content) throws URISyntaxException, IOException {
         if(location.getHost().matches(privSetting.loginPageRegex())){
 
-            if (setting.username() != null && setting.password() != null) {
+            if (setting.username() != null && setting.username().length() > 0 &&
+                    setting.password() != null && setting.password().length() > 0) {
                 String script = resources.getResoureContent("scripts/loginScript.js");
                 String toExecute = String.format(
                     script,
                     setting.username(),
                     setting.password()
                 );
-                actionable.performAction(e -> {
-                    e.executeScript(toExecute);
-                    return false;
+                actionable.action(engine -> {
+                    engine.executeScript(toExecute);
                 });
             }
-            if (setting.serverName() != null) {
+            if (setting.serverName() != null && setting.serverName().length() > 0) {
                 String navigate = "window.location = '/page/play/" + setting.serverName() + "'";
-                actionable.performWaitAction(e -> e.executeScript(navigate));
+                actionable.action(engine -> engine.executeScript(navigate));
             }
 
         }

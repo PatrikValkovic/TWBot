@@ -16,7 +16,7 @@ public class ObservableFactoryImpl implements ObservableFactory {
     }
 
     @Override
-    public <T> Observable<T> Create(T value) {
+    public <T> Observable<T> create(T value) {
         return new Observable<T>(value, this.log, this.execution);
     }
 }

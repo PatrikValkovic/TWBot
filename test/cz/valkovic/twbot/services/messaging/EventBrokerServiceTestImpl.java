@@ -47,8 +47,4 @@ public class EventBrokerServiceTestImpl implements EventBrokerService {
                      });
         return this;
     }
-
-    @Override
-    public void waitToAllEvents() {
-    }
 }

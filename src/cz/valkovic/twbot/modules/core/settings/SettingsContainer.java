@@ -45,7 +45,7 @@ public class SettingsContainer implements
         this.log = log;
         this.injector = injector;
         this.event = event;
-        this.observable = observFact.Create(true);
+        this.observable = observFact.create(true);
     }
 
     @Override

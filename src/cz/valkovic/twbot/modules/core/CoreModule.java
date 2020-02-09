@@ -1,6 +1,9 @@
 package cz.valkovic.twbot.modules.core;
 
 import com.google.inject.AbstractModule;
+import cz.valkovic.twbot.modules.core.actions.ActionEventHandler;
+import cz.valkovic.twbot.modules.core.actions.ActionsService;
+import cz.valkovic.twbot.modules.core.actions.ActionsServiceImpl;
 import cz.valkovic.twbot.modules.core.database.*;
 import cz.valkovic.twbot.modules.core.database.setting.DatabaseSettingDemand;
 import cz.valkovic.twbot.modules.core.directories.AppDirsDirectoriesService;
@@ -73,5 +76,9 @@ public class CoreModule extends AbstractModule {
         bind(PipesRetrieveService.class).to(PipesContainer.class);
         bind(ParsingService.class).to(ParsingServiceImpl.class);
         requestStaticInjection(PipesSettingDemand.class);
+
+        // actions
+        bind(ActionsService.class).to(ActionsServiceImpl.class);
+        requestStaticInjection(ActionEventHandler.class);
     }
 }

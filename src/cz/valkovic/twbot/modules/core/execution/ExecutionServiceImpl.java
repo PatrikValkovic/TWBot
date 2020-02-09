@@ -50,7 +50,10 @@ public class ExecutionServiceImpl implements ExecutionService {
      * Finnish all the tasks and exit the application.
      */
     @Override
-    public void waitAndExit() throws InterruptedException {
+    public void stopAndJoin() throws InterruptedException {
+        if(!this.thread.isAlive())
+            return;
+
         this.log.getExecution().debug("Stopping execution service thread");
 
         this.execution.getEnd().set(true);

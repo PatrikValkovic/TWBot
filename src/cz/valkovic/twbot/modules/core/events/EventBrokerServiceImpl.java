@@ -2,14 +2,14 @@ package cz.valkovic.twbot.modules.core.events;
 
 import cz.valkovic.twbot.modules.core.execution.ExecutionService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 @Singleton
 public class EventBrokerServiceImpl implements EventBrokerService {
@@ -26,13 +26,6 @@ public class EventBrokerServiceImpl implements EventBrokerService {
         this.log = log;
         this.execution = execution;
     }
-
-
-    @Override
-    public void waitToAllEvents() throws InterruptedException {
-        this.execution.waitAndExit();
-    }
-
 
     @AllArgsConstructor
     private static class ListenerRemoveObject<E extends Event> {

@@ -20,6 +20,6 @@ public interface ExecutionService {
     /**
      * Finnish all the tasks and exit the application.
      */
-    void waitAndExit() throws InterruptedException;
+    void stopAndJoin() throws InterruptedException;
 
 }

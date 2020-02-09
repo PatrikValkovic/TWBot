@@ -28,10 +28,4 @@ public interface EventBrokerService {
      * @return Instance self.
      */
     <E extends Event> EventBrokerService invoke(E e);
-
-    /**
-     * Wait for all events to be processed.
-     * @throws InterruptedException When the waiting is interrupted.
-     */
-    void waitToAllEvents() throws InterruptedException;
 }

@@ -1,10 +1,12 @@
 package cz.valkovic.twbot;
 
 import com.google.inject.Injector;
+import cz.valkovic.twbot.modules.core.actions.ActionsService;
 import cz.valkovic.twbot.modules.core.controls.Application;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.twbot.modules.core.events.instances.ApplicationStartEvent;
+import cz.valkovic.twbot.modules.core.execution.ExecutionService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import lombok.Getter;
 
@@ -24,9 +26,9 @@ public class Main {
             Application.main(args);
         }
         finally {
-            i.getInstance(EventBrokerService.class)
-             .invoke(new ApplicationCloseEvent(log.getExit()))
-             .waitToAllEvents();
+            i.getInstance(EventBrokerService.class).invoke(new ApplicationCloseEvent(log.getExit()));
+            i.getInstance(ActionsService.class).stopAndJoin();
+            i.getInstance(ExecutionService.class).stopAndJoin();
         }
     }
 

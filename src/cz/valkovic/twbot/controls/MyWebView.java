@@ -1,6 +1,7 @@
 package cz.valkovic.twbot.controls;
 
 import com.google.inject.Inject;
+import cz.valkovic.twbot.modules.browsing.WebEngineConnector;
 import cz.valkovic.twbot.modules.core.ResourceLoaderService;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
@@ -40,7 +41,8 @@ public class MyWebView extends VBox{
             WebViewConnector connector,
             EventBrokerService messaging,
             NavigationEngine nav,
-            SettingsProviderService setting
+            SettingsProviderService setting,
+            WebEngineConnector connectNew
     ) throws IOException {
         this.log = log;
         this.messaging = messaging;
@@ -59,6 +61,7 @@ public class MyWebView extends VBox{
 
         // connection with rest of the app
         connector.bind(this);
+        connectNew.bind(this.getEngine());
 
         // navigate to index page
         setting.observe(CorePublicSetting.class, s -> {
