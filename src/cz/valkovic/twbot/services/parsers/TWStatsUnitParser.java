@@ -5,23 +5,20 @@ import cz.valkovic.twbot.models.UnitInfo;
 import cz.valkovic.twbot.models.UnitTypes;
 import cz.valkovic.twbot.models.UnitsSettings;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
-import cz.valkovic.twbot.services.parsers.reporting.UnitsSettingsReportingService;
-import java.net.URL;
-import java.util.Arrays;
-import javax.inject.Inject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import javax.inject.Inject;
+import java.net.URL;
+import java.util.Arrays;
 
 public class TWStatsUnitParser extends BaseParser implements Parser {
 
     private LoggingService log;
-    private UnitsSettingsReportingService report;
 
     @Inject
-    public TWStatsUnitParser(LoggingService log, UnitsSettingsReportingService report) {
+    public TWStatsUnitParser(LoggingService log) {
         this.log = log;
-        this.report = report;
     }
 
 
@@ -91,7 +88,7 @@ public class TWStatsUnitParser extends BaseParser implements Parser {
             }
         }
 
-        this.report.report(settings);
+        //this.report.report(settings);
 
         log.getParsing().info(location.toString() + " units parsed successfully");
     }

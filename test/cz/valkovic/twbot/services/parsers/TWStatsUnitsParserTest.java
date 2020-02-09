@@ -4,26 +4,24 @@ import cz.valkovic.twbot.models.UnitInfo;
 import cz.valkovic.twbot.models.UnitTypes;
 import cz.valkovic.twbot.models.UnitsSettings;
 import cz.valkovic.twbot.services.logging.TestLoggingService;
-import cz.valkovic.twbot.services.parsers.reporting.UnitsSettingsReportingService;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class TWStatsUnitsParserTest {
 
-    static class ReportClass implements UnitsSettingsReportingService {
+    static class ReportClass {
         private UnitsSettings units;
 
 
-        @Override
         public void report(UnitsSettings units) {
             this.units = units;
         }
@@ -48,7 +46,7 @@ class TWStatsUnitsParserTest {
 
         d = Jsoup.parse(toRead, "UTF8");
 
-        p = new TWStatsUnitParser(new TestLoggingService(), r);
+        p = new TWStatsUnitParser(new TestLoggingService());
     }
 
     @Test

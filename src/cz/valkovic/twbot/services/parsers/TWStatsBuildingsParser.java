@@ -5,23 +5,20 @@ import cz.valkovic.twbot.models.BuildingInfo;
 import cz.valkovic.twbot.models.BuildingSettings;
 import cz.valkovic.twbot.models.BuildingTypes;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
-import cz.valkovic.twbot.services.parsers.reporting.BuildingSettingsReportingService;
-import java.net.URL;
-import java.util.Arrays;
-import javax.inject.Inject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import javax.inject.Inject;
+import java.net.URL;
+import java.util.Arrays;
 
 public class TWStatsBuildingsParser extends BaseParser implements Parser {
 
     private LoggingService log;
-    private BuildingSettingsReportingService report;
 
     @Inject
-    public TWStatsBuildingsParser(LoggingService log, BuildingSettingsReportingService report) {
+    public TWStatsBuildingsParser(LoggingService log) {
         this.log = log;
-        this.report = report;
     }
 
 
@@ -99,7 +96,7 @@ public class TWStatsBuildingsParser extends BaseParser implements Parser {
             }
         }
 
-        this.report.report(settings);
+        //this.report.report(settings);
 
         log.getParsing().info(location.toString() + " buildings parsed successfully");
     }

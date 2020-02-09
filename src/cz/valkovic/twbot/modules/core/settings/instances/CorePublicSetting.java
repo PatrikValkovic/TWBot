@@ -54,8 +54,4 @@ public interface CorePublicSetting extends PublicSettings {
 
     @SettingDescription("Default server, that you want to log in by default. Leave empty if you want to choose server yourself.")
     String serverName();
-
-    @SettingDescription("Website, that should be load on startup of the application.")
-    @DefaultValue("https://www.divokekmeny.cz")
-    String homepage();
 }

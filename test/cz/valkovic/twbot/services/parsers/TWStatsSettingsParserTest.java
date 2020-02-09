@@ -2,25 +2,23 @@ package cz.valkovic.twbot.services.parsers;
 
 import cz.valkovic.twbot.models.ServerSetting;
 import cz.valkovic.twbot.services.logging.TestLoggingService;
-import cz.valkovic.twbot.services.parsers.reporting.ServerSettingsReportingService;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import lombok.Getter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TWStatsSettingsParserTest {
 
-    static class ReportClass implements ServerSettingsReportingService {
+    static class ReportClass {
         @Getter
         private ServerSetting settings;
 
-        @Override
         public void report(ServerSetting settings) {
             this.settings = settings;
         }
@@ -45,7 +43,7 @@ class TWStatsSettingsParserTest {
 
         d = Jsoup.parse(toRead, "UTF8");
 
-        p = new TWStatsSettingParser(new TestLoggingService(), r);
+        p = new TWStatsSettingParser(new TestLoggingService());
     }
 
     @Test

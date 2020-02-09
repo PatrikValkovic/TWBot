@@ -4,18 +4,22 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.web.WebView?>
-<fx:root type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml">
+<fx:root
+        type="javafx.scene.layout.VBox"
+        xmlns="http://javafx.com/javafx/10.0.2-internal"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="cz.valkovic.twbot.modules.browsing.controls.WebViewController"
+>
     <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
-        <children>
-            <Button mnemonicParsing="false" text="Back" onAction="#backClicked" disable="${controller.disableBack}"/>
-            <Button mnemonicParsing="false" text="Forward" onAction="#forwardClicked"
-                    disable="${controller.disableForward}"/>
-            <TextField fx:id="urlfield"
-                       HBox.hgrow="ALWAYS"
-                       onKeyPressed="#fieldInput"/>
-            <Button mnemonicParsing="false" text="Refresh" onAction="#refreshClicked"/>
-        </children>
+        <Button text="Back" onAction="#backAction" disable="${controller.cantGoBack}"/>
+        <Button text="Forward" onAction="#forwardAction" disable="${controller.cantGoForward}"/>
+        <TextField fx:id="urlfield"
+                   HBox.hgrow="ALWAYS"
+                   onKeyPressed="#inputFieldChanged"/>
+        <Button text="Refresh" onAction="#refreshAction"/>
+        <Rectangle width="25" height="25" fill="${controller.hasActions}"/>
     </HBox>
     <WebView fx:id="webview" VBox.vgrow="ALWAYS"/>
 </fx:root>

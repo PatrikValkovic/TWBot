@@ -86,6 +86,9 @@ public class Observable<T> {
      */
     public synchronized Object observeInRender(Consumer<T> callback) {
         return this.observe(value -> {
+            this.log.getObservable().debug(
+                    "Going to execute in render method " + callback.getClass().getCanonicalName()
+            );
             this.execution.runInRender(() -> callback.accept(this.getValue()));
         });
     }

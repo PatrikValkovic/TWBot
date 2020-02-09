@@ -4,25 +4,22 @@ import cz.valkovic.twbot.models.BuildingInfo;
 import cz.valkovic.twbot.models.BuildingSettings;
 import cz.valkovic.twbot.models.BuildingTypes;
 import cz.valkovic.twbot.services.logging.TestLoggingService;
-import cz.valkovic.twbot.services.parsers.reporting.BuildingSettingsReportingService;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TWStatsBuildingsParserTest {
 
-    static class ReportClass implements BuildingSettingsReportingService {
+    static class ReportClass {
         private BuildingSettings buildings;
 
-
-        @Override
         public void report(BuildingSettings units) {
             this.buildings = units;
         }
@@ -47,7 +44,7 @@ class TWStatsBuildingsParserTest {
 
         d = Jsoup.parse(toRead, "UTF8");
 
-        p = new TWStatsBuildingsParser(new TestLoggingService(), r);
+        p = new TWStatsBuildingsParser(new TestLoggingService());
     }
 
     @Test
