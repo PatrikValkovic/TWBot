@@ -27,6 +27,9 @@ public class ParsingModule extends AbstractModule {
         // parsing
         bind(ParsingRequestService.class).to(ParsingRequestServiceImpl.class);
         requestStaticInjection(EventHandler.class);
+
+        // automatic repeated parsing
+        requestStaticInjection(RepeatedParsingRegistration.class);
     }
 
 }

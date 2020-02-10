@@ -50,6 +50,7 @@ public class SettingsContainer implements
 
     @Override
     public void register(SettingDemand demand) {
+        this.log.getStartup().info("Registering setting " + demand.getClass().getCanonicalName());
         storeSettingInMap(demand.getPublicSetting(), loadSetting(demand.getPublicSetting()));
         storeSettingInMap(demand.getPrivateSetting(), loadSetting(demand.getPrivateSetting()));
 

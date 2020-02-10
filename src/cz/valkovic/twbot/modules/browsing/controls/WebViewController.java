@@ -84,6 +84,7 @@ public class WebViewController {
         // navigate to home page
         this.setting.observe(BrowserPublicSetting.class, s -> {
             this.webview.getEngine().load(s.homepage());
+            this.webview.getEngine().setUserAgent(s.userAgent());
         });
     }
 

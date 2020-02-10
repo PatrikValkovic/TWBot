@@ -22,16 +22,16 @@ import cz.valkovic.twbot.modules.core.pipeping.*;
 import cz.valkovic.twbot.modules.core.settings.*;
 import cz.valkovic.twbot.modules.core.settings.instances.CoreSettingDemand;
 import cz.valkovic.twbot.modules.core.tabs.*;
+import cz.valkovic.twbot.modules.core.timing.TimingService;
+import cz.valkovic.twbot.modules.core.timing.TimingServiceImpl;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
 
-@TWModule
+@TWModule(100)
 public class CoreModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        super.configure();
-
         // ResourceLoaderService
         bind(ResourceLoaderService.class);
 
@@ -80,5 +80,8 @@ public class CoreModule extends AbstractModule {
         // actions
         bind(ActionsService.class).to(ActionsServiceImpl.class);
         requestStaticInjection(ActionEventHandler.class);
+
+        // timing
+        bind(TimingService.class).to(TimingServiceImpl.class);
     }
 }

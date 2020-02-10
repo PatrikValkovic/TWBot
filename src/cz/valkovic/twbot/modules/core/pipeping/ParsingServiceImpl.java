@@ -41,7 +41,7 @@ public class ParsingServiceImpl implements ParsingService {
 
     @Override
     public void parse(URL url, String content) {
-        log.getParsing().info("Initializing parsing on " + url.toString());
+        log.getParsing().debug("Initializing parsing on " + url.toString());
         exe.run(() -> {
             Document doc = createDocument(content);
 

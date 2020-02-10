@@ -1,7 +1,9 @@
 package cz.valkovic.twbot.modules.browsing.engine;
 
 import cz.valkovic.twbot.modules.core.actions.WebEngineProvider;
+import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import javafx.scene.web.WebEngine;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -10,10 +12,17 @@ import javax.inject.Singleton;
 @Singleton
 public class EngineMiddleware implements WebEngineProvider, WebEngineConnector {
 
+    private final LoggingService log;
     private WebEngine engine = null;
+
+    @Inject
+    public EngineMiddleware(LoggingService log) {
+        this.log = log;
+    }
 
     @Override
     public void bind(WebEngine engine) {
+        this.log.getStartup().debug("WebEngine bind");
         this.engine = engine;
     }
 

@@ -53,7 +53,7 @@ public class Application extends javafx.application.Application {
             primaryStage.setTitle("TWBot");
             primaryStage.setScene(new Scene(root, width, height));
             primaryStage.setMaximized(
-                    s.maximalized() ||
+                    s.maximized() ||
                     screenSize.getWidth() < s.windowWidth() ||
                     screenSize.getHeight() < s.windowHeight()
             );

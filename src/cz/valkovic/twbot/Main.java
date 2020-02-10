@@ -8,6 +8,7 @@ import cz.valkovic.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.twbot.modules.core.events.instances.ApplicationStartEvent;
 import cz.valkovic.twbot.modules.core.execution.ExecutionService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
+import cz.valkovic.twbot.modules.core.timing.TimingService;
 import lombok.Getter;
 
 public class Main {
@@ -27,8 +28,11 @@ public class Main {
         }
         finally {
             i.getInstance(EventBrokerService.class).invoke(new ApplicationCloseEvent(log.getExit()));
+            i.getInstance(TimingService.class).stopAndJoin();
             i.getInstance(ActionsService.class).stopAndJoin();
             i.getInstance(ExecutionService.class).stopAndJoin();
+            log.getExit().info("Application closed");
+            System.exit(0);
         }
     }
 

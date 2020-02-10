@@ -64,7 +64,7 @@ public class ActionThread implements Runnable {
     @Override
     public void run() {
         this.log.getAction().info("Starting action thread");
-        while(this.engineProvider.getEngine() == null){
+        while(this.engineProvider.getEngine() == null || this.privSetting == null){
             Thread.yield();
         }
         this.log.getAction().info("Engine provider in action thread loaded");
@@ -80,10 +80,16 @@ public class ActionThread implements Runnable {
                 // perform action
                 this.hasActionsToPerform.setValue(true);
                 this.log.getAction().debug("Executing action " + toExecute.getClass().getCanonicalName());
-                synchronized (this.actionWaitLock){
-                    this.actionWaitLock.set(false);
-                    this.exe.runInRender(() -> toExecute.accept(this.engineProvider.getEngine(), this::notifyLock));
-                    this.actionWaitLock.wait(privSetting.maxLockWaitingTime() / 2);
+                try {
+                    synchronized (this.actionWaitLock) {
+                        this.actionWaitLock.set(false);
+                        this.exe.runInRender(() -> toExecute.accept(this.engineProvider.getEngine(), this::notifyLock));
+                        this.actionWaitLock.wait(privSetting.maxLockWaitingTime() / 2);
+                    }
+                }
+                catch(Exception e) {
+                    this.log.getAction().warn("Exception during action");
+                    this.log.getAction().debug(e, e);
                 }
                 // timeouted
                 if(!actionWaitLock.get()) {
@@ -102,6 +108,8 @@ public class ActionThread implements Runnable {
             this.log.getAction().error("Action thread interrupted");
             this.log.getAction().debug(e, e);
         }
-        this.log.getAction().info("Closing action thread");
+        finally {
+            this.log.getAction().info("Closing action thread");
+        }
     }
 }

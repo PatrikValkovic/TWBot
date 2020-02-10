@@ -12,7 +12,7 @@ import cz.valkovic.twbot.modules.browsing.setting.BrowsingSettingDemand;
 import cz.valkovic.twbot.modules.core.actions.WebEngineProvider;
 import cz.valkovic.twbot.modules.core.importing.TWModule;
 
-@TWModule
+@TWModule(500)
 public class BrowsingModule extends AbstractModule {
 
     @Override
@@ -30,6 +30,9 @@ public class BrowsingModule extends AbstractModule {
         // actions
         bind(ActionsWithReloadService.class).to(ActionsWithReloadServiceImpl.class);
         bind(NavigationService.class).to(NavigationServiceImpl.class);
+
+        // browser reloading
+        requestStaticInjection(BrowserReloadingRegistration.class);
     }
 
 }

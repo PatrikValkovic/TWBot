@@ -4,10 +4,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import cz.valkovic.twbot.modules.core.importing.TWModule;
+import org.reflections.Reflections;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.reflections.Reflections;
 
 /**
  * Registers modules to the application.
@@ -18,6 +18,10 @@ public class ModulesRegistration {
         Reflections reflect = new Reflections("cz.valkovic.twbot");
         return reflect.getTypesAnnotatedWith(TWModule.class)
                       .stream()
+                      .sorted(((o1, o2) -> Integer.compare(
+                            o1.getAnnotation(TWModule.class).value(),
+                            o2.getAnnotation(TWModule.class).value()
+                      )))
                       .map(c -> {
                           try {
                               return c.getConstructor().newInstance();

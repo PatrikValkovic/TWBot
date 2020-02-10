@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 @Singleton
 public class Log4jLoggingService implements LoggingService {
 
-    private static final String BASE_PACKAGE = "cz.valkovic.java.twbot";
+    private static final String BASE_PACKAGE = "cz.valkovic.twbot";
 
     @Override
     public Logger getStartup() {
@@ -50,11 +50,6 @@ public class Log4jLoggingService implements LoggingService {
     }
 
     @Override
-    public Logger getNavigationAction() {
-        return LogManager.getFormatterLogger(BASE_PACKAGE + ".action.navigation");
-    }
-
-    @Override
     public Logger getEvents() {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".events");
     }
@@ -77,5 +72,10 @@ public class Log4jLoggingService implements LoggingService {
     @Override
     public Logger getGUI() {
         return LogManager.getFormatterLogger(BASE_PACKAGE + ".gui");
+    }
+
+    @Override
+    public Logger getTiming() {
+        return LogManager.getFormatterLogger(BASE_PACKAGE + ".timing");
     }
 }

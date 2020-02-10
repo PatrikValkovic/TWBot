@@ -51,11 +51,6 @@ public interface LoggingService {
     Logger getAction();
 
     /**
-     * Logs events related to navigation events.
-     */
-    Logger getNavigationAction();
-
-    /**
      * Logs events related to events and their processing.
      */
     Logger getEvents();
@@ -79,6 +74,11 @@ public interface LoggingService {
      * Logs events in GUI.
      */
     Logger getGUI();
+
+    /**
+     * Logs events about timing actions.
+     */
+    Logger getTiming();
 
     /**
      * Log error about missing FXML file.

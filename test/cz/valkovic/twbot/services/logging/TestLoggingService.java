@@ -49,11 +49,6 @@ public class TestLoggingService implements LoggingService {
     }
 
     @Override
-    public Logger getNavigationAction() {
-        return log;
-    }
-
-    @Override
     public Logger getEvents() {
         return log;
     }
@@ -75,6 +70,11 @@ public class TestLoggingService implements LoggingService {
 
     @Override
     public Logger getGUI() {
+        return log;
+    }
+
+    @Override
+    public Logger getTiming() {
         return log;
     }
 }
