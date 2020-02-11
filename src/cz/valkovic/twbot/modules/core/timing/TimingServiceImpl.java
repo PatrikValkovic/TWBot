@@ -1,6 +1,7 @@
 package cz.valkovic.twbot.modules.core.timing;
 
 import com.google.inject.Injector;
+import cz.valkovic.twbot.modules.core.execution.ExecutionService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
 import cz.valkovic.twbot.modules.core.settings.instances.CorePrivateSetting;
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.function.Function;
 
 @Singleton
 public class TimingServiceImpl implements TimingService {
@@ -30,28 +32,37 @@ public class TimingServiceImpl implements TimingService {
 
     @Override
     public TimingRef executeAt(Runnable callback, Instant when) {
-        //TODO
-        return new TimingRef() {
+        Function<ExecutionService, Instant> acc = (exe) -> {
+            exe.run(callback);
+            return null;
         };
-    }
-
-    @Override
-    public TimingRef executeEvery(Runnable callback, Duration duration) {
-        //TODO
-        return new TimingRef() {
-        };
+        this.log.getTiming().debug(String.format(
+                "Timing callback %s will be add as %s",
+                callback.getClass().getCanonicalName(),
+                acc.getClass().getCanonicalName()
+        ));
+        return this.timingThread.addCallback(acc, when);
     }
 
     @Override
     public TimingRef executeEveryWithDelay(Runnable callback, Duration duration, Instant firstExecution) {
-        //TODO
-        return new TimingRef() {
+        Function<ExecutionService, Instant> acc = (exe) -> {
+            exe.run(callback);
+            return Instant.now().plus(duration);
         };
+        this.log.getTiming().debug(String.format(
+                "Timing callback with delay %d ms to be repeated every %d ms, with name %s will be add as %s",
+                Duration.between(Instant.now(), firstExecution).toMillis(),
+                duration.toMillis(),
+                callback.getClass().getCanonicalName(),
+                acc.getClass().getCanonicalName()
+        ));
+        return this.timingThread.addCallback(acc, firstExecution);
     }
 
     @Override
     public void remove(TimingRef o) {
-        //TODO
+        this.timingThread.removeCallback(o);
     }
 
     @Override

@@ -4,9 +4,7 @@ import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
 import cz.valkovic.twbot.modules.core.timing.TimingRef;
 import cz.valkovic.twbot.modules.core.timing.TimingService;
 import cz.valkovic.twbot.modules.parsing.handle.ParsingRequestService;
-import cz.valkovic.twbot.modules.parsing.setting.ParsingPublicSetting;
 import javax.inject.Inject;
-import java.time.Duration;
 
 public class RepeatedParsingRegistration {
 
@@ -21,11 +19,11 @@ public class RepeatedParsingRegistration {
             ParsingRequestService parsing
     ){
 
-        publicSettingLock = setting.observe(ParsingPublicSetting.class, (s) -> {
-            if(callbackHandler != null)
-                timing.remove(callbackHandler);
-            callbackHandler = timing.executeEvery(parsing::parse, Duration.ofMillis(s.parseTime()));
-        });
+        //publicSettingLock = setting.observe(ParsingPublicSetting.class, (s) -> {
+        //    if(callbackHandler != null)
+        //        timing.remove(callbackHandleSr);
+        //    callbackHandler = timing.executeEvery(parsing::parse, Duration.ofMillis(s.parseTime()));
+        //});
 
     }
 
