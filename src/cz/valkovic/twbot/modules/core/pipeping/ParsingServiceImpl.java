@@ -42,7 +42,7 @@ public class ParsingServiceImpl implements ParsingService {
     @Override
     public void parse(URL url, String content) {
         log.getParsing().debug("Initializing parsing on " + url.toString());
-        exe.run(() -> {
+        exe.runInRender(() -> {
             Document doc = createDocument(content);
 
             if(doc == null){
@@ -71,12 +71,14 @@ public class ParsingServiceImpl implements ParsingService {
                 return;
             }
 
-            List<ParsingPipe> p = pipes.getRelevantPipes(url, doc);
-            log.getParsing().info(String.format(
-                    "Found %d parsing pipes for url %s",
-                    p.size(), url.toString()
-            ));
-            p.forEach(pipe -> exe.run(() -> pipe.process(url, doc)));
+            exe.run(() -> {
+                List<ParsingPipe> p = pipes.getRelevantPipes(url, doc);
+                log.getParsing().info(String.format(
+                        "Found %d parsing pipes for url %s",
+                        p.size(), url.toString()
+                ));
+                p.forEach(pipe -> exe.run(() -> pipe.process(url, doc)));
+            });
         });
     }
 

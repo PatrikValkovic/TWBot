@@ -22,7 +22,9 @@ public interface TimingService {
      * @param duration How often execute the callback.
      * @return Object that can be later used for removing the callback.
      */
-    TimingRef executeEvery(Runnable callback, Duration duration);
+    default TimingRef executeEvery(Runnable callback, Duration duration) {
+        return this.executeEveryWithDelay(callback, duration, Instant.now());
+    }
 
     /**
      * Execute callback at firstExecution and then every duration time.
