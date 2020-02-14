@@ -5,8 +5,8 @@ import cz.valkovic.twbot.modules.core.timing.TimingRef;
 import cz.valkovic.twbot.modules.core.timing.TimingService;
 import cz.valkovic.twbot.modules.parsing.handle.ParsingRequestService;
 import cz.valkovic.twbot.modules.parsing.setting.ParsingPublicSetting;
-import javax.inject.Inject;
 import java.time.Duration;
+import javax.inject.Inject;
 
 public class RepeatedParsingRegistration {
 

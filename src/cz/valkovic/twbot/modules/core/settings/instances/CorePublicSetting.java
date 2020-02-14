@@ -29,13 +29,4 @@ public interface CorePublicSetting extends PublicSettings {
     @DefaultValue("False")
     boolean fullscreen();
 
-    //TODO move away
-    @SettingDescription("Your username, that can be used to log in. Please note that your username and password is stored unsecurely on this computer.")
-    String username();
-
-    @SettingDescription("Your password, that can be used to log in. Please note that your username and password is stored unsecurely on this computer!")
-    String password();
-
-    @SettingDescription("Default server, that you want to log in by default. Leave empty if you want to choose server yourself.")
-    String serverName();
 }

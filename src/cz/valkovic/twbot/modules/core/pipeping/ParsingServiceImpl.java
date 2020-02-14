@@ -4,9 +4,6 @@ import cz.valkovic.twbot.modules.core.directories.DirectoriesService;
 import cz.valkovic.twbot.modules.core.execution.ExecutionService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import javax.inject.Inject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 public class ParsingServiceImpl implements ParsingService {
 
@@ -42,7 +42,7 @@ public class ParsingServiceImpl implements ParsingService {
     @Override
     public void parse(URL url, String content) {
         log.getParsing().debug("Initializing parsing on " + url.toString());
-        exe.runInRender(() -> {
+        exe.run(() -> {
             Document doc = createDocument(content);
 
             if(doc == null){
@@ -77,7 +77,18 @@ public class ParsingServiceImpl implements ParsingService {
                         "Found %d parsing pipes for url %s",
                         p.size(), url.toString()
                 ));
-                p.forEach(pipe -> exe.run(() -> pipe.process(url, doc)));
+                p.forEach(pipe -> exe.run(() -> {
+                    try {
+                        pipe.process(url, doc);
+                    }
+                    catch (Exception e){
+                        this.log.getParsing().error(String.format(
+                                "Error on %s in parsing pipe %s",
+                                url.toString(),
+                                pipe.getClass().getCanonicalName()
+                        ));
+                    }
+                }));
             });
         });
     }

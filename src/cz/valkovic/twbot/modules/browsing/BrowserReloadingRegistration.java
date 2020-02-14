@@ -4,16 +4,15 @@ import cz.valkovic.twbot.modules.browsing.actions.ActionsWithReloadService;
 import cz.valkovic.twbot.modules.browsing.events.PageLoadedEvent;
 import cz.valkovic.twbot.modules.browsing.setting.BrowserPublicSetting;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
-import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
 import cz.valkovic.twbot.modules.core.timing.TimingRef;
 import cz.valkovic.twbot.modules.core.timing.TimingService;
-import javafx.scene.web.WebEngine;
-import javax.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import javafx.scene.web.WebEngine;
+import javax.inject.Inject;
 
 public class BrowserReloadingRegistration {
 
@@ -27,10 +26,9 @@ public class BrowserReloadingRegistration {
     @Inject
     public static void register(
             SettingsProviderService setting,
-            ActionsWithReloadService action,
+            ActionsWithReloadService actionWithReload,
             EventBrokerService event,
-            TimingService timing,
-            LoggingService log
+            TimingService timing
     ) {
         publicSettingLock = setting.observe(BrowserPublicSetting.class, s -> {
             reloadPageMax.set(s.reloadPageMax());
@@ -41,17 +39,19 @@ public class BrowserReloadingRegistration {
         event.listenTo(PageLoadedEvent.class, e -> {
             if(reloadPageMax.get() == -1 || reloadPageMin.get() == -1)
                 return;
+            int min = reloadPageMin.get(), max = reloadPageMax.get();
+            if(min > max)
+                return;
 
             if(callbackHandler != null) {
                 timing.remove(callbackHandler);
                 callbackHandler = null;
             }
 
-            int min = reloadPageMin.get(), max = reloadPageMax.get();
             int waitFor = rand.nextInt(max - min) + min;
             Instant executeAt = Instant.now().plus(Duration.ofMillis(waitFor));
             callbackHandler = timing.executeAt(() -> {
-                action.action(WebEngine::reload);
+                actionWithReload.action(WebEngine::reload);
             }, executeAt);
         });
     }

@@ -11,8 +11,4 @@ public interface ParsingPrivateSetting extends StorableSettings {
     @Config.DefaultValue("divokekmeny.cz")
     String applicationDomain();
 
-    @Config.DefaultValue("twstats.com")
-    String twstatsDomain();
-
-
 }

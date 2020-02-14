@@ -1,6 +1,7 @@
 package cz.valkovic.twbot.modules.browsing.controls;
 
 import cz.valkovic.twbot.Main;
+import cz.valkovic.twbot.modules.browsing.actions.ActionsWithReloadService;
 import cz.valkovic.twbot.modules.browsing.actions.NavigationService;
 import cz.valkovic.twbot.modules.browsing.engine.WebEngineConnector;
 import cz.valkovic.twbot.modules.browsing.events.LocationChangedEvent;
@@ -36,6 +37,9 @@ public class WebViewController {
     WebEngineConnector connector;
     @Inject
     SettingsProviderService setting;
+    Object settingLock;
+    @Inject
+    ActionsWithReloadService actionWithReload;
     @Inject
     NavigationService navigation;
     @Inject
@@ -84,6 +88,8 @@ public class WebViewController {
         // navigate to home page
         this.setting.observe(BrowserPublicSetting.class, s -> {
             this.webview.getEngine().load(s.homepage());
+        });
+        settingLock = this.setting.observe(BrowserPublicSetting.class, s -> {
             this.webview.getEngine().setUserAgent(s.userAgent());
         });
     }
@@ -99,7 +105,7 @@ public class WebViewController {
 
     // back action
     @FXML
-    private void backAction(ActionEvent actionEvent) {
+    private void backAction(ActionEvent ignored) {
         this.webview.getEngine().getHistory().go(-1);
     }
     private BooleanProperty cantGoBackProp = new SimpleBooleanProperty(true);
@@ -112,7 +118,7 @@ public class WebViewController {
 
     // forward action
     @FXML
-    private void forwardAction(ActionEvent actionEvent) {
+    private void forwardAction(ActionEvent ignored) {
         this.webview.getEngine().getHistory().go(1);
     }
     private BooleanProperty cantGoForwardProp = new SimpleBooleanProperty(true);
@@ -125,8 +131,8 @@ public class WebViewController {
 
     // refresh
     @FXML
-    private void refreshAction(ActionEvent actionEvent) {
-        this.actions.action(WebEngine::reload); // TODO wait for load
+    private void refreshAction(ActionEvent ignored) {
+        this.actionWithReload.action(WebEngine::reload);
     }
 
     // text field
