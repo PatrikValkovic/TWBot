@@ -7,17 +7,17 @@ import java.net.URL;
 import javax.inject.Inject;
 import org.jsoup.nodes.Document;
 
-public class ApplicationLocPipe implements LocationPipe {
+public class IngameLocPipe implements LocationPipe {
 
-    public ParsingPrivateSetting privSetting;
+    ParsingPrivateSetting setting;
 
     @Inject
-    public ApplicationLocPipe(SettingsProviderService setting) {
-        setting.observe(ParsingPrivateSetting.class, s -> privSetting = s);
+    public IngameLocPipe(SettingsProviderService setting){
+        setting.observe(ParsingPrivateSetting.class, s -> this.setting = s);
     }
 
     @Override
     public boolean match(URL url, Document content) {
-        return url.getHost().contains(privSetting.applicationDomain());
+        return url.getHost().matches(setting.ingameRegex());
     }
 }

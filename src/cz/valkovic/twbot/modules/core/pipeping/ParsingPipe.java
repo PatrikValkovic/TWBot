@@ -1,12 +1,12 @@
 package cz.valkovic.twbot.modules.core.pipeping;
 
-import org.jsoup.nodes.Document;
 import java.net.URL;
+import org.jsoup.nodes.Document;
 
 /**
  * Define parsing pipe - pipe that should scratch content from the webpage.
  */
-public interface ParsingPipe {
+public interface ParsingPipe extends Pipe {
 
     /**
      * Process the webpage and scratch data from it.

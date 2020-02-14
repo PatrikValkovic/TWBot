@@ -77,7 +77,18 @@ public class ParsingServiceImpl implements ParsingService {
                         "Found %d parsing pipes for url %s",
                         p.size(), url.toString()
                 ));
-                p.forEach(pipe -> exe.run(() -> pipe.process(url, doc)));
+                p.forEach(pipe -> exe.run(() -> {
+                    try {
+                        pipe.process(url, doc);
+                    }
+                    catch (Exception e){
+                        this.log.getParsing().error(String.format(
+                                "Error on %s in parsing pipe %s",
+                                url.toString(),
+                                pipe.getClass().getCanonicalName()
+                        ));
+                    }
+                }));
             });
         });
     }

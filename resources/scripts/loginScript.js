@@ -1,6 +1,10 @@
-var elem = document.getElementById('user');
-if(elem){
-    elem.value = '%s';
-    document.getElementById('password').value = '%s';
-    document.querySelector('#login_form .btn-login').click()
-}
+(function(){
+    var username = '%s';
+    var password = '%s';
+
+    var usernameField = document.getElementById('user');
+    var passwordField = document.getElementById('password');
+    usernameField.value = username;
+    passwordField.value = password;
+    document.getElementsByClassName('btn-login')[0].click();
+})();
