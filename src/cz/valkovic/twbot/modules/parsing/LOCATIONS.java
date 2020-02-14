@@ -133,7 +133,41 @@ public enum LOCATIONS {
     VILLAGE_FARM("https://cs69.divokekmeny.cz/game.php?village=13176&screen=farm"),
     VILLAGE_WAREHOUSE("https://cs69.divokekmeny.cz/game.php?village=13176&screen=storage"),
     VILLAGE_HIDEOUT("https://cs69.divokekmeny.cz/game.php?village=13176&screen=hide"),
-    VILLAGE_WALL("https://cs69.divokekmeny.cz/game.php?village=13176&screen=wall");
+    VILLAGE_WALL("https://cs69.divokekmeny.cz/game.php?village=13176&screen=wall"),
+
+    REPORTS("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report"),
+    REPORTS_ALL("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report[&mode=all]"),
+    REPORTS_ATT("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report&mode=attack"),
+    REPORTS_DEF("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report&mode=defense"),
+    REPORTS_SUPPORT("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report&mode=support"),
+    REPORTS_TRADE("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report&mode=trade"),
+    REPORTS_EVENTS("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report&mode=event"),
+    REPORTS_OTHER("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report&mode=other"),
+    REPORTS_FORWARD("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report&mode=forwarded"),
+    REPORTS_PUBLIC("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report&mode=public"),
+    REPORTS_FILTER("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report&mode=filter"),
+    REPORT_READ("https://cs69.divokekmeny.cz/game.php?village=13176&screen=report&mode=attack&group_id=0&view=5326629"),
+
+    MAP("https://cs69.divokekmeny.cz/game.php?village=13176&screen=map#388;512"),
+
+    TRIBE("https://cs69.divokekmeny.cz/game.php?village=13176&screen=ally"),
+    TRIBE_OVERVIEW("https://cs69.divokekmeny.cz/game.php?village=13176&screen=ally[&mode=overview]"),
+    TRIBE_PROPERTIES("https://cs69.divokekmeny.cz/game.php?village=13176&screen=ally&mode=properties"),
+    TRIBE_LEVEL("https://cs69.divokekmeny.cz/game.php?village=13176&screen=ally&mode=level"),
+    TRIBE_MEMBERS("https://cs69.divokekmeny.cz/game.php?village=13176&screen=ally&mode=members"),
+    TRIBE_DIPLOMACY("https://cs69.divokekmeny.cz/game.php?village=13176&screen=ally&mode=contracts"),
+    TRIBE_WARS("https://cs69.divokekmeny.cz/game.php?screen=wars&village=13176"),
+    TRIBE_WARS_CURRENT("https://cs69.divokekmeny.cz/game.php?village=13176&screen=wars[&mode=running]"),
+    TRIBE_WARS_INVITES("https://cs69.divokekmeny.cz/game.php?village=13176&screen=wars&mode=invites"),
+    TRIBE_WARS_DECLARATION("https://cs69.divokekmeny.cz/game.php?village=13176&screen=wars&mode=declare"),
+    TRIBE_WARS_ARCHIVE("https://cs69.divokekmeny.cz/game.php?village=13176&screen=wars&mode=archive"),
+    TRIBE_WARS_SCORE("https://cs69.divokekmeny.cz/game.php?village=13176&screen=wars&mode=score"),
+    TRIBE_RESERVATIONS("https://cs69.divokekmeny.cz/game.php?village=13176&screen=ally&mode=reservations"),
+    TRIBE_RECRUIT("https://cs69.divokekmeny.cz/game.php?village=13176&screen=ally&mode=invite"),
+
+    FORUM("https://cs69.divokekmeny.cz/game.php?village=13176&screen=forum"),
+    FORUM_SECTION("https://cs69.divokekmeny.cz/game.php?screen=forum[&forum_id=2123]"),
+    FORUM_THREAD("https://cs69.divokekmeny.cz/game.php?screen=forum&screenmode=view_thread[&forum_id=2123]&thread_id=5684");
 
 
     LOCATIONS() {}

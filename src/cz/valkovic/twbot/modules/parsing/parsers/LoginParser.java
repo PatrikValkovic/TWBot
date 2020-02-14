@@ -6,9 +6,9 @@ import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.pipeping.ParsingPipe;
 import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
 import cz.valkovic.twbot.modules.parsing.setting.ParsingPublicSetting;
-import java.net.URL;
-import javax.inject.Inject;
 import org.jsoup.nodes.Document;
+import javax.inject.Inject;
+import java.net.URL;
 
 public class LoginParser implements ParsingPipe {
 
@@ -18,6 +18,8 @@ public class LoginParser implements ParsingPipe {
     private final ResourceLoaderService resources;
     private final ActionsService actions;
     private final LoggingService log;
+
+    private boolean inQueue = false;
 
     @Inject
     public LoginParser(SettingsProviderService setting, ResourceLoaderService resources, ActionsService actions, LoggingService log) {
@@ -32,7 +34,8 @@ public class LoginParser implements ParsingPipe {
     @Override
     public void process(URL url, Document content) {
         if (pubSetting.username() == null || pubSetting.username().length() == 0 ||
-                pubSetting.password() == null || pubSetting.password().length() == 0)
+                pubSetting.password() == null || pubSetting.password().length() == 0 ||
+                inQueue)
             return;
 
         try {
@@ -41,6 +44,7 @@ public class LoginParser implements ParsingPipe {
                     pubSetting.username(), pubSetting.password()
             );
             actions.action(engine -> engine.executeScript(filledScript));
+            this.inQueue = true;
         }
         catch(Exception e){
             this.log.getParsing().warn("Couldn't login user");
