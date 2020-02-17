@@ -1,6 +1,5 @@
 package cz.valkovic.twbot.modules.core.database;
 
-import cz.valkovic.twbot.models.BaseEntity;
 import cz.valkovic.twbot.modules.core.database.events.EntityRegisteredEvent;
 import cz.valkovic.twbot.modules.core.database.events.HibernateLoadedEvent;
 import cz.valkovic.twbot.modules.core.database.setting.DatabasePrivateSetting;
@@ -10,12 +9,12 @@ import cz.valkovic.twbot.modules.core.execution.ExecutionService;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import cz.valkovic.twbot.modules.core.settings.SettingsProviderService;
 import cz.valkovic.twbot.modules.core.settings.instances.CorePrivateSetting;
-import java.util.LinkedList;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.LinkedList;
+import java.util.List;
 
 @Singleton
 public class SessionFactoryImpl implements
@@ -28,7 +27,7 @@ public class SessionFactoryImpl implements
     private DatabasePrivateSetting dbPrivate;
     private CorePrivateSetting coreSetting;
 
-    private final List<Class<? extends BaseEntity>> entities = new LinkedList<>();
+    private final List<Class<? extends BaseEntity<?>>> entities = new LinkedList<>();
     private SessionFactory factory = null;
 
     @Inject
@@ -69,7 +68,7 @@ public class SessionFactoryImpl implements
             hiberConf.configure();
             hiberConf.setProperty("hibernate.connection.url", this.dbStatic.connectionString());
             hiberConf.setProperty("hibernate.hbm2ddl.auto", this.dbPrivate.hbm2ddl());
-            for(Class<? extends BaseEntity> entity : this.entities)
+            for(Class<? extends BaseEntity<?>> entity : this.entities)
                 hiberConf.addAnnotatedClass(entity);
 
             if (this.coreSetting.firstRun()) {
@@ -90,7 +89,7 @@ public class SessionFactoryImpl implements
     }
 
     @Override
-    public void registerEntity(Class<? extends BaseEntity> entity) {
+    public void registerEntity(Class<? extends BaseEntity<?>> entity) {
         this.log.getDatabase().debug(String.format(
                 "Entity %s registration",
                 entity.getCanonicalName()

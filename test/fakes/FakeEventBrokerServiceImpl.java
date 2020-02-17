@@ -1,4 +1,4 @@
-package cz.valkovic.twbot.services.messaging;
+package fakes;
 
 import cz.valkovic.twbot.modules.core.events.Event;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EventBrokerServiceTestImpl implements EventBrokerService {
+public class FakeEventBrokerServiceImpl implements EventBrokerService {
 
     private Map<Class<? extends Event>, List<Listener<? extends Event>>> messages = new HashMap<>();
 
     @Override
-    public <e extends Event> EventBrokerServiceTestImpl listenTo(Class<e> listenTo, Listener<e> listener) {
+    public <e extends Event> FakeEventBrokerServiceImpl listenTo(Class<e> listenTo, Listener<e> listener) {
         if (!this.messages.containsKey(listenTo))
             this.messages.put(listenTo, new ArrayList<>());
         this.messages.get(listenTo).add(listener);
@@ -32,7 +32,7 @@ public class EventBrokerServiceTestImpl implements EventBrokerService {
     }
 
     @Override
-    public <E extends Event> EventBrokerServiceTestImpl invoke(E event) {
+    public <E extends Event> FakeEventBrokerServiceImpl invoke(E event) {
         if (!this.messages.containsKey(event.getClass()))
             return this;
         this.messages.get(event.getClass())

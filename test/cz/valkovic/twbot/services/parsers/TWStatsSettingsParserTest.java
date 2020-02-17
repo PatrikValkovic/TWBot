@@ -1,7 +1,7 @@
 package cz.valkovic.twbot.services.parsers;
 
 import cz.valkovic.twbot.models.ServerSetting;
-import cz.valkovic.twbot.services.logging.TestLoggingService;
+import fakes.FakeLoggingService;
 import lombok.Getter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TWStatsSettingsParserTest {
 
@@ -43,7 +42,7 @@ class TWStatsSettingsParserTest {
 
         d = Jsoup.parse(toRead, "UTF8");
 
-        p = new TWStatsSettingParser(new TestLoggingService());
+        p = new TWStatsSettingParser(new FakeLoggingService());
     }
 
     @Test

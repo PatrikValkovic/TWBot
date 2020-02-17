@@ -1,20 +1,21 @@
 package cz.valkovic.twbot.models;
 
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.*;
+import cz.valkovic.twbot.modules.core.database.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "units_setting")
-public class UnitsSettings implements BaseEntity {
+public class UnitsSettings implements BaseEntity<Integer> {
 
     @Id
     @GeneratedValue
     @Getter
     @Setter
-    int id;
+    Integer id;
 
     @Getter
     @Setter

@@ -35,8 +35,10 @@ public class LoginParser implements ParsingPipe {
     public void process(URL url, Document content) {
         if (pubSetting.username() == null || pubSetting.username().length() == 0 ||
                 pubSetting.password() == null || pubSetting.password().length() == 0 ||
-                inQueue)
+                inQueue) {
+            inQueue = false;
             return;
+        }
 
         try {
             String loginScript = resources.getResoureContent("scripts/loginScript.js");

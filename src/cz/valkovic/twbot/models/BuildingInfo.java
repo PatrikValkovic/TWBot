@@ -1,18 +1,19 @@
 package cz.valkovic.twbot.models;
 
-import javax.persistence.*;
+import cz.valkovic.twbot.modules.core.database.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "building_info")
-public class BuildingInfo implements BaseEntity {
+public class BuildingInfo implements BaseEntity<Integer> {
 
     @Id
     @GeneratedValue
     @Getter
     @Setter
-    int id;
+    Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="building_settings_id", nullable = false)

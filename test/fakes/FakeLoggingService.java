@@ -1,12 +1,12 @@
-package cz.valkovic.twbot.services.logging;
+package fakes;
 
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TestLoggingService implements LoggingService {
+public class FakeLoggingService implements LoggingService {
 
-    private static Logger log = LogManager.getLogger(TestLoggingService.class);
+    private static Logger log = LogManager.getLogger(FakeLoggingService.class);
 
     @Override
     public Logger getStartup() {

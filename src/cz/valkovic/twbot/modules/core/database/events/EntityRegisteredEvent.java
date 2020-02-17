@@ -1,6 +1,6 @@
 package cz.valkovic.twbot.modules.core.database.events;
 
-import cz.valkovic.twbot.models.BaseEntity;
+import cz.valkovic.twbot.modules.core.database.BaseEntity;
 import cz.valkovic.twbot.modules.core.events.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

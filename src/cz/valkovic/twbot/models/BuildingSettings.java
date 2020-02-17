@@ -1,20 +1,21 @@
 package cz.valkovic.twbot.models;
 
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.*;
+import cz.valkovic.twbot.modules.core.database.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "buildings_settings")
-public class BuildingSettings implements BaseEntity{
+public class BuildingSettings implements BaseEntity<Integer> {
 
     @Id
     @GeneratedValue
     @Getter
     @Setter
-    int id;
+    Integer id;
 
 
     @Getter

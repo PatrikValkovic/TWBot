@@ -4,14 +4,13 @@ package cz.valkovic.twbot.modules.core.database;
 import cz.valkovic.twbot.modules.core.events.EventBrokerService;
 import cz.valkovic.twbot.modules.core.events.instances.ApplicationCloseEvent;
 import cz.valkovic.twbot.modules.core.logging.LoggingService;
-import java.io.Closeable;
+import org.hibernate.HibernateException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
-import org.hibernate.HibernateException;
 
 @Singleton
-public class HibernateDatabaseConnectionService implements DatabaseConnectionService, Closeable {
+public class HibernateDatabaseConnectionService implements DatabaseConnectionService {
 
     private final LoggingService log;
     private final SessionFactoryService factory;

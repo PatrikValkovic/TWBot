@@ -1,18 +1,22 @@
 package cz.valkovic.twbot.models;
 
-import javax.persistence.*;
+import cz.valkovic.twbot.modules.core.database.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "server")
-public class Server implements BaseEntity{
+public class Server implements BaseEntity<Integer> {
 
     @Id
     @GeneratedValue
     @Getter
     @Setter
-    int id;
+    Integer id;
 
     @Getter
     @Setter
@@ -21,15 +25,4 @@ public class Server implements BaseEntity{
     @Getter
     @Setter
     private String host;
-
-    @OneToOne(mappedBy = "server", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Getter
-    private ServerSetting setting;
-
-
-    public void setSetting(ServerSetting setting) {
-        this.setting = setting;
-        setting.setServerName(getServerName());
-        setting.setServer(this);
-    }
 }

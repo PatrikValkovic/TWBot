@@ -63,6 +63,7 @@ public class CoreModule extends AbstractModule {
         bind(SessionFactoryService.class).to(SessionFactoryImpl.class);
         bind(EntityRegistrationService.class).to(SessionFactoryImpl.class);
         bind(DatabaseConnectionService.class).to(HibernateDatabaseConnectionService.class);
+        bind(RepositoryFactoryService.class).to(RepositoryFactoryServiceImpl.class);
         requestStaticInjection(DatabaseSettingDemand.class);
         requestStaticInjection(SessionFactoryImpl.class);
 

@@ -3,7 +3,7 @@ package cz.valkovic.twbot.services.parsers;
 import cz.valkovic.twbot.models.BuildingInfo;
 import cz.valkovic.twbot.models.BuildingSettings;
 import cz.valkovic.twbot.models.BuildingTypes;
-import cz.valkovic.twbot.services.logging.TestLoggingService;
+import fakes.FakeLoggingService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.BeforeAll;
@@ -44,7 +44,7 @@ class TWStatsBuildingsParserTest {
 
         d = Jsoup.parse(toRead, "UTF8");
 
-        p = new TWStatsBuildingsParser(new TestLoggingService());
+        p = new TWStatsBuildingsParser(new FakeLoggingService());
     }
 
     @Test
