@@ -2,6 +2,7 @@ package cz.valkovic.twbot.modules.core.database;
 
 import cz.valkovic.twbot.modules.core.observable.Observable;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Interface that allows to work with entities.
